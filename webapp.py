@@ -1,10 +1,14 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 
 # ----- Settings -----
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
-
+st.session_state.query = ""
+muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
+image_types = ["tif", "jped", "png"]
+devices = ["Siemens", "Philips", "GE"]
 
 # --------------------
 
@@ -15,40 +19,57 @@ st.set_page_config(
 )
 st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 
-# Input fields
-muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
-image_types = ["tif", "jped", "png"]
-devices = ["Siemens", "Philips", "GE"]
 
+# Specify tabs
+selected_tab = option_menu(
+    "Menu",
+    options=["Home", "Repository", "Challenge"],
+    icons=["house", "archive", "trophy"],
+    default_index=0,
+    orientation="horizontal",
+)
 
-entry_dict = {
-    "muscle": ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"],
-    "image_type": ["tif", "jped", "png"],
-    "device": ["Siemens", "Philips", "GE"],
-}
+if selected_tab == "Home":
+    st.header("Home")
+    st.write("Welcome to the UMUD repository!")
 
-st.header("Metadata")
-with st.form("entry_form", clear_on_submit=True):
+elif selected_tab == "Repository":
 
-    "---"
-    muscle_select = st.selectbox("muscle", muscles)
-    "---"
-    image_types_select = st.selectbox("image_type", image_types)
-    "---"
-    devices_select = st.selectbox("device", devices)
-    "---"
-    age_select = st.number_input(
-        "age", min_value=0, max_value=120, format="%i", step=10
-    )
-    "---"
-    st.text_area("Link Return Field")
+    st.header("Metadata")
+    with st.form("entry_form", clear_on_submit=True):
 
-    submitted = st.form_submit_button("Submit Query")
-    if submitted:
+        "---"
+        # Muscle selection
+        muscle_select = st.selectbox("muscle", muscles)
+        # Image types
+        image_types_select = st.selectbox("image_type", image_types)
+        # device list
+        devices_select = st.selectbox("device", devices)
+        # Age range
+        age_select = st.number_input(
+            "age", min_value=0, max_value=120, format="%i", step=10
+        )
 
-        st.write(muscle_select)
-        st.write(image_types_select)
-        st.write(devices_select)
+        "---"
+        # Submit button
+        submitted = st.form_submit_button("Submit Query")
+        if submitted:
+            # Form query for MongoDB
+            st.session_state.query = {
+                "muscle": muscle_select,
+                "image_type": image_types_select,
+                "device": muscle_select,
+                "age": age_select,
+            }
+
+            # TODO include database filtering
+        "---"
+        # Text area for link return
+        st.text_area("Link Return Field", value=st.session_state.query)
+
+else:
+    st.header("Challenge")
+    st.write("Coming soon!")
 
 
 # use st.chache_resoure for databse connection as this will store the db and dont relaod it everytime
