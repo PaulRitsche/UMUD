@@ -1,12 +1,14 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+import pymongo
 
 # ----- Settings -----
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
 st.session_state.query = ""
-muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
+st.session_state.link = {"dataset_link": ""}
+muscles = ["Biceps", "Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
 image_types = ["tif", "jped", "png"]
 devices = ["Siemens", "Philips", "GE"]
 
@@ -20,9 +22,30 @@ st.set_page_config(
 st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 
 
+# Initialize connection.
+# Uses st.cache_resource to only run once.
+@st.cache_resource
+def init_connection():
+    username = st.secrets.mongo["username"]
+    password = st.secrets.mongo["password"]
+    return pymongo.MongoClient(
+        f"mongodb+srv://{username}:{password}@umud.jmbqpo0.mongodb.net/?retryWrites=true&w=majority&appName=UMUD"
+    )
+
+
+# Pull data from the collection.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_resource(ttl=600)
+def get_data():
+    db = client.muscle_ultrasound
+    items = db.metadata
+    # items = list(items)  # make hashable for st.cache_data
+    return items
+
+
 # Specify tabs
 selected_tab = option_menu(
-    "Menu",
+    "",
     options=["Home", "Repository", "Challenge"],
     icons=["house", "archive", "trophy"],
     default_index=0,
@@ -54,6 +77,9 @@ elif selected_tab == "Repository":
         # Submit button
         submitted = st.form_submit_button("Submit Query")
         if submitted:
+            client = init_connection()
+            items = get_data()
+
             # Form query for MongoDB
             st.session_state.query = {
                 "muscle": muscle_select,
@@ -62,10 +88,14 @@ elif selected_tab == "Repository":
                 "age": age_select,
             }
 
+            # Filter data
+            st.session_state.link = items.find_one(
+                {"muscle": st.session_state.query["muscle"]}
+            )
             # TODO include database filtering
         "---"
         # Text area for link return
-        st.text_area("Link Return Field", value=st.session_state.query)
+        st.text_area("Link Return Field", st.session_state.link["dataset_link"])
 
 else:
     st.header("Challenge")
@@ -73,3 +103,4 @@ else:
 
 
 # use st.chache_resoure for databse connection as this will store the db and dont relaod it everytime
+# Print results.

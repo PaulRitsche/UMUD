@@ -1,12 +1,19 @@
-from deta import Deta
+import streamlit as st
+from pymongo import MongoClient
 
-# Initialize Deta Base
-DETA_PROJECT_KEY = "bLbnQSkX_JNprytFEx1rVKBSdWRZRj19qtmxXMgHs"
-deta = Deta(DETA_PROJECT_KEY)
-db = deta.Base("muscle_ultrasound_metadata")
+# Replace with your MongoDB connection string
+# For a local MongoDB server, it would typically be: "mongodb://localhost:27017/"
+# For MongoDB Atlas, it would be something like: "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority"
+username = st.secrets.mongo["username"]
+password = st.secrets.mongo["password"]
+MONGO_URI = f"mongodb+srv://{username}:{password}@umud.jmbqpo0.mongodb.net/?retryWrites=true&w=majority&appName=UMUD"
 
-print(db)
-dp.put({"name": "test", "age": 25, "sex": "male"})
+# Connect to MongoDB
+client = MongoClient(MONGO_URI)
+
+# Select the database and collection
+db = client.muscel_ultrasound
+collection = db.metadata
 
 # Example data
 example_data = [
@@ -42,31 +49,9 @@ example_data = [
     },
 ]
 
-
-def insert_dataset(dataset):
-    return db.put(dataset)
+# Insert data into the collection
 
 
-def fetch_all_datasets():
-    res = db.fetch().items
-    return res
-
-
-def get_dataset(muscle, image_type, device, age, sex, height, weight):
-    res = db.get(
-        {
-            "muscle": muscle,
-            "image_type": image_type,
-            "device": device,
-            "age": age,
-            "sex": sex,
-            "height": height,
-            "weight": weight,
-        }
-    )
-    return res
-
-
-insert_dataset(example_data[0])
-print(fetch_all_datasets())
-print(get_dataset("Biceps", "Type1", "DeviceA", 25, "Male", 180, 75))
+# Retrieve and print data from the collection
+document = collection.find_one({"muscle": "Biceps", "image_type": "Type1"})
+print(document["dataset_link"])
