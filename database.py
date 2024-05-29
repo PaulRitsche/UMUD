@@ -18,9 +18,9 @@ collection = db.metadata
 # Example data
 example_data = [
     {
-        "muscle": "Biceps",
-        "image_type": "Type1",
-        "device": "DeviceA",
+        "muscle": "Gastrocnemius Medialis",
+        "image_type": "tiff",
+        "device": "GE",
         "age": 25,
         "sex": "Male",
         "height": 180,
@@ -28,9 +28,9 @@ example_data = [
         "dataset_link": "https://example.com/dataset1",
     },
     {
-        "muscle": "Triceps",
-        "image_type": "Type2",
-        "device": "DeviceB",
+        "muscle": "Vastus Lateralis",
+        "image_type": "tiff",
+        "device": "Siemens",
         "age": 30,
         "sex": "Female",
         "height": 165,
@@ -38,9 +38,9 @@ example_data = [
         "dataset_link": "https://example.com/dataset2",
     },
     {
-        "muscle": "Quadriceps",
-        "image_type": "Type3",
-        "device": "DeviceC",
+        "muscle": "Vastus Lateralis",
+        "image_type": "jpeg",
+        "device": "Esaote",
         "age": 40,
         "sex": "Male",
         "height": 175,
@@ -50,8 +50,10 @@ example_data = [
 ]
 
 # Insert data into the collection
-
+collection.insert_many(example_data)
 
 # Retrieve and print data from the collection
-document = collection.find_one({"muscle": "Biceps", "image_type": "Type1"})
+document = collection.find_one(
+    {"muscle": "Gastrocnemius Medialis", "image_type": "tiff"}
+)
 print(document["dataset_link"])

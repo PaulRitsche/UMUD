@@ -8,8 +8,8 @@ page_icon = ":mechanical_arm:"
 layout = "centered"
 st.session_state.query = ""
 st.session_state.link = {"dataset_link": ""}
-muscles = ["Biceps", "Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
-image_types = ["tif", "jped", "png"]
+muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
+image_types = ["tiff", "jpeg", "png"]
 devices = ["Siemens", "Philips", "GE"]
 
 # --------------------
@@ -46,8 +46,8 @@ def get_data():
 # Specify tabs
 selected_tab = option_menu(
     "",
-    options=["Home", "Repository", "Challenge"],
-    icons=["house", "archive", "trophy"],
+    options=["Home", "Datasets", "Database", "Challenge"],
+    icons=["house", "file-earmark-bar-graph", "archive", "trophy"],
     default_index=0,
     orientation="horizontal",
 )
@@ -56,12 +56,11 @@ if selected_tab == "Home":
     st.header("Home")
     st.write("Welcome to the UMUD repository!")
 
-elif selected_tab == "Repository":
+elif selected_tab == "Datasets":
 
-    st.header("Metadata")
+    st.header("Enter Metadata:")
     with st.form("entry_form", clear_on_submit=True):
 
-        "---"
         # Muscle selection
         muscle_select = st.selectbox("muscle", muscles)
         # Image types
@@ -97,9 +96,16 @@ elif selected_tab == "Repository":
         # Text area for link return
         st.text_area("Link Return Field", st.session_state.link["dataset_link"])
 
+elif selected_tab == "Database":
+    st.header("Database")
+    st.write("Coming soon!")
+
 else:
     st.header("Challenge")
-    st.write("Coming soon!")
+
+    # User upload section
+    st.header("Upload Your Results")
+    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
 
 # use st.chache_resoure for databse connection as this will store the db and dont relaod it everytime
