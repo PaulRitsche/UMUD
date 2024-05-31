@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pymongo
+import pandas as pd
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -98,15 +99,58 @@ elif selected_tab == "Datasets":
 
 elif selected_tab == "Database":
     st.header("Database")
-    st.write("Coming soon!")
+
+    # TODO make a filterable dataframe for databse exploration https://blog.streamlit.io/auto-generate-a-dataframe-filtering-ui-in-streamlit-with-filter_dataframe/
+    st.write(
+        "Description of the database and all included datasets in form of interactive table."
+    )
+
+    "---"
+    st.write("The database is hosted on MongoDB Atlas.")
+    st.write(
+        "The database contains metadata for all included datasets, in my mind from images, videos and 3DUS."
+    )
+    st.write(
+        "The database is currently not publicly available, but the datasets will be."
+    )
+    st.write(
+        "Who to approach, index all images or just the datasets, only labeled datasets??"
+    )
+
 
 else:
     st.header("Challenge")
 
     # User upload section
-    st.header("Upload Your Results")
-    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
+    st.write("The idea is to propose a challenge for the community.")
+    st.write(
+        "The challenge will be to create a model (or any analysis script) to predict the muscle parameters in an unseen test set."
+    )
+    st.write(
+        "I would suggest to use kaggle competition format. The results could be communicated in a workshop at the ECSS, ISB..."
+    )
 
-# use st.chache_resoure for databse connection as this will store the db and dont relaod it everytime
-# Print results.
+    # st.header("Upload Your Results")
+    # uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+
+    # Scoreboard #TODO this should also be fed by the database
+    st.header("Scoreboard")
+
+    st.write("Upload or Email?!")
+
+    results = pd.DataFrame(
+        {
+            "Name": ["Neil", "Olivier", "Paul"],
+            "Model IoU": [1, 0.9, 0.8],
+            "Model Dice": [0.9, 0.8, 0.7],
+            "SEM Fascicle Length": [0.1, 0.5, 0.7],
+            "SEM Pennation Angle": [0.1, 0.5, 0.7],
+            "SEM Muscle Thickness": [0.1, 0.5, 0.7],
+        }
+    )
+
+    st.table(
+        results
+    )  # TODO use st_aggrid to improve table look https://medium.com/@nikolayryabykh/enhancing-your-streamlit-tables-with-aggrid-advanced-tips-and-tricks-250d4b57903
+    # TODO check out PyGWalker as well
