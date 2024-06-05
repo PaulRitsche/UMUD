@@ -27,7 +27,7 @@ st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 # Uses st.cache_resource to only run once.
 @st.cache_resource
 def init_connection():
-    connection_string = st.secrets.CONNECTION_STRING
+    connection_string = st.secrets.mongo["CONNECTION_STRING"]
     return pymongo.MongoClient(connection_string)
 
 
@@ -54,6 +54,18 @@ selected_tab = option_menu(
 if selected_tab == "Home":
     st.header("Home")
     st.write("Welcome to the UMUD repository!")
+    st.write("The database is hosted on MongoDB Atlas.")
+    st.write(
+        "The database contains metadata for all included datasets, in my mind from images, videos and 3DUS."
+    )
+    st.write(
+        "The database is currently not publicly available, but the datasets will be."
+    )
+    st.write(
+        "Who to approach, index all images or just the datasets, only labeled datasets??"
+    )
+    st.write("LICENSE!!!!!!!!")
+
 
 elif selected_tab == "Datasets":
 
@@ -101,7 +113,16 @@ elif selected_tab == "Datasets":
             # TODO include database filtering
 
 elif selected_tab == "Database":
+
     st.header("Database")
+
+    items = get_data()
+    df = pd.DataFrame(items.find({}))
+    unique_muscles = df["muscle"].unique().tolist()
+    selected_muscle = st.multiselect("", unique_muscles)
+    if selected_muscle:
+        df = df[df["muscle"].isin(selected_muscle)]
+    st.write(df)
 
     # TODO make a filterable dataframe for databse exploration https://blog.streamlit.io/auto-generate-a-dataframe-filtering-ui-in-streamlit-with-filter_dataframe/
     st.write(
@@ -109,16 +130,6 @@ elif selected_tab == "Database":
     )
 
     "---"
-    st.write("The database is hosted on MongoDB Atlas.")
-    st.write(
-        "The database contains metadata for all included datasets, in my mind from images, videos and 3DUS."
-    )
-    st.write(
-        "The database is currently not publicly available, but the datasets will be."
-    )
-    st.write(
-        "Who to approach, index all images or just the datasets, only labeled datasets??"
-    )
 
 
 else:
@@ -153,7 +164,7 @@ else:
         }
     )
 
-    st.table(
+    st.write(
         results
     )  # TODO use st_aggrid to improve table look https://medium.com/@nikolayryabykh/enhancing-your-streamlit-tables-with-aggrid-advanced-tips-and-tricks-250d4b57903
     # TODO check out PyGWalker as well
