@@ -6,20 +6,20 @@ from pymongo import MongoClient
 # For MongoDB Atlas, it would be something like: "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority"
 username = st.secrets.mongo["username"]
 password = st.secrets.mongo["password"]
-MONGO_URI = f"mongodb+srv://{username}:{password}@umud.jmbqpo0.mongodb.net/?retryWrites=true&w=majority&appName=UMUD"
+MONGO_URI = st.secrets.mongo["connection_string"]
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
 
 # Select the database and collection
-db = client.muscel_ultrasound
-collection = db.metadata
+db = client.muscle_ultrasound
+collection = db.datasets
 
 # Example data
 example_data = [
     {
         "muscle": "Gastrocnemius Medialis",
-        "image_type": "tiff",
+        "image_type": ".tiff",
         "device": "GE",
         "age": 25,
         "sex": "Male",
@@ -29,7 +29,7 @@ example_data = [
     },
     {
         "muscle": "Vastus Lateralis",
-        "image_type": "tiff",
+        "image_type": ".tiff",
         "device": "Siemens",
         "age": 30,
         "sex": "Female",
@@ -39,7 +39,7 @@ example_data = [
     },
     {
         "muscle": "Vastus Lateralis",
-        "image_type": "jpeg",
+        "image_type": ".jpeg",
         "device": "Esaote",
         "age": 40,
         "sex": "Male",
@@ -53,7 +53,6 @@ example_data = [
 collection.insert_many(example_data)
 
 # Retrieve and print data from the collection
-document = collection.find_one(
-    {"muscle": "Gastrocnemius Medialis", "image_type": "tiff"}
-)
-print(document["dataset_link"])
+query = {"muscle": "Gastrocnemius Medialis"}
+results = collection.find(query)
+print([result["dataset_link"] for result in results])

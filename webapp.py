@@ -7,11 +7,11 @@ import pandas as pd
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
-st.session_state.query = ""
-st.session_state.link = {"dataset_link": ""}
+# st.session_state.query = {"muscle": "", "image_type": "", "device": "", "age": ""}
+# st.session_state.link = {"dataset_link": ""}
 muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
-image_types = ["tiff", "jpeg", "png"]
-devices = ["Siemens", "Philips", "GE"]
+image_types = ["all", ".tiff", ".jpeg", ".png"]
+devices = ["all", "Siemens", "Philips", "GE"]
 
 # --------------------
 
@@ -27,19 +27,17 @@ st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 # Uses st.cache_resource to only run once.
 @st.cache_resource
 def init_connection():
-    username = st.secrets.mongo["username"]
-    password = st.secrets.mongo["password"]
-    return pymongo.MongoClient(
-        f"mongodb+srv://{username}:{password}@umud.jmbqpo0.mongodb.net/?retryWrites=true&w=majority&appName=UMUD"
-    )
+    connection_string = st.secrets.mongo["connection_string"]
+    return pymongo.MongoClient(connection_string)
 
 
 # Pull data from the collection.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
 @st.cache_resource(ttl=600)
 def get_data():
+    client = init_connection()
     db = client.muscle_ultrasound
-    items = db.metadata
+    items = db.datasets
     # items = list(items)  # make hashable for st.cache_data
     return items
 
@@ -77,25 +75,30 @@ elif selected_tab == "Datasets":
         # Submit button
         submitted = st.form_submit_button("Submit Query")
         if submitted:
-            client = init_connection()
             items = get_data()
 
             # Form query for MongoDB
-            st.session_state.query = {
-                "muscle": muscle_select,
-                "image_type": image_types_select,
-                "device": muscle_select,
-                "age": age_select,
-            }
+
+            query = {"muscle": "Gastrocnemius Medialis"}
+            if image_types_select != "all":
+                query["image_type"] = image_types_select
+            if devices_select != "all":
+                query["device"] = devices_select
+            if age_select != 0:
+                query["age"] = age_select
 
             # Filter data
-            st.session_state.link = items.find_one(
-                {"muscle": st.session_state.query["muscle"]}
-            )
+            print(query)
+            results = items.find(query)
+
+            # Collect dataset links
+            dataset_links = [result["dataset_link"] for result in results]
+            print(dataset_links)
+            # Display dataset links
+            st.write("### Dataset Links:")
+            st.text_area("Link Return Field", "\n".join(dataset_links))
+
             # TODO include database filtering
-        "---"
-        # Text area for link return
-        st.text_area("Link Return Field", st.session_state.link["dataset_link"])
 
 elif selected_tab == "Database":
     st.header("Database")
