@@ -27,7 +27,7 @@ st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 # Uses st.cache_resource to only run once.
 @st.cache_resource
 def init_connection():
-    connection_string = st.secrets.mongo["connection_string"]
+    connection_string = st.secrets.CONNECTION_STRING
     return pymongo.MongoClient(connection_string)
 
 
