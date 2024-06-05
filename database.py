@@ -4,9 +4,9 @@ from pymongo import MongoClient
 # Replace with your MongoDB connection string
 # For a local MongoDB server, it would typically be: "mongodb://localhost:27017/"
 # For MongoDB Atlas, it would be something like: "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority"
-username = st.secrets.mongo["username"]
-password = st.secrets.mongo["password"]
-MONGO_URI = st.secrets.mongo["connection_string"]
+# username = st.secrets.mongo["username"]
+# password = st.secrets.mongo["password"]
+MONGO_URI = st.secrets.CONNECTION_STRING
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
@@ -50,7 +50,7 @@ example_data = [
 ]
 
 # Insert data into the collection
-collection.insert_many(example_data)
+# collection.insert_many(example_data)
 
 # Retrieve and print data from the collection
 query = {"muscle": "Gastrocnemius Medialis"}
