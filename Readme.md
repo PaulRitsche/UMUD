@@ -1,7 +1,3 @@
-Sure, here's a detailed README for your Streamlit app along with a suitable license.
-
----
-
 # Universal Muscle Ultrasound Repository (UMUD)
 
 ![UMUD Logo](path_to_logo_image)
