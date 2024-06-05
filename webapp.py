@@ -70,7 +70,7 @@ if selected_tab == "Home":
 elif selected_tab == "Datasets":
 
     st.header("Enter Metadata:")
-    with st.form("entry_form", clear_on_submit=True):
+    with st.form("entry_form", clear_on_submit=False):
 
         # Muscle selection
         muscle_select = st.selectbox("muscle", muscles)
@@ -91,7 +91,7 @@ elif selected_tab == "Datasets":
 
             # Form query for MongoDB
 
-            query = {"muscle": "Gastrocnemius Medialis"}
+            query = {"muscle": muscle_select}
             if image_types_select != "all":
                 query["image_type"] = image_types_select
             if devices_select != "all":
