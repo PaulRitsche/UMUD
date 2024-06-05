@@ -28,7 +28,7 @@ st.title("Universal Muscle Ultrasound Repository" + " " + page_icon)
 @st.cache_resource
 def init_connection():
     connection_string = st.secrets.mongo["CONNECTION_STRING"]
-    return pymongo.MongoClient(connection_string)
+    return pymongo.MongoClient(connection_string, tls=True)
 
 
 # Pull data from the collection.
