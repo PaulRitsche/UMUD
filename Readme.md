@@ -69,21 +69,3 @@ To install and run this application locally, follow these steps:
 
 ## Contributing
 
-We welcome contributions to the UMUD project. To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature/your-feature-name`.
-3. Make your changes and commit them: `git commit -m 'Add some feature'`.
-4. Push to the branch: `git push origin feature/your-feature-name`.
-5. Submit a pull request.
-
-Please make sure to update tests as appropriate.
-
-## Acknowledgements
-
-- Thanks to the developers and contributors of Streamlit and MongoDB for their amazing tools.
-- Special thanks to the muscle ultrasonography research community for their contributions and datasets.
-
----
-
-This README provides a comprehensive guide to your project, including installation, usage, and contribution instructions. The license ensures that your app and database remain open source and non-commercial.
