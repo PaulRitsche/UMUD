@@ -1,0 +1,38 @@
+
+**Welcome to the UMUD Community Challenge!**
+
+This challenge is designed to engage the community in developing models or analysis scripts to predict muscle parameters in an unseen test set. Participants are encouraged to use any tools or techniques at their disposal to create the best predictive models possible.
+
+### Challenge Overview
+
+1. **Data Provided**:
+    - A training set of images and their corresponding segmentation masks.
+    - A test set of images for which you need to provide predictions.
+
+2. **Objective**:
+    - Train your algorithms using the provided training data.
+    - Generate predictions for the test set.
+
+3. **Evaluation**:
+    - Submit your model predictions.
+    - We will evaluate your model on an unseen validation set that we keep hidden.
+    - The evaluation metrics will include Intersection over Union (IoU) and Dice coefficient.
+
+4. **Submission**:
+    - You can submit your predictions through this platform.
+    - We accept models written in any language, but we prefer Python for ease of evaluation.
+
+5. **Leaderboard**:
+    - Your scores will be displayed on the leaderboard.
+    - Medals will be awarded to the top three participants.
+
+### How to Participate
+
+1. **Download the training and test datasets.**
+2. **Train your model using the training dataset.**
+3. **Generate predictions for the test dataset.**
+4. **Submit your predictions through this platform.
+
+We look forward to your participation and seeing the innovative models you develop!
+
+**Note**: For any questions or issues, please contact us at support@umudchallenge.org.
