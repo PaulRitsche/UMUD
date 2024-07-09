@@ -8,20 +8,21 @@ from io import BytesIO
 import base64
 import urllib.parse
 import os
+import json
+import ast
+from templates.template_dictionary import template_data
 
 
 def clean_dataframe(df):
     """
     Clean the dataframe to ensure all data is properly encoded and formatted.
     """
-    # Convert all string columns to UTF-8
     for col in df.select_dtypes(include=[object]).columns:
         df[col] = (
             df[col]
             .astype(str)
             .apply(lambda x: x.encode("utf-8", "ignore").decode("utf-8", "ignore"))
         )
-
     return df
 
 
@@ -57,7 +58,7 @@ def display_scoreboard(df):
 
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_pagination(paginationAutoPageSize=True)
-    gb.configure_default_column(editable=True, groupable=True)
+    gb.configure_default_column(editable=False, groupable=True)
     gb.configure_side_bar()
     grid_options = gb.build()
     AgGrid(df, gridOptions=grid_options, enable_enterprise_modules=True)
@@ -65,34 +66,29 @@ def display_scoreboard(df):
 
 def filter_dataframe(df):
     """
-    Display an interactive, filterable dataframe using st_aggrid.
+    Display an interactive, filterable dataframe using st_aggrid and provide a download button.
     """
     gb = GridOptionsBuilder.from_dataframe(df)
-
-    # Get all categorical columns and make them groupable
-    categorical_columns = get_categorical_columns(df)
-    for col in categorical_columns:
-        gb.configure_column(col, enableRowGroup=True)
-
     gb.configure_pagination()
-    gb.configure_default_column(editable=False, groupable=True)
+    gb.configure_default_column(editable=True, groupable=True)
     gb.configure_selection(selection_mode="multiple", use_checkbox=True)
     gb.configure_side_bar()
     grid_options = gb.build()
     grid_response = AgGrid(df, gridOptions=grid_options, enable_enterprise_modules=True)
-
     return grid_response["data"]
 
 
 def display_charts(df, selected_plots, group_by_column):
     """
-    Display interactive charts based on the dataframe.
+    Display interactive charts based on the dataframe and user selections.
     """
+    st.subheader("Interactive Charts")
+
     for plot in selected_plots:
-        if plot == "Muscle Distribution" and "muscle" in df.columns:
+        if plot == "Muscle Distribution":
             fig, ax = plt.subplots()
             muscle_count = (
-                df.groupby(group_by_column)["muscle"]
+                df.groupby(group_by_column)["MUSCLE"]
                 .value_counts()
                 .unstack()
                 .plot(kind="bar", stacked=True, ax=ax)
@@ -102,9 +98,9 @@ def display_charts(df, selected_plots, group_by_column):
             ax.set_ylabel("Count")
             st.pyplot(fig)
 
-        elif plot == "Age Distribution" and "age" in df.columns:
+        elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
             fig, ax = plt.subplots()
-            df.groupby(group_by_column)["age"].plot(
+            df.groupby(group_by_column)["PARTICIPANT_AGE"].plot(
                 kind="hist", bins=20, alpha=0.5, ax=ax
             )
             ax.set_title("Age Distribution")
@@ -286,48 +282,78 @@ if selected_tab == "Home":
 
 elif selected_tab == "Datasets":
 
-    st.header("Enter Metadata:")
-    with st.form("entry_form", clear_on_submit=False):
+    st.header("🔍 Enter Metadata to Query Datasets")
 
-        # Muscle selection
-        muscle_select = st.selectbox("muscle", muscles)
-        # Image types
-        image_types_select = st.selectbox("image_type", image_types)
-        # device list
-        devices_select = st.selectbox("device", devices)
-        # Age range
-        age_select = st.number_input(
-            "age", min_value=0, max_value=120, format="%i", step=10
-        )
+    # Allow users to select which filters they want to use
+    st.markdown("#### Select Filters to Apply")
+    filter_options = list(template_data[0].keys())
+    selected_filters = st.multiselect(
+        "Select Filters", filter_options, help="Select which filters you want to apply."
+    )
+
+    # Create a form for user input
+    with st.form("entry_form", clear_on_submit=True):
+        st.markdown("#### Provide Filter Values")
+        filter_inputs = {}
+
+        for key in selected_filters:
+            # description = template_data[0][key].get(
+            #     "description", "No description available"
+            # )
+            input_type = template_data[0].get("type", "str")
+
+            # st.markdown(f"**{key}**")
+            # st.popover(description)
+
+            # Fetch unique values for the field from the database
+            items = get_data()
+            unique_values = items.distinct(key)
+
+            if input_type == "str":
+                filter_inputs[key] = st.selectbox(key, options=unique_values)
+            elif input_type == "int":
+                filter_inputs[key] = st.selectbox(key, options=unique_values)
+            elif input_type == "float":
+                filter_inputs[key] = st.selectbox(key, options=unique_values)
+            elif input_type == "bool":
+                filter_inputs[key] = st.checkbox(key)
+            elif input_type == "list":
+                filter_inputs[key] = st.multiselect(key, options=unique_values)
 
         "---"
-        # Submit button
         submitted = st.form_submit_button("Submit Query")
+
         if submitted:
             items = get_data()
+            query = {k: v for k, v in filter_inputs.items() if v}
 
-            # Form query for MongoDB
-
-            query = {"muscle": muscle_select}
-            if image_types_select != "all":
-                query["image_type"] = image_types_select
-            if devices_select != "all":
-                query["device"] = devices_select
-            if age_select != 0:
-                query["age"] = age_select
-
-            # Filter data
-            print(query)
+            st.markdown("#### Formed Query")
+            st.json(query)
             results = items.find(query)
 
-            # Collect dataset links
-            dataset_links = [result["dataset_link"] for result in results]
-            print(dataset_links)
-            # Display dataset links
-            st.write("### Dataset Links:")
-            st.text_area("Link Return Field", "\n".join(dataset_links))
+            dataset_links = [result["DATASET_LINK"] for result in results]
+            dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
 
-            # TODO include database filtering
+            if dataset_links:
+                st.markdown("### Dataset Links:")
+                for link in dataset_links:
+                    st.markdown(f"- [{link}]({link})")
+
+                if dataset_descriptions:
+                    st.markdown(f"  {', '.join(dataset_descriptions)}")
+
+                else:
+                    st.write("No dataset descriptions found for the selected criteria.")
+            else:
+                st.write("No datasets found for the selected criteria.")
+
+            # if dataset_links:
+            #     st.download_button(
+            #         label="Download Dataset Links",
+            #         data="\n".join(dataset_links),
+            #         file_name="dataset_links.txt",
+            #         mime="text/plain",
+            #     )
 
 elif selected_tab == "Database":
 
@@ -347,7 +373,6 @@ elif selected_tab == "Database":
     filtered_df = filter_dataframe(df)
     with st.expander("Filtered Data to download...", expanded=False):
         st.write(filtered_df)
-
         # Add download button for the filtered dataframe
         get_download_button(filtered_df)
 
@@ -370,9 +395,6 @@ elif selected_tab == "Database":
     # Display interactive charts
     display_charts(df, selected_plots, group_by_column)
 
-    "---"
-
-
 else:
     st.header("Challenge")
 
@@ -383,14 +405,13 @@ else:
         techniques at their disposal to create the best predictive models possible. 
 
         The format of the challenge is inspired by Kaggle competitions, where participants can submit their predictions, 
-        and a leaderboard will track the top-performing models. Results can be presented in a workshop at prominent conferences 
-        such as ECSS or ISB.
+        and a leaderboard will track the top-performing models.
         """
     )
 
     # Save instructions to a text file and create a download button
 
-    instructions_path = "challenge_instructions.txt"
+    instructions_path = "/webapp_files/challenge_instructions.txt"
     if os.path.exists(instructions_path):
         with open(instructions_path, "r") as file:
             instructions_content = file.read()
