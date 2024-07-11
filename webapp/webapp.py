@@ -144,22 +144,65 @@ def get_download_link(content, filename, mime):
     return href
 
 
+def add_footer():
+    footer = """
+    <style>
+    .footer {
+        background-color: rgba(0, 0, 0, 0);  /* Transparent black background */
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        width: 100%;
+        position: bottom;
+        bottom: 0;
+        left: 0;
+    }
+    .footer a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+    .footer a:hover {
+        text-decoration: underline;
+    }
+    .footer-divider {
+        height: 2px;
+        background-color: white;
+        width: 100%;
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var footer = document.querySelector('.footer');
+        var observer = new IntersectionObserver(function(entries) {
+            if(entries[0].isIntersecting === true)
+                footer.style.display = 'block';
+            else
+                footer.style.display = 'none';
+        }, { threshold: [0.9] });
+        observer.observe(document.querySelector('#footer-anchor'));
+    });
+    </script>
+    <div id="footer-anchor" style="height: 10px;"></div>
+    <div class="footer">
+        <p>© 2024 UMUD Repository. All rights reserved.</p>
+        <p>Contact: <a href="mailto:support@umudrepository.org">support@umudrepository.org</a></p>
+    </div>
+    """
+    st.markdown(footer, unsafe_allow_html=True)
+
+
 # ----- Settings -----
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
 # st.session_state.query = {"muscle": "", "image_type": "", "device": "", "age": ""}
 # st.session_state.link = {"dataset_link": ""}
-muscles = ["Gastrocnemius Medialis", "Vastus Lateralis", "Vastus Medialis"]
-image_types = ["all", ".tiff", ".jpeg", ".png"]
-devices = ["all", "Siemens", "Philips", "GE"]
-
 # --------------------
 
 st.set_page_config(
     page_title=page_title,
     page_icon=page_icon,
-    layout=layout,
 )
 st.title("Universal Muscle Ultrasound Database" + " " + page_icon)
 
@@ -184,15 +227,41 @@ def get_data():
 
 
 # Specify tabs
-selected_tab = option_menu(
-    "",
-    options=["Home", "Datasets", "Database", "Challenge"],
-    icons=["house", "file-earmark-bar-graph", "archive", "trophy"],
-    default_index=0,
-    orientation="horizontal",
-)
+with st.sidebar:
+
+    st.header("Navigation")
+    "---"
+    selected_tab = option_menu(
+        "",
+        options=[
+            "Home",
+            "Datasets",
+            "Database",
+            "Challenge",
+            "Benchmarks",
+            "Contributing",
+            "About Us",
+        ],
+        icons=[
+            "house",
+            "file-earmark-bar-graph",
+            "archive",
+            "trophy",
+            "stars",
+            "person-hearts",
+            "info-circle",
+        ],
+        default_index=0,
+        orientation="vertical",
+    )
+
+    "---"
+
+    add_footer()
 
 if selected_tab == "Home":
+
+    "---"
 
     st.markdown(
         """
@@ -248,19 +317,6 @@ if selected_tab == "Home":
     """
     )
 
-    # Contributing section
-    st.markdown(
-        """
-    ### Contributing
-    We welcome contributions from the community! Here are some ways you can contribute:
-    - **Data Contributions**: If you have relevant datasets that you would like to share, please get in touch with us.
-    - **Code Contributions**: Help us improve the repository by contributing to the codebase.
-    - **Feedback**: Provide feedback on the existing datasets and features, and suggest improvements.
-
-    To contribute, please contact us at [contribute@umudrepository.org](mailto:contribute@umudrepository.org) or visit our [GitHub repository](https://github.com/UMUD-repo) for more information.
-    """
-    )
-
     # Future plans section
     st.markdown(
         """
@@ -282,13 +338,21 @@ if selected_tab == "Home":
 
 elif selected_tab == "Datasets":
 
+    "---"
     st.header("🔍 Enter Metadata to Query Datasets")
+
+    st.write(
+        "In this tab, you can query the muscle ultrasound datasets by providing specific metadata filters. "
+        "Select the filters you want to apply, provide the values, and submit the query to retrieve relevant datasets."
+    )
 
     # Allow users to select which filters they want to use
     st.markdown("#### Select Filters to Apply")
     filter_options = list(template_data[0].keys())
     selected_filters = st.multiselect(
-        "Select Filters", filter_options, help="Select which filters you want to apply."
+        "",
+        filter_options,
+        help="Select which filters you want to apply to get the dataset you want. Filters are based on the metadata fields and contain all values present in the datasets of the database.",
     )
 
     # Create a form for user input
@@ -347,17 +411,18 @@ elif selected_tab == "Datasets":
             else:
                 st.write("No datasets found for the selected criteria.")
 
-            # if dataset_links:
-            #     st.download_button(
-            #         label="Download Dataset Links",
-            #         data="\n".join(dataset_links),
-            #         file_name="dataset_links.txt",
-            #         mime="text/plain",
-            #     )
 
 elif selected_tab == "Database":
 
+    "---"
+
     st.header("Database")
+
+    st.write(
+        "In this tab, you can explore the entire muscle ultrasound dataset stored in the database. "
+        "You can filter the data, visualize different aspects of the dataset through interactive charts, "
+        "and download the filtered data for further analysis."
+    )
 
     items = get_data()
     df = pd.DataFrame(items.find({}))
@@ -371,10 +436,13 @@ elif selected_tab == "Database":
     # Display filtered dataframe with filtering capabilities
     st.subheader("Dataset Overview")
     filtered_df = filter_dataframe(df)
+
     with st.expander("Filtered Data to download...", expanded=False):
         st.write(filtered_df)
         # Add download button for the filtered dataframe
         get_download_button(filtered_df)
+
+    "---"
 
     # Dropdown for plot selection
     st.subheader("Interactive Charts")
@@ -383,6 +451,7 @@ elif selected_tab == "Database":
         "Select Plots to Display",
         plot_options,
         default=["Muscle Distribution"],
+        help="Select which plots you want to display to get a better understanding of the data. So far, only two plots are available.",
     )
 
     # Dropdown for grouping selection
@@ -390,12 +459,16 @@ elif selected_tab == "Database":
     group_by_column = st.selectbox(
         "Select Column to Group By",
         options=categorical_columns,
+        help="Select which column you want to group the data by.",
     )
 
     # Display interactive charts
     display_charts(df, selected_plots, group_by_column)
 
-else:
+elif selected_tab == "Challenge":
+
+    "---"
+
     st.header("Challenge")
 
     st.write(
@@ -411,7 +484,7 @@ else:
 
     # Save instructions to a text file and create a download button
 
-    instructions_path = "/webapp_files/challenge_instructions.txt"
+    instructions_path = "webapp_files/challenge_instructions.txt"
     if os.path.exists(instructions_path):
         with open(instructions_path, "r") as file:
             instructions_content = file.read()
@@ -421,6 +494,12 @@ else:
             file_name="challenge_instructions.txt",
             mime="text/plain",
         )
+
+    st.header("Scoreboard")
+
+    # Load and display the scoreboard
+    scoreboard_df = load_scoreboard()
+    display_scoreboard(scoreboard_df)
 
     st.subheader("Submit Your Results via Email")
     recipient_email = "support@umudchallenge.org"
@@ -436,10 +515,120 @@ else:
         mailto_link = create_email_link(subject, body, recipient_email, filenames)
         st.markdown(f"[Send Email](mailto:{mailto_link})", unsafe_allow_html=True)
 
-    st.header("Scoreboard")
+elif selected_tab == "Benchmarks":
+    st.header("Benchmarks")
+    st.write(
+        "In this tab, you can view the benchmarks for different models and methods applied to the dataset. "
+        "Compare performance metrics and analyze the results."
+    )
 
-    # Load and display the scoreboard
-    scoreboard_df = load_scoreboard()
-    display_scoreboard(scoreboard_df)
+elif selected_tab == "Contributing":
+    "---"
+    st.header("Contributing")
+
+    st.write(
+        "We welcome contributions from the community to help improve and expand the UMUD Repository. Here's how you can get involved:"
+    )
+
+    st.subheader("1. Contributing Data")
+    st.write(
+        """
+    If you have muscle ultrasound datasets that you would like to share, you can contribute them to the UMUD Repository. 
+    By contributing your data, you help create a richer resource for researchers and developers. Here's how you can add your data:
+    
+    - **Prepare Your Data**: Ensure your data is properly labeled and formatted according to the UMUD standards. This includes metadata such as muscle type, imaging device, participant details, and file formats.
+    - **Submit Your Data**: Email your dataset to [contribute@umudrepository.org](mailto:contribute@umudrepository.org) with the subject line "Dataset Contribution". Include a brief description of the dataset and any relevant publication links.
+    - **Data Review**: Our team will review your submission to ensure it meets our quality standards. We may contact you for additional information or clarification if needed.
+    - **Data Integration**: Once approved, your dataset will be integrated into the UMUD Repository and made available to the community. You will be credited for your contribution.
+    """
+    )
+
+    # Add a button to download the template dictionary
+    template_dict_content = json.dumps(template_data, indent=4)
+    st.download_button(
+        label="Download Template Dictionary",
+        data=template_dict_content,
+        file_name="templates/template_dictionary.py",
+        mime="application/json",
+    )
+
+    st.subheader("2. Providing Feedback")
+    st.write(
+        """
+    Your feedback is invaluable in helping us improve the UMUD Repository. Whether you have suggestions for new features, improvements to existing functionalities, or general comments, we want to hear from you.
+    
+    - **Feature Requests**: If you have ideas for new features or enhancements, please email [feedback@umudrepository.org](mailto:feedback@umudrepository.org) with the subject line "Feature Request".
+    - **Bug Reports**: If you encounter any issues or bugs, please report them by emailing [support@umudrepository.org](mailto:support@umudrepository.org) with the subject line "Bug Report". Include detailed information about the issue and steps to reproduce it.
+    - **General Feedback**: For any other feedback or comments, you can also use the above email addresses.
+    """
+    )
+
+    st.subheader("3. Contributing to the Codebase")
+    st.write(
+        """
+    We encourage developers to contribute to the UMUD Repository's codebase. Whether you're fixing bugs, adding new features, or improving documentation, your contributions are welcome.
+    
+    - **Fork the Repository**: Start by forking the [UMUD Repository GitHub repository](https://github.com/UMUD-repo) to your own GitHub account.
+    - **Make Your Changes**: Clone your forked repository to your local machine and make the desired changes. Ensure your code follows our contribution guidelines and coding standards.
+    - **Submit a Pull Request**: Once you've made your changes, push them to your forked repository and submit a pull request to the main repository. Provide a detailed description of your changes and reference any relevant issues or feature requests.
+    - **Review and Merge**: Our team will review your pull request and provide feedback. Once approved, your changes will be merged into the main repository.
+    """
+    )
+
+
+elif selected_tab == "About Us":
+
+    "---"
+    st.header("About Us")
+
+    st.subheader("The Idea Behind UMUD")
+    st.write(
+        """
+    The UMUD (Ultrasound Muscle Data) Repository was conceived to provide researchers and developers with a comprehensive and accessible platform for muscle ultrasound datasets. 
+    The aim is to facilitate advancements in muscle research, biomechanics, and medical applications by providing high-quality, labeled data for model training and analysis.
+    """
+    )
+
+    st.subheader("The Main Developers")
+    # Neil Cronin
+    st.image(
+        "webapp_files/neil_cronin.png", caption="Neil Cronin", width=150
+    )  # Add the path to Neil Cronin's image
+    st.write(
+        """
+    Neil Cronin is the main visionary behind the UMUD Repository. He had the original idea and has been instrumental in guiding the project. Neil is known for his expertise in biomechanics and muscle research.
+    """
+    )
+    st.write(
+        "[Read more about Neil Cronin](https://scholar.google.com/citations?user=neil_cronin)"
+    )
+
+    # Paul Ritsche
+    st.image(
+        "webapp_files/paul_ritsche.png", caption="Paul Ritsche", width=150
+    )  # Add the path to Paul Ritsche's image
+    st.write(
+        """
+    Paul Ritsche is the lead developer who coded and maintains the UMUD Repository. Together with Neil, he finetuned to original idea of UMUD. Paul has a background in biomechanics and muscle physiolohy and a passion for software development and data science.
+    """
+    )
+    st.write(
+        "[Read more about Paul Ritsche](https://www.linkedin.com/in/paul-ritsche/)"
+    )
+
+    # Olivier Seynnes
+    st.image(
+        "webapp_files/olivier_seynnes.png", caption="Olivier Seynnes", width=150
+    )  # Add the path to Olivier Seynnes's image
+    st.write(
+        """
+    Olivier Seynnes has been involved with the UMUD Repository from the beginning, providing valuable insights and support. Olivier is an expert in muscle physiology and has contributed significantly to the project's development.
+    """
+    )
+    st.write(
+        "[Read more about Olivier Seynnes](https://scholar.google.com/citations?user=olivier_seynnes)"
+    )
+
+    st.subheader("The Contributors")
 
 # TODO check out PyGWalker as well
