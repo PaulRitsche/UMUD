@@ -469,21 +469,32 @@ elif selected_tab == "Challenge":
 
     "---"
 
-    st.header("Challenge")
+    st.header("UMUD Community Challenge")
 
     st.write(
         """
         Welcome to the UMUD Community Challenge! This challenge is designed to engage the community in developing models or 
         analysis scripts to predict muscle parameters in an unseen test set. Participants are encouraged to use any tools or 
-        techniques at their disposal to create the best predictive models possible. 
+        techniques at their disposal to create the best predictive models possible.
 
         The format of the challenge is inspired by Kaggle competitions, where participants can submit their predictions, 
         and a leaderboard will track the top-performing models.
         """
     )
 
-    # Save instructions to a text file and create a download button
+    st.subheader("How to Participate")
+    st.write(
+        """
+        1. **Download the Dataset**: Download the training and test datasets from the [UMUD Repository](#).
+        2. **Develop Your Analysis Code**: Use the training dataset to develop and train your predictive models/code.
+        3. **Make Predictions**: Apply your model to the test dataset to make predictions on muscle parameters.
+        4. **Submit Your Predictions and Code**: Submit your predictions using the submission file below and include a linke to your trained code or models for evaluation.
+        5. **Check the Leaderboard**: Track your performance on the leaderboard and see how you rank against other participants.
+        6. **Win the Challenge!**: If you are among the top 3 participants, there may be (as of yet undetermined) prizes!
+        """
+    )
 
+    st.subheader("Challenge Instructions")
     instructions_path = "webapp_files/challenge_instructions.txt"
     if os.path.exists(instructions_path):
         with open(instructions_path, "r") as file:
@@ -495,32 +506,149 @@ elif selected_tab == "Challenge":
             mime="text/plain",
         )
 
-    st.header("Scoreboard")
+    st.subheader("Sample Submission File")
+    sample_submission_path = "webapp_files/sample_submission.csv"
+    if os.path.exists(sample_submission_path):
+        with open(sample_submission_path, "r") as file:
+            sample_submission_content = file.read()
+        st.download_button(
+            label="📄 Download Sample Submission File",
+            data=sample_submission_content,
+            file_name="sample_submission.csv",
+            mime="text/csv",
+        )
 
-    # Load and display the scoreboard
-    scoreboard_df = load_scoreboard()
-    display_scoreboard(scoreboard_df)
+    st.subheader("Scoreboard")
+    scoreboard_df = (
+        load_scoreboard()
+    )  # Define this function to load the scoreboard data
+    display_scoreboard(scoreboard_df)  # Define this function to display the scoreboard
 
-    st.subheader("Submit Your Results via Email")
-    recipient_email = "support@umudchallenge.org"
-    subject = "UMUD Challenge Submission"
-    body = "Please find attached my submission for the UMUD Challenge."
-
-    uploaded_files = st.file_uploader(
-        "Choose files to send", type=None, accept_multiple_files=True
+    st.subheader("Submit Your Results")
+    st.write(
+        """
+        Please submit your prediction results using the form below. Ensure that your submission file follows the specified format 
+        outlined in the challenge instructions and matches the sample submission file. Since UMUD is devised according to the open science principles,
+        we encourage you to submit a link to your models and code for evaluation as well. The link will be listed in the scoreboard as well. 
+        """
     )
 
-    if uploaded_files:
-        filenames = [file.name for file in uploaded_files]
-        mailto_link = create_email_link(subject, body, recipient_email, filenames)
-        st.markdown(f"[Send Email](mailto:{mailto_link})", unsafe_allow_html=True)
+    prediction_file = st.file_uploader(
+        "Choose a CSV file for predictions", type=["csv"], accept_multiple_files=False
+    )
+
+    if prediction_file:
+        filenames = [prediction_file.name]
+        if code_file:
+            filenames.append(code_file.name)
+        st.write(f"Files ready for submission: {', '.join(filenames)}")
+
+        # Validate the uploaded prediction file
+        try:
+            df = pd.read_csv(prediction_file)
+            # Example validation: Check if required columns exist
+            required_columns = [
+                "_id",
+                "_fascicle_lengt",
+                "_pennation_angle",
+                "_muscle_thickness",
+            ]
+            if all(column in df.columns for column in required_columns):
+                st.success(
+                    "Prediction file format is correct and ready for submission!"
+                )
+            else:
+                st.error(
+                    f"Prediction file is missing required columns. Expected columns: {required_columns}"
+                )
+
+            st.subheader("Submit via Email")
+            recipient_email = "support@umudchallenge.org"
+            subject = "UMUD Challenge Submission"
+            body = "Please find attached my submission for the UMUD Challenge."
+
+            mailto_link = create_email_link(
+                subject, body, recipient_email, filenames
+            )  # Define this function to create mailto link
+            st.markdown(f"[Send Email](mailto:{mailto_link})", unsafe_allow_html=True)
+
+        except Exception as e:
+            st.error(f"An error occurred while processing the file: {e}")
+
+    st.write(
+        """
+        Alternatively, you can send your submission files directly to [support@umudchallenge.org](mailto:support@umudchallenge.org).
+        """
+    )
 
 elif selected_tab == "Benchmarks":
-    st.header("Benchmarks")
+
+    "---"
+    st.header("Benchmark for Muscle Architecture and ACSA Analysis")
+
     st.write(
-        "In this tab, you can view the benchmarks for different models and methods applied to the dataset. "
-        "Compare performance metrics and analyze the results."
+        """
+        This benchmark is designed to support the development and evaluation of automatic analysis algorithms for muscle architecture and anatomical cross-sectional area (ACSA) analysis in ultrasonography images. Accurate and reliable automatic analysis tools are essential for advancing research and clinical practices, particularly for training purposes.
+
+        Muscle architecture analysis includes parameters such as muscle fascicle length, pennation angle, and muscle thickness. These parameters are crucial for understanding muscle function and adaptations to training or rehabilitation.
+
+        Below is a list of available automatic analysis algorithms along with short descriptions and links to their documentation pages.
+        """
     )
+
+    st.subheader("Available Automatic Analysis Algorithms")
+
+    algorithms = [
+        {
+            "name": "UltraTrack",
+            "description": "UltraTrack is a software tool for tracking muscle fascicles in ultrasound images. It provides robust and accurate tracking of muscle architecture parameters.",
+            "link": "https://ultratrack-docs.example.com",
+        },
+        {
+            "name": "SMA",
+            "description": "SMA (Semi-automated Muscle Analysis) offers a semi-automated approach for analyzing muscle architecture, balancing automation with user control for higher accuracy.",
+            "link": "https://sma-docs.example.com",
+        },
+        {
+            "name": "DeepACSA",
+            "description": "DeepACSA utilizes deep learning techniques to automatically analyze muscle ACSA in ultrasound images, providing quick and reliable measurements.",
+            "link": "https://deepacsa-docs.example.com",
+        },
+        {
+            "name": "ACSAuto",
+            "description": "ACSAuto is an automatic analysis tool focused on muscle ACSA measurement, offering a user-friendly interface and high precision.",
+            "link": "https://acsauto-docs.example.com",
+        },
+        {
+            "name": "DL_Track_US",
+            "description": "DL_Track_US employs deep learning models for tracking muscle fascicles and architecture in ultrasound images, designed for high accuracy and reproducibility.",
+            "link": "https://dltrackus-docs.example.com",
+        },
+    ]
+
+    for algo in algorithms:
+        st.markdown(f"**[{algo['name']}]({algo['link']})**: {algo['description']}")
+
+    st.subheader("Downloadable Image Dataset")
+
+    st.write(
+        """
+        To support the development and validation of these algorithms, we provide a downloadable image dataset with corresponding manual analyses by three raters. This dataset follows the protocol outlined in the DL_Track_US paper published in the Ultrasound in Medicine & Biology (UMB) journal.
+
+        You can use this dataset to train and evaluate your own models or compare the performance of different automatic analysis algorithms.
+        """
+    )
+
+    dataset_path = "webapp_files/muscle_benchmark_dataset.zip"
+    if os.path.exists(dataset_path):
+        with open(dataset_path, "rb") as file:
+            dataset_content = file.read()
+        st.download_button(
+            label="📦 Download Muscle Benchmark Dataset",
+            data=dataset_content,
+            file_name="muscle_benchmark_dataset.zip",
+            mime="application/zip",
+        )
 
 elif selected_tab == "Contributing":
     "---"

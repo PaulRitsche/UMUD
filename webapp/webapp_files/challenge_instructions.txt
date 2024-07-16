@@ -2,6 +2,9 @@
 **Welcome to the UMUD Community Challenge!**
 
 This challenge is designed to engage the community in developing models or analysis scripts to predict muscle parameters in an unseen test set. Participants are encouraged to use any tools or techniques at their disposal to create the best predictive models possible.
+The testset will be provided, but the ground thruths will be kept hidden. Defining a ground truth without true objective analysis criteria is hard, especially when determining muscle architecture in ultrasonography images. Therefore, the UMUD team decided that the best possible 
+ground truth is to let a bunch of "experts" analyse the images in the test set manually to the best of their knowledge and average their scores. We agreed on the following analysis criteria...
+
 
 ### Challenge Overview
 
@@ -15,16 +18,20 @@ This challenge is designed to engage the community in developing models or analy
 
 3. **Evaluation**:
     - Submit your model predictions.
-    - We will evaluate your model on an unseen validation set that we keep hidden.
-    - The evaluation metrics will include Intersection over Union (IoU) and Dice coefficient.
+    - We will evaluate your predictions against our ground truth.
+    - The evaluation metrics will include the ICC, mean difference, mean difference in percent and the standard error of the differences.
 
 4. **Submission**:
     - You can submit your predictions through this platform.
-    - We accept models written in any language, but we prefer Python for ease of evaluation.
+    - We accept code written in any language, but we prefer Python for ease of evaluation. 
 
 5. **Leaderboard**:
     - Your scores will be displayed on the leaderboard.
     - Medals will be awarded to the top three participants.
+
+6. **Prices**:
+    - The price of participation is not determined yet.
+    - We are confident we will figure it out...
 
 ### How to Participate
 
