@@ -1,4 +1,22 @@
 
+2024-07-21
+==========
+
+Added
+-----
+
+- contributin, benchmark and about us tab.
+- sidebar and footer and vertical tab settings.
+
+- About us page entry
+- Newsfeed to homepage
+- Logo to navigation bar
+
+Fixed
+-----
+
+- Benchmarks page description
+
 2024-07-10
 ==========
 

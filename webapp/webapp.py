@@ -33,16 +33,33 @@ def get_categorical_columns(df):
     return df.select_dtypes(include=["object", "category"]).columns.tolist()
 
 
+def read_newsfeed(filepath):
+    """
+    Reads news items from a text file and returns them as a list of strings.
+
+    Args:
+        filepath (str): The path to the newsfeed text file.
+
+    Returns:
+        list: A list of news items.
+    """
+    try:
+        with open(filepath, "r") as file:
+            news_items = file.readlines()
+        return [item.strip() for item in news_items]
+    except Exception as e:
+        st.error(f"Error reading newsfeed: {e}")
+        return []
+
+
 def load_scoreboard():
     # This function should be modified to load data from your database if needed.
     results = pd.DataFrame(
         {
             "Name": ["Neil", "Olivier", "Paul"],
-            "Model IoU": [1, 0.9, 0.8],
-            "Model Dice": [0.9, 0.8, 0.7],
-            "SEM Fascicle Length": [0.1, 0.5, 0.7],
-            "SEM Pennation Angle": [0.1, 0.5, 0.7],
-            "SEM Muscle Thickness": [0.1, 0.5, 0.7],
+            "SEM Fascicle Length (cm)": [0.1, 0.5, 0.7],
+            "SEM Pennation Angle (cm)": [0.1, 0.5, 0.7],
+            "SEM Muscle Thickness (cm)": [0.1, 0.5, 0.7],
         }
     )
     return results
@@ -149,7 +166,6 @@ def add_footer():
     <style>
     .footer {
         background-color: rgba(0, 0, 0, 0);  /* Transparent black background */
-        color: white;
         text-align: center;
         padding: 10px;
         font-size: 14px;
@@ -159,7 +175,7 @@ def add_footer():
         left: 0;
     }
     .footer a {
-        color: #4CAF50;
+        color: #008080;
         text-decoration: none;
     }
     .footer a:hover {
@@ -196,15 +212,18 @@ def add_footer():
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
+
+
 # st.session_state.query = {"muscle": "", "image_type": "", "device": "", "age": ""}
 # st.session_state.link = {"dataset_link": ""}
 # --------------------
 
-st.set_page_config(
-    page_title=page_title,
-    page_icon=page_icon,
+st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
+# st.title("Universal Muscle Ultrasound Database" + " " + page_icon)
+st.markdown(
+    "<h1 style='text-align: center; '>Universal Muscle Ultrasound Database</h1>",
+    unsafe_allow_html=True,
 )
-st.title("Universal Muscle Ultrasound Database" + " " + page_icon)
 
 
 # Initialize connection.
@@ -229,7 +248,15 @@ def get_data():
 # Specify tabs
 with st.sidebar:
 
-    st.header("Navigation")
+    st.image("webapp_files/logo.png", use_column_width=True)
+    # st.markdown(
+    #     """
+    # <div style="text-align: center;">
+    #     <h2>Navigation</h2>
+    # </div>
+    # """,
+    #     unsafe_allow_html=True,
+    # )
     "---"
     selected_tab = option_menu(
         "",
@@ -241,6 +268,7 @@ with st.sidebar:
             "Benchmarks",
             "Contributing",
             "About Us",
+            "License",
         ],
         icons=[
             "house",
@@ -250,6 +278,7 @@ with st.sidebar:
             "stars",
             "person-hearts",
             "info-circle",
+            "key",
         ],
         default_index=0,
         orientation="vertical",
@@ -275,60 +304,59 @@ if selected_tab == "Home":
     st.markdown(
         """
     ### About UMUD
-    The **UMUD repository** is a comprehensive database hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including images, videos, and 3D ultrasound (3DUS) data. Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research.
+    The **UMUD repository** is a comprehensive database hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including images, videos, and 3D ultrasound (3DUS) data. Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
+    
+    We are continuously working on expanding the repository and making it publicly accessible. Be sure to check out the Newsfeed below!
     """
     )
 
     st.markdown(
         """
-    ### Current Status
-    - **Database Accessibility**: The database is currently not publicly available, but the datasets will be.
-    - **Metadata Information**: Contains detailed metadata for all included datasets.
-    """
-    )
 
-    st.markdown(
-        """
     ### Features
     - 📁 **Variety of Data**: Includes images, videos, and 3DUS data.
     - 🏷️ **Labeled Datasets**: Focus on datasets that include labels for better training and validation.
     - 🔍 **Metadata Indexing**: Comprehensive indexing of metadata for easy search and retrieval.
+    - ✨ **Analysis Standards**: Provide benchmark datasets and models analysed by experts in the field.
     """
     )
 
-    st.markdown(
-        """
-    ### Contact Us
-    For any questions or inquiries, please contact our support team.
+    news_items = read_newsfeed("webapp_files/newsfeed.txt")
+    st.markdown("### 📰 Newsfeed")
+    newsfeed_container = """
+    <style>
+    .news-container {
+        max-height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #e6e6e6;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    .news-item {
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    </style>
+    <div class="news-container">
     """
-    )
+
+    if news_items:
+        for item in news_items:
+            newsfeed_container += f'<div class="news-item">- {item}</div>'
+    else:
+        newsfeed_container += '<div class="news-item">No news items available.</div>'
+
+    newsfeed_container += "</div>"
+
+    st.markdown(newsfeed_container, unsafe_allow_html=True)
 
     # License section with GPL-3.0 license
-    st.markdown(
-        """
-    ### License
-    The UMUD repository and datasets are licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
-    - **Share**: Copy and redistribute the material in any medium or format.
-    - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
-
-    Under the following terms:
-    - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-    - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
-    """
-    )
-
-    # Future plans section
-    st.markdown(
-        """
-    ### Future Plans
-    We are continuously working on expanding the repository and making it publicly accessible. Stay tuned for updates!
-    """
-    )
 
     # Closing message
     st.markdown(
         """
     <div style="text-align: center;">
+        <h3></h3>
         <h4>Thank you for visiting the UMUD Repository!</h4>
     </div>
     """,
@@ -339,7 +367,7 @@ if selected_tab == "Home":
 elif selected_tab == "Datasets":
 
     "---"
-    st.header("🔍 Enter Metadata to Query Datasets")
+    st.header("Enter Metadata to Query Datasets")
 
     st.write(
         "In this tab, you can query the muscle ultrasound datasets by providing specific metadata filters. "
@@ -584,60 +612,81 @@ elif selected_tab == "Challenge":
 elif selected_tab == "Benchmarks":
 
     "---"
-    st.header("Benchmark for Muscle Architecture and ACSA Analysis")
+    st.header("Benchmarks for Muscle Architecture and ACSA Analysis")
 
     st.write(
         """
         This benchmark is designed to support the development and evaluation of automatic analysis algorithms for muscle architecture and anatomical cross-sectional area (ACSA) analysis in ultrasonography images. Accurate and reliable automatic analysis tools are essential for advancing research and clinical practices, particularly for training purposes.
 
         Muscle architecture analysis includes parameters such as muscle fascicle length, pennation angle, and muscle thickness. These parameters are crucial for understanding muscle function and adaptations to training or rehabilitation.
+        As we can all agree, manual ultrasonography image analysis is time-consuming and subjective, especially for large-scale studies. So far, no common ground exists where researchers can compare and benchmark their manual analyses/algorithms.
+        In addition to manual analysis, several automated analysis algorithms exist. Automated analysis algorithms can significantly reduce the time and effort required for manual analysis, enabling faster and more accurate results.
 
-        Below is a list of available automatic analysis algorithms along with short descriptions and links to their documentation pages.
+        Below is a list of available automatic analysis algorithms along with short descriptions and links to their documentation pages. This list is not exhaustive and may be updated as new algorithms are developed.
+        """
+    )
+
+    st.subheader("Benchmark Image Dataset")
+
+    st.write(
+        """
+        To support operator training and the development and validation of automated image analysis algorithms, we provide a downloadable image dataset with corresponding manual analyses by five expert raters. 
+        The dataset contains images of cross-sectional area (ACSA) as well as images of muscle architecture. The dataset can be downloaded from the following link: [Dataset](https://drive.google.com/drive/folders/13Lq803fK96w4U45K062RH29875565663?usp=sharing).
+ 
+        You can use this dataset to train and evaluate your own models or compare the performance of different automatic analysis algorithms.  Furthermore, we encourage you to use the dataset to check whether your own manual analysis falls within bounds of the expert-annotations.
+        """
+    )
+
+    st.subheader("Benchmark Models")
+
+    st.write(
+        """
+        We have developed benchmark models for muscle architecture and muscle ACSA analysis. The models are those from two published papers. [Ritsche et al. (2022) MSSE](https://journals.lww.com/acsm-msse/fulltext/2022/12000/deepacsa__automatic_segmentation_of.21.aspx) for the ACSA analysis models and [Ritsche et al.(2024) UMD](https://www.sciencedirect.com/science/article/abs/pii/S0301562923003423) for muscle architecture analysis. The specifities of the models can be viewed in the respective papers. 
+        The models are implemented in Python and can be easily integrated into your own analysis pipeline. Note that we did not choose our own models for prestige or publicity, but rather because they are the only openly available deep neural networs for this kind of analysis. We will add more benchmarks models for other segmentation tasks in the future.
+        
+        Performance tables are being developed at the moment...
         """
     )
 
     st.subheader("Available Automatic Analysis Algorithms")
 
+    st.write(
+        """
+        We believe that automated image analysis algorithms are essential for advancing our understanding of muscle function and adaptation.
+        Therefore we have compiled a list of available automatic analysis algorithms. 
+        """
+    )
+
     algorithms = [
-        {
-            "name": "UltraTrack",
-            "description": "UltraTrack is a software tool for tracking muscle fascicles in ultrasound images. It provides robust and accurate tracking of muscle architecture parameters.",
-            "link": "https://ultratrack-docs.example.com",
-        },
-        {
-            "name": "SMA",
-            "description": "SMA (Semi-automated Muscle Analysis) offers a semi-automated approach for analyzing muscle architecture, balancing automation with user control for higher accuracy.",
-            "link": "https://sma-docs.example.com",
-        },
         {
             "name": "DeepACSA",
             "description": "DeepACSA utilizes deep learning techniques to automatically analyze muscle ACSA in ultrasound images, providing quick and reliable measurements.",
-            "link": "https://deepacsa-docs.example.com",
+            "link": "file:///C:/Users/admin/Documents/DeepACSA/DeepACSA/docs/build/html/index.html",
         },
         {
             "name": "ACSAuto",
             "description": "ACSAuto is an automatic analysis tool focused on muscle ACSA measurement, offering a user-friendly interface and high precision.",
-            "link": "https://acsauto-docs.example.com",
+            "link": "https://github.com/PaulRitsche/ACSAuto",
         },
         {
             "name": "DL_Track_US",
             "description": "DL_Track_US employs deep learning models for tracking muscle fascicles and architecture in ultrasound images, designed for high accuracy and reproducibility.",
-            "link": "https://dltrackus-docs.example.com",
+            "link": "file:///C:/Users/admin/Documents/DL_Track/DL_Track_US/docs/build/html/index.html",
+        },
+        {
+            "name": "UltraTrack",
+            "description": "UltraTrack is a software tool for tracking muscle fascicles in ultrasound images. It provides robust and accurate tracking of muscle architecture parameters.",
+            "link": "https://sites.google.com/site/ultratracksoftware/home",
+        },
+        {
+            "name": "SMA",
+            "description": "SMA (Semi-automated Muscle Analysis) offers a semi-automated approach for analyzing muscle architecture, balancing automation with user control for higher accuracy.",
+            "link": "https://github.com/oseynnes/SMA",
         },
     ]
 
     for algo in algorithms:
         st.markdown(f"**[{algo['name']}]({algo['link']})**: {algo['description']}")
-
-    st.subheader("Downloadable Image Dataset")
-
-    st.write(
-        """
-        To support the development and validation of these algorithms, we provide a downloadable image dataset with corresponding manual analyses by three raters. This dataset follows the protocol outlined in the DL_Track_US paper published in the Ultrasound in Medicine & Biology (UMB) journal.
-
-        You can use this dataset to train and evaluate your own models or compare the performance of different automatic analysis algorithms.
-        """
-    )
 
     dataset_path = "webapp_files/muscle_benchmark_dataset.zip"
     if os.path.exists(dataset_path):
@@ -662,6 +711,7 @@ elif selected_tab == "Contributing":
     st.write(
         """
     If you have muscle ultrasound datasets that you would like to share, you can contribute them to the UMUD Repository. 
+    **Please make sure, that you have permission to share the data openly. UMUD does not cover any potential ethical or legal issues associated with sharing data.**
     By contributing your data, you help create a richer resource for researchers and developers. Here's how you can add your data:
     
     - **Prepare Your Data**: Ensure your data is properly labeled and formatted according to the UMUD standards. This includes metadata such as muscle type, imaging device, participant details, and file formats.
@@ -744,6 +794,14 @@ elif selected_tab == "About Us":
         "[Read more about Paul Ritsche](https://www.linkedin.com/in/paul-ritsche/)"
     )
 
+    # Fabio Sarto
+    st.image("webapp_files/fabio_sarto.png", caption="Fabio Sarto", width=150)
+    st.write(
+        """
+    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in biomechanics and muscle physiology and a passion for open-science
+    """
+    )
+
     # Olivier Seynnes
     st.image(
         "webapp_files/olivier_seynnes.png", caption="Olivier Seynnes", width=150
@@ -757,6 +815,38 @@ elif selected_tab == "About Us":
         "[Read more about Olivier Seynnes](https://scholar.google.com/citations?user=olivier_seynnes)"
     )
 
+    # Contributers
+
     st.subheader("The Contributors")
 
+    st.write(
+        """
+    Francesco Santini
+
+    Oliver Faude
+
+    Martino Franchi
+    
+    ...
+    """
+    )
+
+elif selected_tab == "License":
+
+    "---"
+
+    st.markdown(
+        """
+    ### License
+    The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
+    - **Share**: Copy and redistribute the material in any medium or format.
+    - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
+
+    Under the following terms:
+    - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+    - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+    Each dataset is licensed on its own. Please refer to the each dataset page for more information. 
+    """
+    )
 # TODO check out PyGWalker as well
