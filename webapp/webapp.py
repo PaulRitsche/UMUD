@@ -9,7 +9,6 @@ import base64
 import urllib.parse
 import os
 import json
-import ast
 from templates.template_dictionary import template_data
 
 
