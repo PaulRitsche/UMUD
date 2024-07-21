@@ -1,0 +1,45 @@
+
+**Welcome to the UMUD Community Challenge!**
+
+This challenge is designed to engage the community in developing models or analysis scripts to predict muscle parameters in an unseen test set. Participants are encouraged to use any tools or techniques at their disposal to create the best predictive models possible.
+The testset will be provided, but the ground thruths will be kept hidden. Defining a ground truth without true objective analysis criteria is hard, especially when determining muscle architecture in ultrasonography images. Therefore, the UMUD team decided that the best possible 
+ground truth is to let a bunch of "experts" analyse the images in the test set manually to the best of their knowledge and average their scores. We agreed on the following analysis criteria...
+
+
+### Challenge Overview
+
+1. **Data Provided**:
+    - A training set of images and their corresponding segmentation masks.
+    - A test set of images for which you need to provide predictions.
+
+2. **Objective**:
+    - Train your algorithms using the provided training data.
+    - Generate predictions for the test set.
+
+3. **Evaluation**:
+    - Submit your model predictions.
+    - We will evaluate your predictions against our ground truth.
+    - The evaluation metrics will include the ICC, mean difference, mean difference in percent and the standard error of the differences.
+
+4. **Submission**:
+    - You can submit your predictions through this platform.
+    - We accept code written in any language, but we prefer Python for ease of evaluation. 
+
+5. **Leaderboard**:
+    - Your scores will be displayed on the leaderboard.
+    - Medals will be awarded to the top three participants.
+
+6. **Prices**:
+    - The price of participation is not determined yet.
+    - We are confident we will figure it out...
+
+### How to Participate
+
+1. **Download the training and test datasets.**
+2. **Train your model using the training dataset.**
+3. **Generate predictions for the test dataset.**
+4. **Submit your predictions through this platform.
+
+We look forward to your participation and seeing the innovative models you develop!
+
+**Note**: For any questions or issues, please contact us at support@umudchallenge.org.

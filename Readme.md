@@ -1,6 +1,6 @@
 # Universal Muscle Ultrasound Repository (UMUD)
 
-![UMUD Logo](path_to_logo_image)
+![UMUD Logo](webapp/webapp_files/logo.png)
 
 ## Table of Contents
 - [Project Description](#project-description)
