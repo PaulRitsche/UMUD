@@ -4,6 +4,7 @@ import pymongo
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 import matplotlib.pyplot as plt
+from pathlib import Path
 from io import BytesIO
 import base64
 import urllib.parse
@@ -246,8 +247,8 @@ def get_data():
 
 # Specify tabs
 with st.sidebar:
-
-    st.image("webapp_files/logo.png", use_column_width=True)
+    logo_image_path = str(Path(__file__).with_name("webapp_files"))
+    st.image(logo_image_path + "/logo.png", use_column_width=True)
     # st.markdown(
     #     """
     # <div style="text-align: center;">
