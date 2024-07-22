@@ -5,4 +5,3 @@ pytest==8.2.2
 streamlit==1.35.0
 streamlit_option_menu==0.3.12
 streamlit_aggrid==1.0.5
-
