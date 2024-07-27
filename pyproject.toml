@@ -1,6 +1,6 @@
 [project]
 dynamic = ["version"]
-version = "0.0.1"
+version = "0.0.1-beta"
 name = "Universal Muscle Ultrasound Database"
 requires-python = ">= 3.9"
 

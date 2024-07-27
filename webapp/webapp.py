@@ -12,10 +12,29 @@ import os
 import json
 from templates.template_dictionary import template_data
 
+# TODO
+# - Discuss the scope/plan of the challenge & the metrics according to which it is held
+# - Discuss the making of the test set and the training set
+# - Discuss the current benchmarks and see if everybody is ok with it
+# - Discuss the databse parameters and the webapp outline.
+# - Create the UMUD page on the OSF
+# - Create automatic update of submission/leaderboard page
+# - Include Bug reports and issues via Github
+
 
 def clean_dataframe(df):
     """
     Clean the dataframe to ensure all data is properly encoded and formatted.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to be cleaned.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The cleaned dataframe with properly encoded and formatted data.
     """
     for col in df.select_dtypes(include=[object]).columns:
         df[col] = (
@@ -29,6 +48,16 @@ def clean_dataframe(df):
 def get_categorical_columns(df):
     """
     Identify all categorical columns in the dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to analyze.
+
+    Returns
+    -------
+    list
+        A list of column names that are categorical or object type.
     """
     return df.select_dtypes(include=["object", "category"]).columns.tolist()
 
@@ -37,11 +66,15 @@ def read_newsfeed(filepath):
     """
     Reads news items from a text file and returns them as a list of strings.
 
-    Args:
-        filepath (str): The path to the newsfeed text file.
+    Parameters
+    ----------
+    filepath : str
+        The path to the newsfeed text file.
 
-    Returns:
-        list: A list of news items.
+    Returns
+    -------
+    list
+        A list of news items as strings.
     """
     try:
         with open(filepath, "r") as file:
@@ -53,7 +86,16 @@ def read_newsfeed(filepath):
 
 
 def load_scoreboard():
-    # This function should be modified to load data from your database if needed.
+    """
+    Load the scoreboard data.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A dataframe containing the scoreboard data.
+    """
+
+    # This function should be modified to load data from database if needed.
     results = pd.DataFrame(
         {
             "Name": ["Neil", "Olivier", "Paul"],
@@ -68,6 +110,11 @@ def load_scoreboard():
 def display_scoreboard(df):
     """
     Display the scoreboard using st_aggrid for better visualization.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe containing the scoreboard data.
     """
     # Add medals to the top three rows
     medals = ["🥇", "🥈", "🥉"] + [""] * (len(df) - 3)
@@ -84,6 +131,16 @@ def display_scoreboard(df):
 def filter_dataframe(df):
     """
     Display an interactive, filterable dataframe using st_aggrid and provide a download button.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to be filtered.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The filtered dataframe based on user interactions.
     """
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_pagination()
@@ -98,6 +155,15 @@ def filter_dataframe(df):
 def display_charts(df, selected_plots, group_by_column):
     """
     Display interactive charts based on the dataframe and user selections.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe for chart generation.
+    selected_plots : list
+        A list of plot types selected by the user.
+    group_by_column : str
+        The column name to group the data by for visualization.
     """
     st.subheader("Interactive Charts")
 
@@ -125,10 +191,35 @@ def display_charts(df, selected_plots, group_by_column):
             ax.set_ylabel("Frequency")
             st.pyplot(fig)
 
+        elif plot == "Data Type Distribution" and "DATA_TYPE" in df.columns:
+            fig, ax = plt.subplots()
+            datatype_count = (
+                df.groupby(group_by_column)["DATA_TYPE"]
+                .value_counts()
+                .unstack()
+                .plot(kind="bar", stacked=True, ax=ax)
+            )
+            ax.set_title("Data Type Distribution")
+            ax.set_xlabel("Type")
+            ax.set_ylabel("Frequency")
+            st.pyplot(fig)
+
 
 def get_download_button(df, filename="filtered_data.csv"):
     """
     Generate a link to download the filtered dataframe as a CSV file.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to be downloaded.
+    filename : str, optional
+        The name of the file to be downloaded (default is "filtered_data.csv").
+
+    Returns
+    -------
+    streamlit.download_button
+        A Streamlit download button for the CSV file.
     """
     buffer = BytesIO()
     df.to_csv(buffer, index=False)
@@ -144,6 +235,22 @@ def get_download_button(df, filename="filtered_data.csv"):
 def create_email_link(subject, body, recipient, filenames):
     """
     Create a mailto link with the given subject, body, recipient, and filenames.
+
+    Parameters
+    ----------
+    subject : str
+        The email subject.
+    body : str
+        The email body.
+    recipient : str
+        The email recipient.
+    filenames : list
+        A list of filenames to be attached.
+
+    Returns
+    -------
+    str
+        A mailto link with the specified parameters.
     """
     body += "\n\nAttachments:\n" + "\n".join(filenames)
     params = {"subject": subject, "body": body, "to": recipient}
@@ -155,6 +262,20 @@ def create_email_link(subject, body, recipient, filenames):
 def get_download_link(content, filename, mime):
     """
     Generate a link to download the given content as a file.
+
+    Parameters
+    ----------
+    content : str
+        The content to be downloaded.
+    filename : str
+        The name of the file to be downloaded.
+    mime : str
+        The MIME type of the file.
+
+    Returns
+    -------
+    str
+        An HTML string containing the download link.
     """
     b64 = base64.b64encode(content.encode()).decode()  # Convert to base64
     href = f'<a href="data:{mime};base64,{b64}" download="{filename}">Download detailed instructions...</a>'
@@ -162,6 +283,9 @@ def get_download_link(content, filename, mime):
 
 
 def add_footer():
+    """
+    Add a footer to the Streamlit app.
+    """
     footer = """
     <style>
     .footer {
@@ -202,7 +326,7 @@ def add_footer():
     <div id="footer-anchor" style="height: 10px;"></div>
     <div class="footer">
         <p>© 2024 UMUD Repository. All rights reserved.</p>
-        <p>Contact: <a href="mailto:support@umudrepository.org">support@umudrepository.org</a></p>
+        <p>Contact: <a href="mailto:umudrepository@gmail.com">umudrepository@gmail.com</a></p>
     </div>
     """
     st.markdown(footer, unsafe_allow_html=True)
@@ -221,7 +345,7 @@ layout = "centered"
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 # st.title("Universal Muscle Ultrasound Database" + " " + page_icon)
 st.markdown(
-    "<h1 style='text-align: center; '>Universal Muscle Ultrasound Database</h1>",
+    "<h1 style='text-align: center; '>Universal Musculoskeletal Ultrasound Database</h1>",
     unsafe_allow_html=True,
 )
 
@@ -230,6 +354,14 @@ st.markdown(
 # Uses st.cache_resource to only run once.
 @st.cache_resource
 def init_connection():
+    """
+    Initialize connection to MongoDB.
+
+    Returns
+    -------
+    pymongo.MongoClient
+        A MongoDB client instance.
+    """
     connection_string = st.secrets.mongo["CONNECTION_STRING"]
     return pymongo.MongoClient(connection_string, tls=True)
 
@@ -238,6 +370,14 @@ def init_connection():
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
 @st.cache_resource(ttl=600)
 def get_data():
+    """
+    Pull data from the MongoDB collection.
+
+    Returns
+    -------
+    pymongo.collection.Collection
+        A MongoDB collection instance containing the datasets.
+    """
     client = init_connection()
     db = client.muscle_ultrasound
     items = db.datasets
@@ -249,14 +389,7 @@ def get_data():
 with st.sidebar:
     logo_image_path = str(Path(__file__).with_name("webapp_files"))
     st.image(logo_image_path + "/logo.png", use_column_width=True)
-    # st.markdown(
-    #     """
-    # <div style="text-align: center;">
-    #     <h2>Navigation</h2>
-    # </div>
-    # """,
-    #     unsafe_allow_html=True,
-    # )
+
     "---"
     selected_tab = option_menu(
         "",
@@ -296,6 +429,7 @@ if selected_tab == "Home":
         """
     <div style="text-align: center;">
         <h2>Welcome to the UMUD Repository!</h2>
+        <p>
     </div>
     """,
         unsafe_allow_html=True,
@@ -304,9 +438,14 @@ if selected_tab == "Home":
     st.markdown(
         """
     ### About UMUD
-    The **UMUD repository** is a comprehensive database hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including images, videos, and 3D ultrasound (3DUS) data. Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
+
+    **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
+
+    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image database hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
     
-    We are continuously working on expanding the repository and making it publicly accessible. Be sure to check out the Newsfeed below!
+    We are continuously working on expanding the database, improving the webapp and try to create community challenges. Be sure to check out the Newsfeed below!
+    
+    The UMUD project is part of the [ORMIR](https://www.ormir.org/) community as a seperate [working group](https://www.ormir.org/groups.html#). 
     """
     )
 
@@ -323,6 +462,7 @@ if selected_tab == "Home":
 
     news_items_path = str(Path(__file__).with_name("webapp_files"))
     news_items = read_newsfeed(news_items_path + "/newsfeed.txt")
+
     st.markdown("### 📰 Newsfeed")
     newsfeed_container = """
     <style>
@@ -351,7 +491,46 @@ if selected_tab == "Home":
 
     st.markdown(newsfeed_container, unsafe_allow_html=True)
 
-    # License section with GPL-3.0 license
+    # Partner section
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        ### Partners
+        """
+    )
+
+    partners = [
+        {
+            "name": "ORMIR",
+            "logo": str(Path(__file__).with_name("webapp_files")) + "/ormir_logo.png",
+            "link": "https://ormir.org/",
+        },
+        {
+            "name": "University of Basel",
+            "logo": str(Path(__file__).with_name("webapp_files")) + "/unibas_logo.png",
+            "link": "https://www.unibas.ch/",
+        },
+        {
+            "name": "University of Padova",
+            "logo": str(Path(__file__).with_name("webapp_files")) + "/unipd_logo.png",
+            "link": "https://www.unipd.it/",
+        },
+        {
+            "name": "University of Jyväskylä",
+            "logo": str(Path(__file__).with_name("webapp_files")) + "/jyu_logo.png",
+            "link": "https://www.jyu.fi/",
+        },
+        {
+            "name": "Norwegian School of Sport Sciences",
+            "logo": str(Path(__file__).with_name("webapp_files")) + "/nih_logo.png",
+            "link": "https://www.nih.no/",
+        },
+    ]
+
+    cols = st.columns(len(partners))
+    for col, partner in zip(cols, partners):
+        with col:
+            st.image(partner["logo"], use_column_width=True)
 
     # Closing message
     st.markdown(
@@ -372,7 +551,10 @@ elif selected_tab == "Datasets":
 
     st.write(
         "In this tab, you can query the muscle ultrasound datasets by providing specific metadata filters. "
-        "Select the filters you want to apply, provide the values, and submit the query to retrieve relevant datasets."
+        "Select the filters you want to apply, provide the values, and submit the query to retrieve relevant datasets. "
+        "The filtering options are based on the metadata fields and contain all values present in the datasets of the database. "
+        "For example, the `MUSCLE` field contains all the muscles represented in the database. "
+        "This means, however, you need to decide how useful a filter value is."
     )
 
     # Allow users to select which filters they want to use
@@ -381,7 +563,7 @@ elif selected_tab == "Datasets":
     selected_filters = st.multiselect(
         "",
         filter_options,
-        help="Select which filters you want to apply to get the dataset you want. Filters are based on the metadata fields and contain all values present in the datasets of the database.",
+        help="Select which filters you want to apply to get the dataset you want. You can select multiple filters.",
     )
 
     # Create a form for user input
@@ -448,9 +630,9 @@ elif selected_tab == "Database":
     st.header("Database")
 
     st.write(
-        "In this tab, you can explore the entire muscle ultrasound dataset stored in the database. "
+        "In this tab, you can explore the entire musculoskeletal ultrasound datasets stored in the database. "
         "You can filter the data, visualize different aspects of the dataset through interactive charts, "
-        "and download the filtered data for further analysis."
+        "and download the filtered data for further analysis. "
     )
 
     items = get_data()
@@ -475,12 +657,12 @@ elif selected_tab == "Database":
 
     # Dropdown for plot selection
     st.subheader("Interactive Charts")
-    plot_options = ["Muscle Distribution", "Age Distribution"]
+    plot_options = ["Muscle Distribution", "Age Distribution", "Data Type Distribution"]
     selected_plots = st.multiselect(
         "Select Plots to Display",
         plot_options,
         default=["Muscle Distribution"],
-        help="Select which plots you want to display to get a better understanding of the data. So far, only two plots are available.",
+        help="Select which plots you want to display to get a better understanding of the data. So far, only three plots are available. You can select multiple plots.",
     )
 
     # Dropdown for grouping selection
@@ -502,22 +684,28 @@ elif selected_tab == "Challenge":
 
     st.write(
         """
-        Welcome to the UMUD Community Challenge! This challenge is designed to engage the community in developing models or 
-        analysis scripts to predict muscle parameters in an unseen test set. Participants are encouraged to use any tools or 
-        techniques at their disposal to create the best predictive models possible.
+        **⚠️ The Challenge is currentlynot active ⚠️**
 
-        The format of the challenge is inspired by Kaggle competitions, where participants can submit their predictions, 
-        and a leaderboard will track the top-performing models.
+        This challenge will be designed to engage the community in developing models or 
+        analysis scripts to predict muscle geometrical parameters in an unseen test set of lower limb ultrasonography images. Participants are encouraged to use any tools or 
+        techniques at their disposal to create the best predictions possible.
+
+        The format of the challenge is inspired by [Kaggle](https://www.kaggle.com/competitions) competitions, where participants can submit their data analysis predictions, 
+        and a leaderboard will track the top results.
         """
     )
+
+    st.subheader("Challenge Outline")
+
+    st.write("...TBD...")
 
     st.subheader("How to Participate")
     st.write(
         """
         1. **Download the Dataset**: Download the training and test datasets from the [UMUD Repository](#).
         2. **Develop Your Analysis Code**: Use the training dataset to develop and train your predictive models/code.
-        3. **Make Predictions**: Apply your model to the test dataset to make predictions on muscle parameters.
-        4. **Submit Your Predictions and Code**: Submit your predictions using the submission file below and include a linke to your trained code or models for evaluation.
+        3. **Make Predictions**: Apply your model/analysis script to the test dataset to make predictions on muscle parameters.
+        4. **Submit Your Predictions and Code**: Submit your predictions using the submission file below and include a link to your trained code or models for evaluation.
         5. **Check the Leaderboard**: Track your performance on the leaderboard and see how you rank against other participants.
         6. **Win the Challenge!**: If you are among the top 3 participants, there may be (as of yet undetermined) prizes!
         """
@@ -537,8 +725,10 @@ elif selected_tab == "Challenge":
         )
 
     st.subheader("Sample Submission File")
+
     submissions = str(Path(__file__).with_name("webapp_files"))
     sample_submission_path = submissions + "/sample_submission.csv"
+
     if os.path.exists(sample_submission_path):
         with open(sample_submission_path, "r") as file:
             sample_submission_content = file.read()
@@ -580,7 +770,7 @@ elif selected_tab == "Challenge":
             # Example validation: Check if required columns exist
             required_columns = [
                 "_id",
-                "_fascicle_lengt",
+                "_fascicle_length",
                 "_pennation_angle",
                 "_muscle_thickness",
             ]
@@ -594,7 +784,7 @@ elif selected_tab == "Challenge":
                 )
 
             st.subheader("Submit via Email")
-            recipient_email = "support@umudchallenge.org"
+            recipient_email = "umudrepository@gmail.com"
             subject = "UMUD Challenge Submission"
             body = "Please find attached my submission for the UMUD Challenge."
 
@@ -608,7 +798,7 @@ elif selected_tab == "Challenge":
 
     st.write(
         """
-        Alternatively, you can send your submission files directly to [support@umudchallenge.org](mailto:support@umudchallenge.org).
+        Alternatively, you can send your submission files directly to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
         """
     )
 
@@ -619,11 +809,12 @@ elif selected_tab == "Benchmarks":
 
     st.write(
         """
-        This benchmark is designed to support the development and evaluation of automatic analysis algorithms for muscle architecture and anatomical cross-sectional area (ACSA) analysis in ultrasonography images. Accurate and reliable automatic analysis tools are essential for advancing research and clinical practices, particularly for training purposes.
+        The benchmark tab is designed to support the development and evaluation of automatic analysis algorithms for muscle architecture and anatomical cross-sectional area (ACSA) analysis in ultrasonography images. Accurate and reliable automatic analysis tools are essential for advancing
+         research and clinical practices, particularly for training purposes.
 
         Muscle architecture analysis includes parameters such as muscle fascicle length, pennation angle, and muscle thickness. These parameters are crucial for understanding muscle function and adaptations to training or rehabilitation.
-        As we can all agree, manual ultrasonography image analysis is time-consuming and subjective, especially for large-scale studies. So far, no common ground exists where researchers can compare and benchmark their manual analyses/algorithms.
-        In addition to manual analysis, several automated analysis algorithms exist. Automated analysis algorithms can significantly reduce the time and effort required for manual analysis, enabling faster and more accurate results.
+        As we can all agree, manual ultrasonography image analysis is time-consuming and subjective, especially for large-scale studies. Yet, it is still deemed to gold-standard. So far, no common ground exists where researchers can compare and benchmark their manual analyses/automated algorithms.
+        In addition to manual analysis, several automated analysis algorithms exist. Automated analysis algorithms can significantly reduce the time and effort required for manual analysis, enabling faster and more objective results.
 
         Below is a list of available automatic analysis algorithms along with short descriptions and links to their documentation pages. This list is not exhaustive and may be updated as new algorithms are developed.
         """
@@ -634,7 +825,7 @@ elif selected_tab == "Benchmarks":
     st.write(
         """
         To support operator training and the development and validation of automated image analysis algorithms, we provide a downloadable image dataset with corresponding manual analyses by five expert raters. 
-        The dataset contains images of cross-sectional area (ACSA) as well as images of muscle architecture. The dataset can be downloaded from the following link: [Dataset](https://drive.google.com/drive/folders/13Lq803fK96w4U45K062RH29875565663?usp=sharing).
+        The dataset contains images of cross-sectional area (ACSA) as well as images of muscle architecture. The dataset can be downloaded from the [UMUD Repository](#TODO). There, a detauled descripion of the dataset is provided as well.
  
         You can use this dataset to train and evaluate your own models or compare the performance of different automatic analysis algorithms.  Furthermore, we encourage you to use the dataset to check whether your own manual analysis falls within bounds of the expert-annotations.
         """
@@ -664,7 +855,7 @@ elif selected_tab == "Benchmarks":
         {
             "name": "DeepACSA",
             "description": "DeepACSA utilizes deep learning techniques to automatically analyze muscle ACSA in ultrasound images, providing quick and reliable measurements.",
-            "link": "file:///C:/Users/admin/Documents/DeepACSA/DeepACSA/docs/build/html/index.html",
+            "link": "https://deepacsa.readthedocs.io/en/latest/",
         },
         {
             "name": "ACSAuto",
@@ -674,7 +865,7 @@ elif selected_tab == "Benchmarks":
         {
             "name": "DL_Track_US",
             "description": "DL_Track_US employs deep learning models for tracking muscle fascicles and architecture in ultrasound images, designed for high accuracy and reproducibility.",
-            "link": "file:///C:/Users/admin/Documents/DL_Track/DL_Track_US/docs/build/html/index.html",
+            "link": "https://dltrack.readthedocs.io/en/latest/index.html",
         },
         {
             "name": "UltraTrack",
@@ -707,20 +898,20 @@ elif selected_tab == "Contributing":
     st.header("Contributing")
 
     st.write(
-        "We welcome contributions from the community to help improve and expand the UMUD Repository. Here's how you can get involved:"
+        "We welcome contributions from the community to help improve and expand UMUD. Here's how you can get involved:"
     )
 
     st.subheader("1. Contributing Data")
     st.write(
         """
-    If you have muscle ultrasound datasets that you would like to share, you can contribute them to the UMUD Repository. 
+    If you have muscle ultrasound datasets that you would like to share, you can contribute them to UMUD. 
     **Please make sure, that you have permission to share the data openly. UMUD does not cover any potential ethical or legal issues associated with sharing data.**
     By contributing your data, you help create a richer resource for researchers and developers. Here's how you can add your data:
     
-    - **Prepare Your Data**: Ensure your data is properly labeled and formatted according to the UMUD standards. This includes metadata such as muscle type, imaging device, participant details, and file formats.
-    - **Submit Your Data**: Email your dataset to [contribute@umudrepository.org](mailto:contribute@umudrepository.org) with the subject line "Dataset Contribution". Include a brief description of the dataset and any relevant publication links.
+    - **Prepare Your Data**: Ensure your data is properly labeled and formatted according to the UMUD standards by using the template metadata dictionary downloadable below. Please note that you need an API (such as [VSCode](https://code.visualstudio.com/)) able to open Python files to be able to use the template. Upload your data to a trusted repository such as [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/) and include the link in the dictionary.
+    - **Submit Your Data**: Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Dataset Contribution". Include a brief description of the dataset and any relevant publication links in the email. 
     - **Data Review**: Our team will review your submission to ensure it meets our quality standards. We may contact you for additional information or clarification if needed.
-    - **Data Integration**: Once approved, your dataset will be integrated into the UMUD Repository and made available to the community. You will be credited for your contribution.
+    - **Data Integration**: Once approved, your dataset will be integrated into UMUD and made available to the community. You will be credited for your contribution.
     """
     )
 
@@ -736,21 +927,21 @@ elif selected_tab == "Contributing":
     st.subheader("2. Providing Feedback")
     st.write(
         """
-    Your feedback is invaluable in helping us improve the UMUD Repository. Whether you have suggestions for new features, improvements to existing functionalities, or general comments, we want to hear from you.
+    Your feedback is invaluable in helping us improve UMUD. Whether you have suggestions for new features, improvements to existing functionalities, or general comments, we want to hear from you.
     
-    - **Feature Requests**: If you have ideas for new features or enhancements, please email [feedback@umudrepository.org](mailto:feedback@umudrepository.org) with the subject line "Feature Request".
-    - **Bug Reports**: If you encounter any issues or bugs, please report them by emailing [support@umudrepository.org](mailto:support@umudrepository.org) with the subject line "Bug Report". Include detailed information about the issue and steps to reproduce it.
-    - **General Feedback**: For any other feedback or comments, you can also use the above email addresses.
+    - **Feature Requests**: If you have ideas for new features or enhancements, please email [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Feature Request".
+    - **Bug Reports**: If you encounter any issues or bugs, please report them by emailing [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Bug Report". Include detailed information about the issue and steps to reproduce it.
+    - **General Feedback**: For any other feedback or comments, you can also use the above email address.
     """
     )
 
     st.subheader("3. Contributing to the Codebase")
     st.write(
         """
-    We encourage developers to contribute to the UMUD Repository's codebase. Whether you're fixing bugs, adding new features, or improving documentation, your contributions are welcome.
+    We encourage developers to contribute to the UMUD codebase. Whether you're fixing bugs, adding new features, or improving documentation, your contributions are welcome.
     
-    - **Fork the Repository**: Start by forking the [UMUD Repository GitHub repository](https://github.com/UMUD-repo) to your own GitHub account.
-    - **Make Your Changes**: Clone your forked repository to your local machine and make the desired changes. Ensure your code follows our contribution guidelines and coding standards.
+    - **Fork the Repository**: Start by forking the [UMUD Repository](https://github.com/PaulRitsche/UMUD) to your own GitHub account.
+    - **Make Your Changes**: Clone your forked repository to your local machine and make the desired changes. Ensure your code follows our contribution guidelines and coding standards. You can take a look at the Readme file for more information on how to do this.
     - **Submit a Pull Request**: Once you've made your changes, push them to your forked repository and submit a pull request to the main repository. Provide a detailed description of your changes and reference any relevant issues or feature requests.
     - **Review and Merge**: Our team will review your pull request and provide feedback. Once approved, your changes will be merged into the main repository.
     """
@@ -765,7 +956,7 @@ elif selected_tab == "About Us":
     st.subheader("The Idea Behind UMUD")
     st.write(
         """
-    The UMUD (Ultrasound Muscle Data) Repository was conceived to provide researchers and developers with a comprehensive and accessible platform for muscle ultrasound datasets. 
+    UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video datasets. 
     The aim is to facilitate advancements in muscle research, biomechanics, and medical applications by providing high-quality, labeled data for model training and analysis.
     """
     )
@@ -778,12 +969,10 @@ elif selected_tab == "About Us":
     )  # Add the path to Neil Cronin's image
     st.write(
         """
-    Neil Cronin is the main visionary behind the UMUD Repository. He had the original idea and has been instrumental in guiding the project. Neil is known for his expertise in biomechanics and muscle research.
+    Neil Cronin is the main visionary behind the UMUD Repository. He had the original idea and has been instrumental in guiding the project. Neil is known for his expertise in biomechanics and musculoskeletal imaging research.
     """
     )
-    st.write(
-        "[Read more about Neil Cronin](https://scholar.google.com/citations?user=neil_cronin)"
-    )
+    st.write("[Read more about Neil](http://users.jyu.fi/~necronin/)")
 
     # Paul Ritsche
     images = str(Path(__file__).with_name("webapp_files"))
@@ -792,12 +981,10 @@ elif selected_tab == "About Us":
     )  # Add the path to Paul Ritsche's image
     st.write(
         """
-    Paul Ritsche is the lead developer who coded and maintains the UMUD Repository. Together with Neil, he finetuned to original idea of UMUD. Paul has a background in biomechanics and muscle physiolohy and a passion for software development and data science.
+    Paul Ritsche is the lead developer who coded and maintains the UMUD Repository. Together with Neil, he finetuned to original idea of UMUD. Paul has a background in biomechanics and musculoskeletal imaging and a passion for software development and data science.
     """
     )
-    st.write(
-        "[Read more about Paul Ritsche](https://www.linkedin.com/in/paul-ritsche/)"
-    )
+    st.write("[Read more about Paul](https://github.com/PaulRitsche)")
 
     # Fabio Sarto
     images = str(Path(__file__).with_name("webapp_files"))
@@ -805,8 +992,11 @@ elif selected_tab == "About Us":
         images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
     st.write(
         """
-    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in biomechanics and muscle physiology and a passion for open-science
+    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science
     """
+    )
+    st.write(
+        "[Read more about Fabio](https://www.researchgate.net/profile/Fabio-Sarto-2)"
     )
 
     # Olivier Seynnes
@@ -816,11 +1006,11 @@ elif selected_tab == "About Us":
     )  # Add the path to Olivier Seynnes's image
     st.write(
         """
-    Olivier Seynnes has been involved with the UMUD Repository from the beginning, providing valuable insights and support. Olivier is an expert in muscle physiology and has contributed significantly to the project's development.
+    Olivier Seynnes has been involved with the UMUD Repository from the beginning, providing valuable insights and support. Olivier is an expert in muscle physiology and musculoskeletal imaging has contributed significantly to the project's development.
     """
     )
     st.write(
-        "[Read more about Olivier Seynnes](https://scholar.google.com/citations?user=olivier_seynnes)"
+        "[Read more about Olivier](https://www.nih.no/english/about/employees/oliviers/)"
     )
 
     # Contributers
@@ -829,12 +1019,12 @@ elif selected_tab == "About Us":
 
     st.write(
         """
-    Francesco Santini
+    [Francesco Santini](https://www.francescosantini.com/wp/)
 
-    Oliver Faude
+    [Oliver Faude](https://www.researchgate.net/profile/Oliver-Faude)
 
-    Martino Franchi
-    
+    [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
+
     ...
     """
     )

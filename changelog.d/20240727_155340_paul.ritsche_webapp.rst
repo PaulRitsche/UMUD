@@ -1,0 +1,37 @@
+.. A new scriv changelog fragment.
+..
+.. Uncomment the header that is right (remove the leading dots).
+..
+.. Removed
+.. -------
+..
+.. - A bullet item for the Removed category.
+..
+Added
+-----
+
+- GIF as quickview of the database in the readme
+- Partner logos to homepage
+- Very basic tests foor the webapp
+
+Changed
+-------
+
+- About Us section descriptions
+
+.. Deprecated
+.. ----------
+..
+.. - A bullet item for the Deprecated category.
+..
+Fixed
+-----
+
+- All links in the database
+
+
+.. Security
+.. --------
+..
+.. - A bullet item for the Security category.
+..
