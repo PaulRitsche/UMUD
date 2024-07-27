@@ -460,8 +460,9 @@ if selected_tab == "Home":
     """
     )
 
-    news_items = read_newsfeed("webapp_files/newsfeed.txt")
-    st.markdown("<br>", unsafe_allow_html=True)
+    news_items_path = str(Path(__file__).with_name("webapp_files"))
+    news_items = read_newsfeed(news_items_path + "/newsfeed.txt")
+
     st.markdown("### 📰 Newsfeed")
     newsfeed_container = """
     <style>
@@ -711,7 +712,8 @@ elif selected_tab == "Challenge":
     )
 
     st.subheader("Challenge Instructions")
-    instructions_path = "webapp_files/challenge_instructions.txt"
+    instructions = str(Path(__file__).with_name("webapp_files"))
+    instructions_path = instructions + "/challenge_instructions.txt"
     if os.path.exists(instructions_path):
         with open(instructions_path, "r") as file:
             instructions_content = file.read()
@@ -723,7 +725,10 @@ elif selected_tab == "Challenge":
         )
 
     st.subheader("Sample Submission File")
-    sample_submission_path = "templates/sample_submission.csv"
+
+    submissions = str(Path(__file__).with_name("webapp_files"))
+    sample_submission_path = submissions + "/sample_submission.csv"
+
     if os.path.exists(sample_submission_path):
         with open(sample_submission_path, "r") as file:
             sample_submission_content = file.read()
@@ -915,7 +920,7 @@ elif selected_tab == "Contributing":
     st.download_button(
         label="Download Template Dictionary",
         data=template_dict_content,
-        file_name="templates/template_dictionary.py",
+        file_name= str(Path(__file__).with_name("templates")) + "/template_dictionary.py",
         mime="application/json",
     )
 
@@ -958,8 +963,9 @@ elif selected_tab == "About Us":
 
     st.subheader("The Main Developers")
     # Neil Cronin
+    images = str(Path(__file__).with_name("webapp_files"))
     st.image(
-        "webapp_files/neil_cronin.png", caption="Neil Cronin", width=150
+        images + "/neil_cronin.png", caption="Neil Cronin", width=150
     )  # Add the path to Neil Cronin's image
     st.write(
         """
@@ -969,8 +975,9 @@ elif selected_tab == "About Us":
     st.write("[Read more about Neil](http://users.jyu.fi/~necronin/)")
 
     # Paul Ritsche
+    images = str(Path(__file__).with_name("webapp_files"))
     st.image(
-        "webapp_files/paul_ritsche.png", caption="Paul Ritsche", width=150
+        images + "/paul_ritsche.png", caption="Paul Ritsche", width=150
     )  # Add the path to Paul Ritsche's image
     st.write(
         """
@@ -980,7 +987,9 @@ elif selected_tab == "About Us":
     st.write("[Read more about Paul](https://github.com/PaulRitsche)")
 
     # Fabio Sarto
-    st.image("webapp_files/fabio_sarto.png", caption="Fabio Sarto", width=150)
+    images = str(Path(__file__).with_name("webapp_files"))
+    st.image(
+        images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
     st.write(
         """
     Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science
@@ -991,8 +1000,9 @@ elif selected_tab == "About Us":
     )
 
     # Olivier Seynnes
+    images = str(Path(__file__).with_name("webapp_files"))
     st.image(
-        "webapp_files/olivier_seynnes.png", caption="Olivier Seynnes", width=150
+        images + "/olivier_seynnes.png", caption="Olivier Seynnes", width=150
     )  # Add the path to Olivier Seynnes's image
     st.write(
         """
@@ -1037,4 +1047,4 @@ elif selected_tab == "License":
     Each dataset is licensed on its own. Please refer to the each dataset page for more information. 
     """
     )
-# TODO check out PyGWalker as well
+
