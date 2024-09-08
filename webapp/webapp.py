@@ -401,7 +401,7 @@ with st.sidebar:
             "Benchmarks",
             "Contributing",
             "About Us",
-            "License",
+            "Usage Policy",
         ],
         icons=[
             "house",
@@ -441,7 +441,8 @@ if selected_tab == "Home":
 
     **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
 
-    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image database hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
+    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image dataset collection hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. 
+    Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
     
     We are continuously working on expanding the database, improving the webapp and try to create community challenges. Be sure to check out the Newsfeed below!
     
@@ -546,10 +547,9 @@ if selected_tab == "Home":
 elif selected_tab == "Datasets":
 
     "---"
-    st.header("Enter Metadata to Query Datasets")
 
     st.write(
-        "In this tab, you can query the muscle ultrasound datasets by providing specific metadata filters. "
+        "In this tab, you can query the muscle ultrasonography image datasets by providing specific metadata filters. "
         "Select the filters you want to apply, provide the values, and submit the query to retrieve relevant datasets. "
         "The filtering options are based on the metadata fields and contain all values present in the datasets of the database. "
         "For example, the `MUSCLE` field contains all the muscles represented in the database. "
@@ -557,7 +557,7 @@ elif selected_tab == "Datasets":
     )
 
     # Allow users to select which filters they want to use
-    st.markdown("#### Select Filters to Apply")
+    st.markdown("#### Select Filters")
     filter_options = list(template_data[0].keys())
     selected_filters = st.multiselect(
         "",
@@ -567,17 +567,12 @@ elif selected_tab == "Datasets":
 
     # Create a form for user input
     with st.form("entry_form", clear_on_submit=True):
-        st.markdown("#### Provide Filter Values")
+        st.markdown("#### Choose Filter Values")
         filter_inputs = {}
 
         for key in selected_filters:
-            # description = template_data[0][key].get(
-            #     "description", "No description available"
-            # )
-            input_type = template_data[0].get("type", "str")
 
-            # st.markdown(f"**{key}**")
-            # st.popover(description)
+            input_type = template_data[0].get("type", "str")
 
             # Fetch unique values for the field from the database
             items = get_data()
@@ -595,7 +590,7 @@ elif selected_tab == "Datasets":
                 filter_inputs[key] = st.multiselect(key, options=unique_values)
 
         "---"
-        submitted = st.form_submit_button("Submit Query")
+        submitted = st.form_submit_button("Submit Query", type="primary")
 
         if submitted:
             items = get_data()
@@ -609,7 +604,7 @@ elif selected_tab == "Datasets":
             dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
 
             if dataset_links:
-                st.markdown("### Dataset Links:")
+                st.markdown("#### Dataset Links:")
                 for link in dataset_links:
                     st.markdown(f"- [{link}]({link})")
 
@@ -626,10 +621,8 @@ elif selected_tab == "Database":
 
     "---"
 
-    st.header("Database")
-
     st.write(
-        "In this tab, you can explore the entire musculoskeletal ultrasound datasets stored in the database. "
+        "In this tab, you can explore the entire musculoskeletal ultrasonography datasets stored in the database. "
         "You can filter the data, visualize different aspects of the dataset through interactive charts, "
         "and download the filtered data for further analysis. "
     )
@@ -647,7 +640,7 @@ elif selected_tab == "Database":
     st.subheader("Dataset Overview")
     filtered_df = filter_dataframe(df)
 
-    with st.expander("Filtered Data to download...", expanded=False):
+    with st.expander("Download Filtered Datasets...", expanded=False):
         st.write(filtered_df)
         # Add download button for the filtered dataframe
         get_download_button(filtered_df)
@@ -679,8 +672,6 @@ elif selected_tab == "Challenge":
 
     "---"
 
-    st.header("UMUD Community Challenge")
-
     st.write(
         """
         **⚠️ The Challenge is currentlynot active ⚠️**
@@ -698,7 +689,7 @@ elif selected_tab == "Challenge":
 
     st.write("...TBD...")
 
-    st.subheader("How to Participate")
+    st.subheader("How to participate")
     st.write(
         """
         1. **Download the Dataset**: Download the training and test datasets from the [UMUD Repository](#).
@@ -762,7 +753,7 @@ elif selected_tab == "Challenge":
         # Validate the uploaded prediction file
         try:
             df = pd.read_csv(prediction_file)
-            # Example validation: Check if required columns exist
+            # Check if required columns exist
             required_columns = [
                 "_id",
                 "_fascicle_length",
@@ -800,7 +791,6 @@ elif selected_tab == "Challenge":
 elif selected_tab == "Benchmarks":
 
     "---"
-    st.header("Benchmarks for Muscle Architecture and ACSA Analysis")
 
     st.write(
         """
@@ -820,7 +810,8 @@ elif selected_tab == "Benchmarks":
     st.write(
         """
         To support operator training and the development and validation of automated image analysis algorithms, we provide a downloadable image dataset with corresponding manual analyses by five expert raters. 
-        The dataset contains images of cross-sectional area (ACSA) as well as images of muscle architecture. The dataset can be downloaded from the [UMUD Repository](#TODO). There, a detauled descripion of the dataset is provided as well.
+        The dataset contains images of cross-sectional area (ACSA) as well as images of muscle architecture. The dataset can be downloaded from the [UMUD Repository](#TODO). 
+        There, a detailed descripion of the dataset is provided as well.
  
         You can use this dataset to train and evaluate your own models or compare the performance of different automatic analysis algorithms.  Furthermore, we encourage you to use the dataset to check whether your own manual analysis falls within bounds of the expert-annotations.
         """
@@ -899,14 +890,38 @@ elif selected_tab == "Contributing":
     st.subheader("1. Contributing Data")
     st.write(
         """
-    If you have muscle ultrasound datasets that you would like to share, you can contribute them to UMUD. 
-    **Please make sure, that you have permission to share the data openly. UMUD does not cover any potential ethical or legal issues associated with sharing data.**
-    By contributing your data, you help create a richer resource for researchers and developers. Here's how you can add your data:
-    
-    - **Prepare Your Data**: Ensure your data is properly labeled and formatted according to the UMUD standards by using the template metadata dictionary downloadable below. Please note that you need an API (such as [VSCode](https://code.visualstudio.com/)) able to open Python files to be able to use the template. Upload your data to a trusted repository such as [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/) and include the link in the dictionary.
-    - **Submit Your Data**: Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Dataset Contribution". Include a brief description of the dataset and any relevant publication links in the email. 
-    - **Data Review**: Our team will review your submission to ensure it meets our quality standards. We may contact you for additional information or clarification if needed.
-    - **Data Integration**: Once approved, your dataset will be integrated into UMUD and made available to the community. You will be credited for your contribution.
+    **Want to Contribute Your Muscle Ultrasound Data to UMUD?**
+
+    If you have muscle ultrasound datasets that you would like to share with the scientific community, you can contribute them to the UMUD database. 
+    **Important:** Make sure you have permission to share the data openly. UMUD is not responsible for any ethical or legal issues that may arise from sharing your data.
+
+    **Why Contribute?**  
+    By sharing your data, you help create a valuable resource for researchers and developers. Your contribution can lead to new discoveries and advancements in muscle research.
+
+    **How to Contribute Your Data - Step by Step:**
+
+    1. **Prepare Your Data:**
+        - Make sure your data is properly labeled and formatted according to UMUD standards.  
+        - Use the metadata dictionary template provided below to organize your data.  
+        - You need a tool that can open Python files, such as [VSCode](https://code.visualstudio.com/), to use the template.  
+        - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
+        - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
+        - Organize your images into folders based on the muscle and muscle region they belong to (if possible). You can view our [sample dataset LINK](#TODO) to see how this is done.
+
+    2. **Submit Your Data:**
+        - Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
+        - Use the subject line "Dataset Contribution".
+        - In the email, include a brief description of your dataset and any relevant publication links.
+
+    3. **Data Review:**
+        - Our team will review your submission to ensure it meets UMUD's quality standards.
+        - We may contact you if we need more information or clarification.
+
+    4. **Data Integration:**
+        - Once your data is approved, it will be added to the UMUD database and made available to the community.
+        - You will be credited for your contribution.
+
+    **Thank you for helping us build a valuable resource for the research community!**
     """
     )
 
@@ -1019,13 +1034,33 @@ elif selected_tab == "About Us":
     """
     )
 
-elif selected_tab == "License":
+elif selected_tab == "Usage Policy":
 
     "---"
 
     st.markdown(
         """
-    ### License
+    ## UMUD Data Usage Policy
+
+    This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
+
+    ### 1. Anonymized Data
+
+    The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
+
+    ### 2. Permitted Uses
+
+    - **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
+    - **Attribution**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors.
+    - **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
+
+    ### 3. Prohibited Uses
+
+    - **Re-identification Attempts**: Users must not attempt to re-identify any individuals from the data, whether through combining it with other datasets or by any other means.
+    - **Commercial Use**: Unless explicitly permitted by the data license, the data should not be used for commercial purposes.
+
+    ### 4. Licensing
+
     The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
     - **Share**: Copy and redistribute the material in any medium or format.
     - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
@@ -1034,7 +1069,19 @@ elif selected_tab == "License":
     - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
     - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-    Each dataset is licensed on its own. Please refer to the each dataset page for more information. 
+    **Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
+
+    ### 5. Ethical Considerations
+
+    Users should consider the ethical implications of their research and data usage. If in doubt, consult with your institution's ethics board or equivalent body.
+
+    ### 6. Disclaimer
+
+    UMUD provides this data "as is" without any warranties or guarantees. Users assume all responsibility for their use of the data and any consequences thereof.
+
+    ### Contact
+
+    For any questions regarding this policy or the use of UMUD data, please contact [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
     """
     )
 # TODO check out PyGWalker as well
