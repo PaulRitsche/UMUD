@@ -1,3 +1,4 @@
+2024-09-11: UMUD Update meeting. 
 2024-07-27: First beta-version of the webapp was created.
 2024-07-23: The UMUD working group was created at ORMIR.
 2024-06-13: First official kickoff-meeting of the UMUD project.
