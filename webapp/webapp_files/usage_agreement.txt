@@ -1,0 +1,42 @@
+## UMUD Data Usage Policy
+
+This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
+
+### 1. Anonymized Data
+
+The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
+
+### 2. Permitted Uses
+
+- **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
+- **Citation**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors by citing them.
+- **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
+
+### 3. Prohibited Uses
+
+- **Re-identification Attempts**: Users must not attempt to re-identify any individuals from the data, whether through combining it with other datasets or by any other means.
+- **Commercial Use**: Unless explicitly permitted by the data license, the data should not be used for commercial purposes.
+
+### 4. Licensing
+
+The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
+- **Share**: Copy and redistribute the material in any medium or format.
+- **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
+
+Under the following terms:
+- **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+- **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+**Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
+
+### 5. Ethical Considerations
+
+Users should consider the ethical implications of their research and data usage. If in doubt, consult with your institution's ethics board or equivalent body.
+
+### 6. Disclaimer
+
+UMUD provides this data "as is" without any warranties or guarantees. Users assume all responsibility for their use of the data and any consequences thereof.
+
+### Contact
+
+For any questions regarding this policy or the use of UMUD data, please contact [umudrepository@gmail.com](mailto:umudrepository@gmail.com).

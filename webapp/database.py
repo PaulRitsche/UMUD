@@ -10,11 +10,6 @@ It is only possible to insert data into the database with access rights to the M
 import streamlit as st
 from pymongo import MongoClient
 
-# Replace with your MongoDB connection string
-# For a local MongoDB server, it would typically be: "mongodb://localhost:27017/"
-# For MongoDB Atlas, it would be something like: "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority"
-# username = st.secrets.mongo["username"]
-# password = st.secrets.mongo["password"]
 MONGO_URI = st.secrets.mongo["CONNECTION_STRING"]
 
 # Connect to MongoDB
@@ -25,28 +20,31 @@ db = client.muscle_ultrasound
 collection = db.datasets
 
 # Example data
-# Here you should insert the filled-out template dictionary that you can
-# download on the webapp.
 dictionary = [
     {
         "DATASET_NAME": "Quadriceps Muscle Data 2024",  # Name the dataset accordingly
-        "MUSCLE": "Quadriceps",  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
-        "MUSCLE_REGION": "Rectus Femoris",  # Which muscle regions are included in the dataset?
-        "DEVICE": "GE Logiq E9",  # What US device was used?
-        "PROBE": "Linear Probe",  # What probe was used?
+        "DOI": "10.1000/quadriceps2024",  # Provide a DOI
+        "VERSION": "1.0",  # Version of the dataset
+        "MUSCLE": "Rectus Femoris",  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
+        "MUSCLE_REGION": [
+            "proximal",
+            "middle",
+        ],  # Which muscle regions are included in the dataset?
+        "DEVICE": "Siemens Juniper",  # What US device was used?
+        "PROBE": "L12/3 Linear Probe",  # What probe was used?
         "DATA_TYPE": "Images",  # Does the dataset contain images, videos, or volumes?
         "FILE_TYPE": "jpg",  # What is the file type of the data?
-        "IMAGE_TYPE": "Static",  # If images are included, are they static or extended-field-of-view?
+        "IMAGE_TYPE": "Static",  # If images are included, are they static or panoramic?
         "DATA_PLANE": "Transverse",  # In what plane were the images/videos collected?
         "PARTICIPANT_AGE": 29.5,  # Mean age of participants.
         "PARTICIPANT_HEIGHT": 175.3,  # Mean height of participants (in cm).
         "PARTICIPANT_WEIGHT": 70.8,  # Mean weight of participants (in kg).
-        "PARTICIPANT_FATMASS": None,  # Mean fat mass of participants (in kg).
-        "PARTICIPANT_MUSCLEMASS": None,  # Mean muscle mass of participants (in kg).
         "PARTICIPANT_SEX": "Both",  # Included males, females, or both?
+        "SAMPLE_SIZE": 100,  # How many participants are included in the dataset?
         "DATA_LABELS": True,  # Are labels provided for the data?
         "DATA_LABELS_DESCRIPTION": "The labels are provided in the form of a spreadsheet.",  # If labels are provided, what is the format of the labels?
-        "SHORT_DESCRIPTION": "This dataset contains ultrasound images of the quadriceps muscle, specifically the rectus femoris region. Images were collected using a GE Logiq E9 device with a linear probe. The dataset includes static transverse plane images from participants aged 20-40 years.",  # Describe the data in 3-4 sentences.
+        "SHORT_DESCRIPTION": "This dataset contains ultrasound images of the quadriceps muscle, specifically the rectus femoris middle and proximal regions. Images were collected using a Siemens Juniper device with a linear probe. The dataset includes static transverse plane images from participants aged 20-40 years.",  # Describe the data in 3-4 sentences.
+        "DATASET_YEAR": "2024",  # What year was the dataset created?
         "PUBLICATION_LINK": "https://doi.org/10.1000/quadriceps2024",  # Can you provide a link to the publication containing the data?
         "AUTHORS": [
             "Dr. Jane Doe",

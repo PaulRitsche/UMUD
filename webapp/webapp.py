@@ -62,6 +62,21 @@ def get_categorical_columns(df):
     return df.select_dtypes(include=["object", "category"]).columns.tolist()
 
 
+def load_dua():
+    """
+    Load the data usage agreement from file.
+
+    Returns
+    -------
+    str
+        Data usage agreement as a string.
+    """
+    with open(
+        str(Path(__file__).with_name("webapp_files")) + "/usage_agreement.txt", "r"
+    ) as file:
+        return file.read()
+
+
 def read_newsfeed(filepath):
     """
     Reads news items from a text file and returns them as a list of strings.
@@ -441,7 +456,7 @@ if selected_tab == "Home":
 
     **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
 
-    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image dataset collection hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. 
+    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image metadata dataset collection hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. 
     Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
     
     We are continuously working on expanding the database, improving the webapp and try to create community challenges. Be sure to check out the Newsfeed below!
@@ -567,10 +582,11 @@ elif selected_tab == "Datasets":
 
     # Create a form for user input
     with st.form("entry_form", clear_on_submit=True):
-        st.markdown("#### Choose Filter Values")
-        filter_inputs = {}
 
         for key in selected_filters:
+
+            st.markdown("#### Choose Filter Values")
+            filter_inputs = {}
 
             input_type = template_data[0].get("type", "str")
 
@@ -589,32 +605,40 @@ elif selected_tab == "Datasets":
             elif input_type == "list":
                 filter_inputs[key] = st.multiselect(key, options=unique_values)
 
-        "---"
-        submitted = st.form_submit_button("Submit Query", type="primary")
+            "---"
+            with st.expander("Data Usage Agreement"):
+                st.markdown(load_dua())  # Display DUA content
 
-        if submitted:
-            items = get_data()
-            query = {k: v for k, v in filter_inputs.items() if v}
+            st.warning("By submitting, you agree to the Data Usage Agreement.")
+            "---"
 
-            st.markdown("#### Formed Query")
-            st.json(query)
-            results = items.find(query)
+            submitted = st.form_submit_button("Submit Query", type="primary")
 
-            dataset_links = [result["DATASET_LINK"] for result in results]
-            dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
+            if submitted:
 
-            if dataset_links:
-                st.markdown("#### Dataset Links:")
-                for link in dataset_links:
-                    st.markdown(f"- [{link}]({link})")
+                items = get_data()
+                query = {k: v for k, v in filter_inputs.items() if v}
 
-                if dataset_descriptions:
-                    st.markdown(f"  {', '.join(dataset_descriptions)}")
+                st.markdown("#### Formed Query")
+                st.json(query)
+                results = items.find(query)
 
+                dataset_links = [result["DATASET_LINK"] for result in results]
+                dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
+
+                if dataset_links:
+                    st.markdown("#### Dataset Links:")
+                    for link in dataset_links:
+                        st.markdown(f"- [{link}]({link})")
+
+                    if dataset_descriptions:
+                        st.markdown(f"  {', '.join(dataset_descriptions)}")
+                    else:
+                        st.write(
+                            "No dataset descriptions found for the selected criteria."
+                        )
                 else:
-                    st.write("No dataset descriptions found for the selected criteria.")
-            else:
-                st.write("No datasets found for the selected criteria.")
+                    st.write("No datasets found for the selected criteria.")
 
 
 elif selected_tab == "Database":
@@ -627,46 +651,61 @@ elif selected_tab == "Database":
         "and download the filtered data for further analysis. "
     )
 
-    items = get_data()
-    df = pd.DataFrame(items.find({}))
+    with st.expander("Data Usage Agreement"):
+        st.warning("You must agree to the Data Usage Agreement before proceeding.")
+        st.markdown(load_dua())  # Display DUA content
 
-    if df.empty:
-        st.write("No data available in the database.")
+        st.text(
+            "By proceeding, you agree to the terms and conditions of the Data Usage Agreement."
+        )
 
-    # Clean the dataframe
-    df = clean_dataframe(df)
+    agreement = st.checkbox("I ACCEPT.")
 
-    # Display filtered dataframe with filtering capabilities
-    st.subheader("Dataset Overview")
-    filtered_df = filter_dataframe(df)
+    if agreement:
+        items = get_data()
+        df = pd.DataFrame(items.find({}))
 
-    with st.expander("Download Filtered Datasets...", expanded=False):
-        st.write(filtered_df)
-        # Add download button for the filtered dataframe
-        get_download_button(filtered_df)
+        if df.empty:
+            st.write("No data available in the database.")
 
-    "---"
+        # Clean the dataframe
+        df = clean_dataframe(df)
 
-    # Dropdown for plot selection
-    st.subheader("Interactive Charts")
-    plot_options = ["Muscle Distribution", "Age Distribution", "Data Type Distribution"]
-    selected_plots = st.multiselect(
-        "Select Plots to Display",
-        plot_options,
-        default=["Muscle Distribution"],
-        help="Select which plots you want to display to get a better understanding of the data. So far, only three plots are available. You can select multiple plots.",
-    )
+        # Display filtered dataframe with filtering capabilities
+        st.subheader("Dataset Overview")
+        filtered_df = filter_dataframe(df)
 
-    # Dropdown for grouping selection
-    categorical_columns = get_categorical_columns(df)
-    group_by_column = st.selectbox(
-        "Select Column to Group By",
-        options=categorical_columns,
-        help="Select which column you want to group the data by.",
-    )
+        with st.expander("Download Filtered Datasets...", expanded=False):
+            st.write(filtered_df)
+            # Add download button for the filtered dataframe
+            get_download_button(filtered_df)
 
-    # Display interactive charts
-    display_charts(df, selected_plots, group_by_column)
+        "---"
+
+        # Dropdown for plot selection
+        st.subheader("Interactive Charts")
+        plot_options = [
+            "Muscle Distribution",
+            "Age Distribution",
+            "Data Type Distribution",
+        ]
+        selected_plots = st.multiselect(
+            "Select Plots to Display",
+            plot_options,
+            default=["Muscle Distribution"],
+            help="Select which plots you want to display to get a better understanding of the data. So far, only three plots are available. You can select multiple plots.",
+        )
+
+        # Dropdown for grouping selection
+        categorical_columns = get_categorical_columns(df)
+        group_by_column = st.selectbox(
+            "Select Column to Group By",
+            options=categorical_columns,
+            help="Select which column you want to group the data by.",
+        )
+
+        # Display interactive charts
+        display_charts(df, selected_plots, group_by_column)
 
 elif selected_tab == "Challenge":
 
@@ -685,108 +724,108 @@ elif selected_tab == "Challenge":
         """
     )
 
-    st.subheader("Challenge Outline")
+    # st.subheader("Challenge Outline")
 
-    st.write("...TBD...")
+    # st.write("...TBD...")
 
-    st.subheader("How to participate")
-    st.write(
-        """
-        1. **Download the Dataset**: Download the training and test datasets from the [UMUD Repository](#).
-        2. **Develop Your Analysis Code**: Use the training dataset to develop and train your predictive models/code.
-        3. **Make Predictions**: Apply your model/analysis script to the test dataset to make predictions on muscle parameters.
-        4. **Submit Your Predictions and Code**: Submit your predictions using the submission file below and include a link to your trained code or models for evaluation.
-        5. **Check the Leaderboard**: Track your performance on the leaderboard and see how you rank against other participants.
-        6. **Win the Challenge!**: If you are among the top 3 participants, there may be (as of yet undetermined) prizes!
-        """
-    )
+    # st.subheader("How to participate")
+    # st.write(
+    #     """
+    #     1. **Download the Dataset**: Download the training and test datasets from the [UMUD Repository](#).
+    #     2. **Develop Your Analysis Code**: Use the training dataset to develop and train your predictive models/code.
+    #     3. **Make Predictions**: Apply your model/analysis script to the test dataset to make predictions on muscle parameters.
+    #     4. **Submit Your Predictions and Code**: Submit your predictions using the submission file below and include a link to your trained code or models for evaluation.
+    #     5. **Check the Leaderboard**: Track your performance on the leaderboard and see how you rank against other participants.
+    #     6. **Win the Challenge!**: If you are among the top 3 participants, there may be (as of yet undetermined) prizes!
+    #     """
+    # )
 
-    st.subheader("Challenge Instructions")
-    instructions_path = "webapp_files/challenge_instructions.txt"
-    if os.path.exists(instructions_path):
-        with open(instructions_path, "r") as file:
-            instructions_content = file.read()
-        st.download_button(
-            label="📜 Download Challenge Instructions",
-            data=instructions_content,
-            file_name="challenge_instructions.txt",
-            mime="text/plain",
-        )
+    # st.subheader("Challenge Instructions")
+    # instructions_path = "webapp_files/challenge_instructions.txt"
+    # if os.path.exists(instructions_path):
+    #     with open(instructions_path, "r") as file:
+    #         instructions_content = file.read()
+    #     st.download_button(
+    #         label="📜 Download Challenge Instructions",
+    #         data=instructions_content,
+    #         file_name="challenge_instructions.txt",
+    #         mime="text/plain",
+    #     )
 
-    st.subheader("Sample Submission File")
-    sample_submission_path = "templates/sample_submission.csv"
-    if os.path.exists(sample_submission_path):
-        with open(sample_submission_path, "r") as file:
-            sample_submission_content = file.read()
-        st.download_button(
-            label="📄 Download Sample Submission File",
-            data=sample_submission_content,
-            file_name="sample_submission.csv",
-            mime="text/csv",
-        )
+    # st.subheader("Sample Submission File")
+    # sample_submission_path = "templates/sample_submission.csv"
+    # if os.path.exists(sample_submission_path):
+    #     with open(sample_submission_path, "r") as file:
+    #         sample_submission_content = file.read()
+    #     st.download_button(
+    #         label="📄 Download Sample Submission File",
+    #         data=sample_submission_content,
+    #         file_name="sample_submission.csv",
+    #         mime="text/csv",
+    #     )
 
-    st.subheader("Scoreboard")
-    scoreboard_df = (
-        load_scoreboard()
-    )  # Define this function to load the scoreboard data
-    display_scoreboard(scoreboard_df)  # Define this function to display the scoreboard
+    # st.subheader("Scoreboard")
+    # scoreboard_df = (
+    #     load_scoreboard()
+    # )  # Define this function to load the scoreboard data
+    # display_scoreboard(scoreboard_df)  # Define this function to display the scoreboard
 
-    st.subheader("Submit Your Results")
-    st.write(
-        """
-        Please submit your prediction results using the form below. Ensure that your submission file follows the specified format 
-        outlined in the challenge instructions and matches the sample submission file. Since UMUD is devised according to the open science principles,
-        we encourage you to submit a link to your models and code for evaluation as well. The link will be listed in the scoreboard as well. 
-        """
-    )
+    # st.subheader("Submit Your Results")
+    # st.write(
+    #     """
+    #     Please submit your prediction results using the form below. Ensure that your submission file follows the specified format
+    #     outlined in the challenge instructions and matches the sample submission file. Since UMUD is devised according to the open science principles,
+    #     we encourage you to submit a link to your models and code for evaluation as well. The link will be listed in the scoreboard as well.
+    #     """
+    # )
 
-    prediction_file = st.file_uploader(
-        "Choose a CSV file for predictions", type=["csv"], accept_multiple_files=False
-    )
+    # prediction_file = st.file_uploader(
+    #     "Choose a CSV file for predictions", type=["csv"], accept_multiple_files=False
+    # )
 
-    if prediction_file:
-        filenames = [prediction_file.name]
-        if code_file:
-            filenames.append(code_file.name)
-        st.write(f"Files ready for submission: {', '.join(filenames)}")
+    # if prediction_file:
+    #     filenames = [prediction_file.name]
+    #     if code_file:
+    #         filenames.append(code_file.name)
+    #     st.write(f"Files ready for submission: {', '.join(filenames)}")
 
-        # Validate the uploaded prediction file
-        try:
-            df = pd.read_csv(prediction_file)
-            # Check if required columns exist
-            required_columns = [
-                "_id",
-                "_fascicle_length",
-                "_pennation_angle",
-                "_muscle_thickness",
-            ]
-            if all(column in df.columns for column in required_columns):
-                st.success(
-                    "Prediction file format is correct and ready for submission!"
-                )
-            else:
-                st.error(
-                    f"Prediction file is missing required columns. Expected columns: {required_columns}"
-                )
+    #     # Validate the uploaded prediction file
+    #     try:
+    #         df = pd.read_csv(prediction_file)
+    #         # Check if required columns exist
+    #         required_columns = [
+    #             "_id",
+    #             "_fascicle_length",
+    #             "_pennation_angle",
+    #             "_muscle_thickness",
+    #         ]
+    #         if all(column in df.columns for column in required_columns):
+    #             st.success(
+    #                 "Prediction file format is correct and ready for submission!"
+    #             )
+    #         else:
+    #             st.error(
+    #                 f"Prediction file is missing required columns. Expected columns: {required_columns}"
+    #             )
 
-            st.subheader("Submit via Email")
-            recipient_email = "umudrepository@gmail.com"
-            subject = "UMUD Challenge Submission"
-            body = "Please find attached my submission for the UMUD Challenge."
+    #         st.subheader("Submit via Email")
+    #         recipient_email = "umudrepository@gmail.com"
+    #         subject = "UMUD Challenge Submission"
+    #         body = "Please find attached my submission for the UMUD Challenge."
 
-            mailto_link = create_email_link(
-                subject, body, recipient_email, filenames
-            )  # Define this function to create mailto link
-            st.markdown(f"[Send Email](mailto:{mailto_link})", unsafe_allow_html=True)
+    #         mailto_link = create_email_link(
+    #             subject, body, recipient_email, filenames
+    #         )  # Define this function to create mailto link
+    #         st.markdown(f"[Send Email](mailto:{mailto_link})", unsafe_allow_html=True)
 
-        except Exception as e:
-            st.error(f"An error occurred while processing the file: {e}")
+    #     except Exception as e:
+    #         st.error(f"An error occurred while processing the file: {e}")
 
-    st.write(
-        """
-        Alternatively, you can send your submission files directly to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
-        """
-    )
+    # st.write(
+    #     """
+    #     Alternatively, you can send your submission files directly to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
+    #     """
+    # )
 
 elif selected_tab == "Benchmarks":
 
@@ -906,7 +945,7 @@ elif selected_tab == "Contributing":
         - You need a tool that can open Python files, such as [VSCode](https://code.visualstudio.com/), to use the template.  
         - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
         - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
-        - Organize your images into folders based on the muscle and muscle region they belong to (if possible). You can view our [sample dataset LINK](#TODO) to see how this is done.
+        - Organize your images into folders based on the muscle and muscle region they belong to (if possible). You can view our [sample dataset LINK](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef) to see how this is done.
 
     2. **Submit Your Data:**
         - Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
@@ -1034,54 +1073,54 @@ elif selected_tab == "About Us":
     """
     )
 
-elif selected_tab == "Usage Policy":
+# elif selected_tab == "Usage Policy":
 
-    "---"
+#     "---"
 
-    st.markdown(
-        """
-    ## UMUD Data Usage Policy
+#     st.markdown(
+#         """
+#     ## UMUD Data Usage Policy
 
-    This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
+#     This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
 
-    ### 1. Anonymized Data
+#     ### 1. Anonymized Data
 
-    The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
+#     The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
 
-    ### 2. Permitted Uses
+#     ### 2. Permitted Uses
 
-    - **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
-    - **Attribution**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors.
-    - **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
+#     - **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
+#     - **Attribution**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors.
+#     - **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
 
-    ### 3. Prohibited Uses
+#     ### 3. Prohibited Uses
 
-    - **Re-identification Attempts**: Users must not attempt to re-identify any individuals from the data, whether through combining it with other datasets or by any other means.
-    - **Commercial Use**: Unless explicitly permitted by the data license, the data should not be used for commercial purposes.
+#     - **Re-identification Attempts**: Users must not attempt to re-identify any individuals from the data, whether through combining it with other datasets or by any other means.
+#     - **Commercial Use**: Unless explicitly permitted by the data license, the data should not be used for commercial purposes.
 
-    ### 4. Licensing
+#     ### 4. Licensing
 
-    The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
-    - **Share**: Copy and redistribute the material in any medium or format.
-    - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
+#     The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
+#     - **Share**: Copy and redistribute the material in any medium or format.
+#     - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
 
-    Under the following terms:
-    - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-    - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+#     Under the following terms:
+#     - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+#     - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-    **Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
+#     **Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
 
-    ### 5. Ethical Considerations
+#     ### 5. Ethical Considerations
 
-    Users should consider the ethical implications of their research and data usage. If in doubt, consult with your institution's ethics board or equivalent body.
+#     Users should consider the ethical implications of their research and data usage. If in doubt, consult with your institution's ethics board or equivalent body.
 
-    ### 6. Disclaimer
+#     ### 6. Disclaimer
 
-    UMUD provides this data "as is" without any warranties or guarantees. Users assume all responsibility for their use of the data and any consequences thereof.
+#     UMUD provides this data "as is" without any warranties or guarantees. Users assume all responsibility for their use of the data and any consequences thereof.
 
-    ### Contact
+#     ### Contact
 
-    For any questions regarding this policy or the use of UMUD data, please contact [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
-    """
-    )
+#     For any questions regarding this policy or the use of UMUD data, please contact [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
+#     """
+#     )
 # TODO check out PyGWalker as well

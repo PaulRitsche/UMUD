@@ -16,9 +16,17 @@ Below, you will find a detailed explanation of each field along with its expecte
   - *Description:* Name of the dataset.
   - *Example:* "Quadriceps_Muscle_Sonography_2024"
 
-- **MUSCLE (str):**
-  - *Description:* The muscle included in the dataset. If more than one muscle is included, split the dataset into multiple parts.
-  - *Example:* "Quadriceps"
+- **DOI (str):**
+  - *Description*: The digital object identifier (DOI) for the dataset.
+  - *Example:* "10.1000/182"
+
+- **VERSION (float):**
+  - *Description:* Version of the dataset.
+  - *Example:* "1.0"
+
+- **MUSCLE (list of str):**
+  - *Description:* The muscle(s) included in the dataset.
+  - *Example:* ["Rectus femoris", "Vastus lateralis"]
 
 - **MUSCLE_REGION (list of str):**
   - *Description:* The specific regions of the muscle included in the dataset.
@@ -30,7 +38,7 @@ Below, you will find a detailed explanation of each field along with its expecte
   - *Example:* "Siemens Juniper"
 
 - **PROBE_MODEL (str):**
-  - *Description:* The model of the probe used during data collection.
+  - *Description:* The model of the probe used during data collection.fond
   - *Example:* "ML6-15"
 
 - **DATA_TYPE (str):**
@@ -127,7 +135,11 @@ Thank you for contributing to the UMUD database! Your participation helps advanc
 template_data = [
     {
         "DATASET_NAME": "Quadriceps Muscle Data 2024",  # Name the dataset accordingly
-        "MUSCLE": "Rectus Femoris",  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
+        "DOI": "10.1000/quadriceps2024",  # Provide a DOI
+        "VERSION": "1.0",  # Version of the dataset
+        "MUSCLE": [
+            "Rectus Femoris"
+        ],  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
         "MUSCLE_REGION": [
             "proximal",
             "middle",
