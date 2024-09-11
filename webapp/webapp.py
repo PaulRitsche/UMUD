@@ -491,8 +491,6 @@ if selected_tab == "Home":
     </style>
     <div class="news-container">
     """
-
-    news_items = read_newsfeed("webapp_files/newsfeed.txt")
     if news_items:
         for item in news_items:
             newsfeed_container += f'<div class="news-item">- {item}</div>'
