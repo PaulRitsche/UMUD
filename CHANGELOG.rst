@@ -1,4 +1,35 @@
 
+2024-09-11
+==========
+
+Removed
+-------
+
+- Challenge Section (for now).
+
+Added
+-----
+
+- GIF as quickview of the database in the readme
+- Partner logos to homepage
+- Very basic tests foor the webapp
+
+- New metadata template dictionary
+- Styling of the webapp
+- Data usage agreement
+
+Changed
+-------
+
+- About Us section descriptions
+
+- Dataset and Database tabs to accept DUA
+
+Fixed
+-----
+
+- All links in the database
+
 2024-07-21
 ==========
 

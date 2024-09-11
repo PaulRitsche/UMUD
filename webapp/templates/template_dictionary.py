@@ -119,6 +119,14 @@ Below, you will find a detailed explanation of each field along with its expecte
   - *Description:* The license under which the data is shared.
   - *Example:* "CC BY 4.0"
 
+- **SCANNING_FREQUENCY (str):**
+  - *Description:* The frequency at which the data was collected in Hz.
+  - *Example:* "8Hz"
+
+- **SAMPLING_RATE (int):**
+  - *Description:* The sampling rate or fps of the data collection. This only applies to video data.
+  - *Example:* 100
+
 ### Additional Instructions:
 
 - **Filling Out the Template:** Each field must be completed with the exact data type specified. For example, if a field requires a string, do not enter a number or a list.
@@ -170,5 +178,7 @@ template_data = [
         ],  # Provide contact details of the authors.
         "DATASET_LINK": "https://datarepository.university.edu/quadriceps2024",  # Will be provided by us if not already existent.
         "LICENSE": "CC BY 4.0",  # What is the license of the data?
+        "SCANNING_FREQUENCY": "8Hz",  # What is the scanning frequency of the data?
+        "SAMPLING_RATE": 100,  # What is the sampling rate or fps of the data collection?
     }
 ]
