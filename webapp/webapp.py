@@ -744,7 +744,7 @@ elif selected_tab == "Challenge":
     <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
         <h4 style="text-align: center;">UMUD Community Challenge</h4>
         <p style="text-align: center;">
-        <strong>⚠️ The Challenge is currently not active ⚠️</strong>
+        <strong>⚠️ The challenge is currently not active ⚠️</strong>
         </p>
         <p style="text-align: center;">
         This challenge will be designed to engage the community in developing models or 
@@ -791,17 +791,17 @@ elif selected_tab == "Challenge":
     #         mime="text/plain",
     #     )
 
-    st.subheader("Sample Submission File")
-    sample_submission_path = "templates/sample_submission.csv"
-    if os.path.exists(sample_submission_path):
-        with open(sample_submission_path, "r") as file:
-            sample_submission_content = file.read()
-        st.download_button(
-            label="📄 Download Sample Submission File",
-            data=sample_submission_content,
-            file_name="sample_submission.csv",
-            mime="text/csv",
-        )
+    # st.subheader("Sample Submission File")
+    # sample_submission_path = "templates/sample_submission.csv"
+    # if os.path.exists(sample_submission_path):
+    #     with open(sample_submission_path, "r") as file:
+    #         sample_submission_content = file.read()
+    #     st.download_button(
+    #         label="📄 Download Sample Submission File",
+    #         data=sample_submission_content,
+    #         file_name="sample_submission.csv",
+    #         mime="text/csv",
+    #     )
 
     # st.subheader("Scoreboard")
     # scoreboard_df = (
@@ -1055,15 +1055,7 @@ elif selected_tab == "About Us":
         """,
         unsafe_allow_html=True,
     )
-
-    st.header("About Us")
-
-    st.subheader("The Idea Behind UMUD")
-    st.write(
-        """
-    U
-    """
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
 
     st.subheader("The Main Developers")
     # Neil Cronin
