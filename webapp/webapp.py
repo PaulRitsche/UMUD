@@ -13,13 +13,6 @@ import json
 from templates.template_dictionary import template_data
 
 # TODO
-# - Discuss the scope/plan of the challenge & the metrics according to which it is held
-# - Discuss the making of the test set and the training set
-# - Discuss the current benchmarks and see if everybody is ok with it
-# - Discuss the databse parameters and the webapp outline.
-# - Create the UMUD page on the OSF
-# - Create automatic update of submission/leaderboard page
-# - Include Bug reports and issues via Github
 
 
 def clean_dataframe(df):
@@ -100,47 +93,47 @@ def read_newsfeed(filepath):
         return []
 
 
-def load_scoreboard():
-    """
-    Load the scoreboard data.
+# def load_scoreboard():
+#     """
+#     Load the scoreboard data.
 
-    Returns
-    -------
-    pandas.DataFrame
-        A dataframe containing the scoreboard data.
-    """
+#     Returns
+#     -------
+#     pandas.DataFrame
+#         A dataframe containing the scoreboard data.
+#     """
 
-    # This function should be modified to load data from database if needed.
-    results = pd.DataFrame(
-        {
-            "Name": ["Neil", "Olivier", "Paul"],
-            "SEM Fascicle Length (cm)": [0.1, 0.5, 0.7],
-            "SEM Pennation Angle (cm)": [0.1, 0.5, 0.7],
-            "SEM Muscle Thickness (cm)": [0.1, 0.5, 0.7],
-        }
-    )
-    return results
+#     # This function should be modified to load data from database if needed.
+#     results = pd.DataFrame(
+#         {
+#             "Name": ["Neil", "Olivier", "Paul"],
+#             "SEM Fascicle Length (cm)": [0.1, 0.5, 0.7],
+#             "SEM Pennation Angle (cm)": [0.1, 0.5, 0.7],
+#             "SEM Muscle Thickness (cm)": [0.1, 0.5, 0.7],
+#         }
+#     )
+#     return results
 
 
-def display_scoreboard(df):
-    """
-    Display the scoreboard using st_aggrid for better visualization.
+# def display_scoreboard(df):
+#     """
+#     Display the scoreboard using st_aggrid for better visualization.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The dataframe containing the scoreboard data.
-    """
-    # Add medals to the top three rows
-    medals = ["🥇", "🥈", "🥉"] + [""] * (len(df) - 3)
-    df.insert(0, "Medal", medals)
+#     Parameters
+#     ----------
+#     df : pandas.DataFrame
+#         The dataframe containing the scoreboard data.
+#     """
+#     # Add medals to the top three rows
+#     medals = ["🥇", "🥈", "🥉"] + [""] * (len(df) - 3)
+#     df.insert(0, "Medal", medals)
 
-    gb = GridOptionsBuilder.from_dataframe(df)
-    gb.configure_pagination(paginationAutoPageSize=True)
-    gb.configure_default_column(editable=False, groupable=True)
-    gb.configure_side_bar()
-    grid_options = gb.build()
-    AgGrid(df, gridOptions=grid_options, enable_enterprise_modules=True)
+#     gb = GridOptionsBuilder.from_dataframe(df)
+#     gb.configure_pagination(paginationAutoPageSize=True)
+#     gb.configure_default_column(editable=False, groupable=True)
+#     gb.configure_side_bar()
+#     grid_options = gb.build()
+#     AgGrid(df, gridOptions=grid_options, enable_enterprise_modules=True)
 
 
 def filter_dataframe(df):
@@ -416,7 +409,6 @@ with st.sidebar:
             "Benchmarks",
             "Contributing",
             "About Us",
-            "Usage Policy",
         ],
         icons=[
             "house",
@@ -426,76 +418,79 @@ with st.sidebar:
             "stars",
             "person-hearts",
             "info-circle",
-            "key",
         ],
         default_index=0,
         orientation="vertical",
     )
 
     "---"
-
+    # This adds the footer to the sidebar only.
     add_footer()
 
 if selected_tab == "Home":
-
-    "---"
-
+    # Welcome Section
     st.markdown(
         """
-    <div style="text-align: center;">
-        <h2>Welcome to the UMUD Repository!</h2>
-        <p>
-    </div>
-    """,
+        <div style="text-align: center; padding: 20px;">
+            <p><strong>Explore musculoskeletal ultrasonography data for research and development.</strong></p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
     st.markdown(
         """
-    ### About UMUD
-
-    **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
-
-    The **UMUD repository** is a comprehensive musculoskeletal ultrasonography image metadata dataset collection hosted on MongoDB Atlas. It contains metadata for a wide range of datasets, including B-mode ultrasonography images, B-mode ultrasonography videos, 3D ultrasound (3DUS) data and shear wave elastography data. 
-    Our mission is to provide an accessible platform for researchers and developers to access and utilize this data for various purposes, including model training and medical research. Moreover, we aim to create analysis standards by providing benchmark datasets analysed by experts in the field and benchmark models for automated image analysis. 
-    
-    We are continuously working on expanding the database, improving the webapp and try to create community challenges. Be sure to check out the Newsfeed below!
-    
-    The UMUD project is part of the [ORMIR](https://www.ormir.org/) community as a seperate [working group](https://www.ormir.org/groups.html#). 
-    """
+    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
+        <h4 style="text-align: center;">Key Features</h4>
+        <ul style="list-style-type: none; padding-left: 0; text-align: left; font-size: 16px;">
+            <li>📁 <strong>Variety of Data</strong>: Access images, videos, and 3DUS data.</li>
+            <li>🏷️ <strong>Labeled Datasets</strong>: Focused on datasets with comprehensive labels.</li>
+            <li>🔍 <strong>Metadata Indexing</strong>: Metadata indexing for efficient searching.</li>
+            <li>✨ <strong>Expert Standards</strong>: Expert-analyzed benchmarks and models.</li>
+        </ul>
+    </div>
+    """,
+        unsafe_allow_html=True,
     )
 
+    # About UMUD Section
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(
         """
+        ### About UMUD
+        **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
 
-    ### Features
-    - 📁 **Variety of Data**: Includes images, videos, and 3DUS data.
-    - 🏷️ **Labeled Datasets**: Focus on datasets that include labels for better training and validation.
-    - 🔍 **Metadata Indexing**: Comprehensive indexing of metadata for easy search and retrieval.
-    - ✨ **Analysis Standards**: Provide benchmark datasets and models analysed by experts in the field.
-    """
+        The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos, 3DUS data, and shear wave elastography data, with a focus on providing labeled datasets for training and research purposes.
+        
+        Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeltal ultrasonography datasets.
+        
+        Moreover, as part of the [ORMIR](https://www.ormir.org/) community, we aim to set analysis standards by offering benchmark datasets and models, and organizing community challenges.
+        """
     )
 
-    news_items = read_newsfeed("webapp_files/newsfeed.txt")
+    # Newsfeed Section
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("### 📰 Newsfeed")
+    st.markdown("### 📰 Latest News")
     newsfeed_container = """
     <style>
     .news-container {
         max-height: 300px;
         overflow-y: scroll;
         border: 1px solid #e6e6e6;
-        padding: 10px;
+        padding: 15px;
         background-color: #f9f9f9;
+        border-radius: 8px;
     }
     .news-item {
-        padding: 5px 0;
+        padding: 10px 0;
         border-bottom: 1px solid #ddd;
+        font-size: 14px;
     }
     </style>
     <div class="news-container">
     """
 
+    news_items = read_newsfeed("webapp_files/newsfeed.txt")
     if news_items:
         for item in news_items:
             newsfeed_container += f'<div class="news-item">- {item}</div>'
@@ -503,16 +498,11 @@ if selected_tab == "Home":
         newsfeed_container += '<div class="news-item">No news items available.</div>'
 
     newsfeed_container += "</div>"
-
     st.markdown(newsfeed_container, unsafe_allow_html=True)
 
-    # Partner section
+    # Partner Section
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(
-        """
-        ### Partners
-        """
-    )
+    st.markdown("### Our Collaborators")
 
     partners = [
         {
@@ -542,10 +532,15 @@ if selected_tab == "Home":
         },
     ]
 
+    # Display partner logos in columns with hover effects
     cols = st.columns(len(partners))
     for col, partner in zip(cols, partners):
         with col:
+            st.markdown(
+                f"<a href='{partner['link']}' target='_blank'>", unsafe_allow_html=True
+            )
             st.image(partner["logo"], use_column_width=True)
+            st.markdown("</a>", unsafe_allow_html=True)
 
     # Closing message
     st.markdown(
@@ -561,65 +556,82 @@ if selected_tab == "Home":
 
 elif selected_tab == "Datasets":
 
-    "---"
+    # Horizontal line separator
+    st.markdown("---")
 
-    st.write(
-        "In this tab, you can query the muscle ultrasonography image datasets by providing specific metadata filters. "
-        "Select the filters you want to apply, provide the values, and submit the query to retrieve relevant datasets. "
-        "The filtering options are based on the metadata fields and contain all values present in the datasets of the database. "
-        "For example, the `MUSCLE` field contains all the muscles represented in the database. "
-        "This means, however, you need to decide how useful a filter value is."
+    # Intro section with concise and readable text
+    st.markdown(
+        """
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+            <h4 style="text-align: center;">Explore Muscle Ultrasound Datasets</h4>
+            <p style="text-align: center;">
+                Use this tab to query datasets by applying specific metadata filters. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
+                Choose the filters you want to apply from the list below. You can apply multiple filters for more precise results.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    # Allow users to select which filters they want to use
-    st.markdown("#### Select Filters")
+    # Section for selecting filters
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("##### Select Metadata Filters")
+
+    # Filter options
     filter_options = list(template_data[0].keys())
     selected_filters = st.multiselect(
-        "",
-        filter_options,
-        help="Select which filters you want to apply to get the dataset you want. You can select multiple filters.",
+        "", filter_options, help="Select the filters you want to use."
     )
 
-    # Create a form for user input
-    with st.form("entry_form", clear_on_submit=True):
+    if len(selected_filters) > 0:
 
-        for key in selected_filters:
+        # Create a form for inputting filter values
+        with st.form("entry_form", clear_on_submit=True):
 
-            st.markdown("#### Choose Filter Values")
+            st.markdown("##### Enter Filter Values")
             filter_inputs = {}
 
-            input_type = template_data[0].get("type", "str")
+            for key in selected_filters:
+                input_type = template_data[0].get("type", "str")
 
-            # Fetch unique values for the field from the database
-            items = get_data()
-            unique_values = items.distinct(key)
+                # Fetch unique values from the database
+                items = get_data()
+                unique_values = items.distinct(key)
 
-            if input_type == "str":
-                filter_inputs[key] = st.selectbox(key, options=unique_values)
-            elif input_type == "int":
-                filter_inputs[key] = st.selectbox(key, options=unique_values)
-            elif input_type == "float":
-                filter_inputs[key] = st.selectbox(key, options=unique_values)
-            elif input_type == "bool":
-                filter_inputs[key] = st.checkbox(key)
-            elif input_type == "list":
-                filter_inputs[key] = st.multiselect(key, options=unique_values)
+                # Dynamically render the input type for each filter
+                if input_type == "str":
+                    filter_inputs[key] = st.selectbox(key, options=unique_values)
+                elif input_type == "int":
+                    filter_inputs[key] = st.selectbox(key, options=unique_values)
+                elif input_type == "float":
+                    filter_inputs[key] = st.selectbox(key, options=unique_values)
+                elif input_type == "bool":
+                    filter_inputs[key] = st.checkbox(key)
+                elif input_type == "list":
+                    filter_inputs[key] = st.multiselect(key, options=unique_values)
 
-            "---"
-            with st.expander("Data Usage Agreement"):
+            # Horizontal separator
+            st.markdown("---")
+
+            # Data Usage Agreement section in an expander
+            with st.expander("Data Usage Agreement", expanded=False):
                 st.markdown(load_dua())  # Display DUA content
 
+            # Warning and submit button
             st.warning("By submitting, you agree to the Data Usage Agreement.")
-            "---"
 
+            # Primary action button
             submitted = st.form_submit_button("Submit Query", type="primary")
+
+            # Horizontal line separator
+            st.markdown("---")
 
             if submitted:
 
                 items = get_data()
                 query = {k: v for k, v in filter_inputs.items() if v}
 
-                st.markdown("#### Formed Query")
+                st.markdown("##### Formed Query")
                 st.json(query)
                 results = items.find(query)
 
@@ -627,7 +639,7 @@ elif selected_tab == "Datasets":
                 dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
 
                 if dataset_links:
-                    st.markdown("#### Dataset Links:")
+                    st.markdown("##### Dataset Links:")
                     for link in dataset_links:
                         st.markdown(f"- [{link}]({link})")
 
@@ -643,13 +655,25 @@ elif selected_tab == "Datasets":
 
 elif selected_tab == "Database":
 
-    "---"
+    # Horizontal line separator
+    st.markdown("---")
 
-    st.write(
-        "In this tab, you can explore the entire musculoskeletal ultrasonography datasets stored in the database. "
-        "You can filter the data, visualize different aspects of the dataset through interactive charts, "
-        "and download the filtered data for further analysis. "
+    # Intro section with concise and readable text
+    st.markdown(
+        """
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+            <h4 style="text-align: center;">Database Exploration Tool</h4>
+            <p style="text-align: center;">
+                In this tab, you can explore the entire musculoskeletal ultrasonography datasets stored in the database. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
+                You can filter the data, visualize different aspects of the dataset through interactive charts, and download the filtered data for further analysis. 
+            </p>
+        </div>
+
+        """,
+        unsafe_allow_html=True,
     )
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     with st.expander("Data Usage Agreement"):
         st.warning("You must agree to the Data Usage Agreement before proceeding.")
@@ -659,7 +683,7 @@ elif selected_tab == "Database":
             "By proceeding, you agree to the terms and conditions of the Data Usage Agreement."
         )
 
-    agreement = st.checkbox("I ACCEPT.")
+    agreement = st.checkbox("ACCEPT TO CONTINUE.")
 
     if agreement:
         items = get_data()
@@ -672,7 +696,7 @@ elif selected_tab == "Database":
         df = clean_dataframe(df)
 
         # Display filtered dataframe with filtering capabilities
-        st.subheader("Dataset Overview")
+        st.markdown("##### Dataset Overview")
         filtered_df = filter_dataframe(df)
 
         with st.expander("Download Filtered Datasets...", expanded=False):
@@ -683,7 +707,7 @@ elif selected_tab == "Database":
         "---"
 
         # Dropdown for plot selection
-        st.subheader("Interactive Charts")
+        st.markdown("##### Interactive Charts")
         plot_options = [
             "Muscle Distribution",
             "Age Distribution",
@@ -709,20 +733,32 @@ elif selected_tab == "Database":
 
 elif selected_tab == "Challenge":
 
-    "---"
+    # Horizontal line separator
+    st.markdown("---")
 
-    st.write(
+    # Intro section with concise and readable text
+    st.markdown(
         """
-        **⚠️ The Challenge is currentlynot active ⚠️**
-
+    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
+        <h4 style="text-align: center;">UMUD Community Challenge</h4>
+        <p style="text-align: center;">
+        <strong>⚠️ The Challenge is currently not active ⚠️</strong>
+        </p>
+        <p style="text-align: center;">
         This challenge will be designed to engage the community in developing models or 
         analysis scripts to predict muscle geometrical parameters in an unseen test set of lower limb ultrasonography images. Participants are encouraged to use any tools or 
         techniques at their disposal to create the best predictions possible.
-
-        The format of the challenge is inspired by [Kaggle](https://www.kaggle.com/competitions) competitions, where participants can submit their data analysis predictions, 
+        </p>
+        <p style="text-align: center;">
+        The format of the challenge is inspired by <a href="https://www.kaggle.com/competitions" target="_blank">Kaggle</a> competitions, where participants can submit their data analysis predictions, 
         and a leaderboard will track the top results.
-        """
+        </p>
+    </div>
+    """,
+        unsafe_allow_html=True,
     )
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # st.subheader("Challenge Outline")
 
@@ -1000,13 +1036,28 @@ elif selected_tab == "Contributing":
 elif selected_tab == "About Us":
 
     "---"
+
+    # Intro section with concise and readable text
+    st.markdown(
+        """
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+            <h4 style="text-align: center;">The Idea Behind UMUD </h4>
+            <p style="text-align: center;">
+                UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video dataset metadata. 
+                Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies.
+                The aim is to facilitate advancements in muscle research, biomechanics, and physiology by providing high-quality, labeled data for model training and analysis.
+           </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.header("About Us")
 
     st.subheader("The Idea Behind UMUD")
     st.write(
         """
-    UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video datasets. 
-    The aim is to facilitate advancements in muscle research, biomechanics, and medical applications by providing high-quality, labeled data for model training and analysis.
+    U
     """
     )
 
@@ -1072,55 +1123,3 @@ elif selected_tab == "About Us":
     ...
     """
     )
-
-# elif selected_tab == "Usage Policy":
-
-#     "---"
-
-#     st.markdown(
-#         """
-#     ## UMUD Data Usage Policy
-
-#     This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
-
-#     ### 1. Anonymized Data
-
-#     The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
-
-#     ### 2. Permitted Uses
-
-#     - **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
-#     - **Attribution**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors.
-#     - **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
-
-#     ### 3. Prohibited Uses
-
-#     - **Re-identification Attempts**: Users must not attempt to re-identify any individuals from the data, whether through combining it with other datasets or by any other means.
-#     - **Commercial Use**: Unless explicitly permitted by the data license, the data should not be used for commercial purposes.
-
-#     ### 4. Licensing
-
-#     The UMUD repository is licensed under the **[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)**. You are free to:
-#     - **Share**: Copy and redistribute the material in any medium or format.
-#     - **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
-
-#     Under the following terms:
-#     - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-#     - **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
-
-#     **Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
-
-#     ### 5. Ethical Considerations
-
-#     Users should consider the ethical implications of their research and data usage. If in doubt, consult with your institution's ethics board or equivalent body.
-
-#     ### 6. Disclaimer
-
-#     UMUD provides this data "as is" without any warranties or guarantees. Users assume all responsibility for their use of the data and any consequences thereof.
-
-#     ### Contact
-
-#     For any questions regarding this policy or the use of UMUD data, please contact [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
-#     """
-#     )
-# TODO check out PyGWalker as well
