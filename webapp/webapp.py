@@ -12,7 +12,7 @@ import os
 import json
 from templates.template_dictionary import template_data
 
-# TODO
+# TODO https://github.com/lukasmasuch/streamlit-pydantic check out for online form
 
 
 def clean_dataframe(df):
@@ -458,7 +458,7 @@ if selected_tab == "Home":
     st.markdown(
         """
         ### About UMUD
-        **⚠️ This is a beta version of the UMUD repository, no real datasets are included yet. ⚠️**
+        **⚠️ This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions. ⚠️**
 
         The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos, 3DUS data, and shear wave elastography data, with a focus on providing labeled datasets for training and research purposes.
         
@@ -1002,13 +1002,15 @@ elif selected_tab == "Contributing":
     )
 
     # Add a button to download the template dictionary
-    template_dict_content = json.dumps(template_data, indent=4)
+    with open("templates/template_dictionary.py") as f:
+        template_dict_content = f.read()
+
     st.download_button(
         label="Download Template Dictionary",
         data=template_dict_content,
         file_name=str(Path(__file__).with_name("templates"))
         + "/template_dictionary.py",
-        mime="application/json",
+        mime="application/python",
     )
 
     st.subheader("2. Providing Feedback")

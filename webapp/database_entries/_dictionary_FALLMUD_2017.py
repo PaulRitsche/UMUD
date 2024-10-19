@@ -1,26 +1,4 @@
-"""
-This module connects to a MongoDB database to insert and retrieve muscle ultrasound dataset metadata. 
-It uses Streamlit secrets for secure connection management. 
-
-Note
----- 
-It is only possible to insert data into the database with access rights to the MongoDB atlas. 
-"""
-
-import streamlit as st
-from pymongo import MongoClient
-
-MONGO_URI = st.secrets.mongo["CONNECTION_STRING"]
-
-# Connect to MongoDB
-client = MongoClient(MONGO_URI)
-
-# Select the database and collection
-db = client.muscle_ultrasound
-collection = db.datasets
-
-# Example data
-dictionary = [
+template_data = [
     {
         "DATASET_NAME": "FALLMUD_2017",  # Name the dataset accordingly
         "DOI": None,  # Provide a DOI
@@ -62,14 +40,3 @@ dictionary = [
         "SAMPLING_RATE": 25,  # What is the sampling rate or fps of the data collection?
     }
 ]
-
-# Insert data into the collection
-# Uncomment the next line to insert template data into database
-collection.insert_many(dictionary)
-
-# Retrieve and print data from the collection
-query = {"DATASET_NAME": "FALLMUD_2017"}
-results = collection.find(query)
-
-# Print the result, DATASET_LINK must be present
-print([result["DATASET_LINK"] for result in results])
