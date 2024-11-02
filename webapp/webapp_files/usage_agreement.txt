@@ -4,7 +4,7 @@ This policy outlines the appropriate use of data provided by the UMUD (Ultrasoun
 
 ### 1. Anonymized Data
 
-The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals. Users are strictly prohibited from attempting to re-identify individuals from the data.
+The data provided in the UMUD repository is fully anonymized and does not contain any information that can be used to identify individuals.
 
 ### 2. Permitted Uses
 

@@ -11,8 +11,12 @@ import urllib.parse
 import os
 import json
 from templates.template_dictionary import template_data
+import ast
 
 # TODO https://github.com/lukasmasuch/streamlit-pydantic check out for online form
+# TODO upload other dicts
+# TODO include benchmark zip
+# TODO add new DeepACSA dict and add better label description and for DeepACSA and Fallmud
 
 
 def clean_dataframe(df):
@@ -29,6 +33,7 @@ def clean_dataframe(df):
     pandas.DataFrame
         The cleaned dataframe with properly encoded and formatted data.
     """
+
     for col in df.select_dtypes(include=[object]).columns:
         df[col] = (
             df[col]
@@ -175,42 +180,74 @@ def display_charts(df, selected_plots, group_by_column):
     """
     st.subheader("Interactive Charts")
 
+    df = pd.DataFrame(df)
+
     for plot in selected_plots:
-        if plot == "Muscle Distribution":
+        if plot == "Muscle Distribution" and "MUSCLE" in df.columns:
             fig, ax = plt.subplots()
-            muscle_count = (
-                df.groupby(group_by_column)["MUSCLE"]
-                .value_counts()
-                .unstack()
-                .plot(kind="bar", stacked=True, ax=ax)
-            )
-            ax.set_title("Muscle Distribution")
-            ax.set_xlabel(group_by_column)
-            ax.set_ylabel("Count")
-            st.pyplot(fig)
+
+            if group_by_column in df.columns:
+
+                df["MUSCLE"] = df["MUSCLE"].apply(
+                    lambda x: ast.literal_eval(x) if isinstance(x, str) else x
+                )
+
+                # Ensure 'MUSCLE' column entries are lists and then explode them
+                df_exploded = df.explode("MUSCLE")
+
+                # Group by muscle name and count occurrences
+                muscle_counts = (
+                    df_exploded.groupby(group_by_column)["MUSCLE"]
+                    .value_counts()
+                    .unstack()
+                )
+
+                # Plotting the muscle distribution
+                fig, ax = plt.subplots()
+                muscle_counts.plot(kind="bar", ax=ax, stacked=True)
+                ax.set_title("Muscle Distribution")
+                ax.set_xlabel(group_by_column)
+                ax.set_ylabel("Count")
+                st.pyplot(fig)
+
+            else:
+                st.warning(
+                    f"'{group_by_column}' column is not suitable for 'Muscle Distribution' plot."
+                )
 
         elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
             fig, ax = plt.subplots()
-            df.groupby(group_by_column)["PARTICIPANT_AGE"].plot(
-                kind="hist", bins=20, alpha=0.5, ax=ax
-            )
-            ax.set_title("Age Distribution")
-            ax.set_xlabel("Age")
-            ax.set_ylabel("Frequency")
-            st.pyplot(fig)
+            # Check if group_by_column is valid for grouping
+            if group_by_column in df.columns:
+                df_exploded.groupby(group_by_column)["PARTICIPANT_AGE"].plot(
+                    kind="hist", bins=20, alpha=0.5, ax=ax
+                )
+                ax.set_title("Age Distribution")
+                ax.set_xlabel("Age")
+                ax.set_ylabel("Frequency")
+                st.pyplot(fig)
+            else:
+                st.warning(
+                    f"'{group_by_column}' column is not suitable for 'Age Distribution' plot."
+                )
 
         elif plot == "Data Type Distribution" and "DATA_TYPE" in df.columns:
             fig, ax = plt.subplots()
-            datatype_count = (
-                df.groupby(group_by_column)["DATA_TYPE"]
-                .value_counts()
-                .unstack()
-                .plot(kind="bar", stacked=True, ax=ax)
-            )
-            ax.set_title("Data Type Distribution")
-            ax.set_xlabel("Type")
-            ax.set_ylabel("Frequency")
-            st.pyplot(fig)
+            if group_by_column in df.columns:
+                datatype_count = (
+                    df_exploded.groupby(group_by_column)["DATA_TYPE"]
+                    .value_counts()
+                    .unstack(fill_value=0)
+                    .plot(kind="bar", stacked=True, ax=ax)
+                )
+                ax.set_title("Data Type Distribution")
+                ax.set_xlabel("Type")
+                ax.set_ylabel("Frequency")
+                st.pyplot(fig)
+            else:
+                st.warning(
+                    f"'{group_by_column}' column is not suitable for 'Data Type Distribution' plot."
+                )
 
 
 def get_download_button(df, filename="filtered_data.csv"):
@@ -588,7 +625,7 @@ elif selected_tab == "Datasets":
     if len(selected_filters) > 0:
 
         # Create a form for inputting filter values
-        with st.form("entry_form", clear_on_submit=True):
+        with st.form("entry_form", clear_on_submit=False):
 
             st.markdown("##### Enter Filter Values")
             filter_inputs = {}
@@ -620,7 +657,9 @@ elif selected_tab == "Datasets":
                 st.markdown(load_dua())  # Display DUA content
 
             # Warning and submit button
-            st.warning("By submitting, you agree to the Data Usage Agreement.")
+            st.warning(
+                "By submitting, you agree to the Data Usage Agreement.",
+            )
 
             # Primary action button
             submitted = st.form_submit_button("Submit Query", type="primary")
@@ -695,11 +734,11 @@ elif selected_tab == "Database":
             st.write("No data available in the database.")
 
         # Clean the dataframe
-        df = clean_dataframe(df)
+        df_clean = clean_dataframe(df)
 
         # Display filtered dataframe with filtering capabilities
         st.markdown("##### Dataset Overview")
-        filtered_df = filter_dataframe(df)
+        filtered_df = filter_dataframe(df_clean)
 
         with st.expander("Download Filtered Datasets...", expanded=False):
             st.write(filtered_df)
@@ -732,6 +771,7 @@ elif selected_tab == "Database":
 
         # Display interactive charts
         display_charts(df, selected_plots, group_by_column)
+
 
 elif selected_tab == "Challenge":
 
@@ -946,9 +986,9 @@ elif selected_tab == "Benchmarks":
     for algo in algorithms:
         st.markdown(f"**[{algo['name']}]({algo['link']})**: {algo['description']}")
 
-    dataset_path = "webapp_files/muscle_benchmark_dataset.zip"
+    dataset_path = str(Path(__file__).with_name("webapp_files"))
     if os.path.exists(dataset_path):
-        with open(dataset_path, "rb") as file:
+        with open(dataset_path + "/muscle_benchmark_dataset.zip", "rb") as file:
             dataset_content = file.read()
         st.download_button(
             label="📦 Download Muscle Benchmark Dataset",
@@ -1004,14 +1044,15 @@ elif selected_tab == "Contributing":
     )
 
     # Add a button to download the template dictionary
-    with open("templates/template_dictionary.py") as f:
+    template_dict_path = str(Path(__file__).with_name("templates"))
+
+    with open(template_dict_path + "/template_dictionary.py") as f:
         template_dict_content = f.read()
 
     st.download_button(
         label="Download Template Dictionary",
         data=template_dict_content,
-        file_name=str(Path(__file__).with_name("templates"))
-        + "/template_dictionary.py",
+        file_name=template_dict_path + "/template_dictionary.py",
         mime="application/python",
     )
 

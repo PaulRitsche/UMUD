@@ -206,3 +206,6 @@ webapp/.streamlit/
 
 # MongoDB
 access.txt
+
+# Benchmarks
+benchmarks/
