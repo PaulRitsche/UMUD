@@ -4,8 +4,8 @@ template_data = [
         "DOI": "10.17605/OSF.IO/A3U4V",  # Provide a DOI
         "VERSION": 1.0,  # Version of the dataset
         "MUSCLE": [
-            "Rectus Femoris",
-            "Vastus Lateralis",
+            "Rectus femoris",
+            "Vastus lateralis",
             "Gastrocnemius medialis",
             "Gastrocnemius lateralis",
         ],  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
@@ -15,8 +15,8 @@ template_data = [
             "distal",
         ],  # Which muscle regions are included in the dataset?
         "DEVICE": [
-            "ACUSON Juniper, linear-array 54-mm probe, 12 L3 Acuson 12 L3, SIEMENS Healthineers Erlangen, Germany",
-            "Aixplorer Ultimate, linear-array 38-mm probe, Superline SL10-2 Super- Sonic Imagine, Aix-en-Provence France",
+            "ACUSON Juniper, SIEMENS Healthineers Erlangen, Germany",
+            "Aixplorer Ultimate, SuperSonic Imagine, Aix-en-Provence, France",
             "Mylab 70, linear-array 47-mm probe, Esaote Biomedica, Genova, Italy",
         ],  # What US device was used?
         "PROBE": [
@@ -33,7 +33,7 @@ template_data = [
         "PARTICIPANT_WEIGHT": None,  # Mean weight of participants (in kg).
         "PARTICIPANT_SEX": "both",  # Included males, females, or both?
         "SAMPLE_SIZE": 153,  # How many participants are included in the dataset?
-        "DATA_LABELS": None,  # Are labels provided for the data?
+        "DATA_LABELS": True,  # Are labels provided for the data?
         "DATA_LABELS_DESCRIPTION": "The labels are provided as binary masks of the whole muscle anatomical cross-sectional area.",  # If labels are provided, what is the format of the labels?
         "SHORT_DESCRIPTION": "The DeepACSA dataset contains panoramic ultrasound images of the human rectus femoris (RF), vastus lateralis (VL), gastrocnemius medialis (GM) and lateralis (GL) muscles. A total of 1772 (including image augmentation) ultrasound images from 153 participants (age = 38.2 yr, range = 13–78). The images were acquired with the participants in supine (VL and RF) and prone (GM and GL) positions at multiple regions.",  # Describe the data in 3-4 sentences.
         "DATASET_YEAR": 2022,  # What year was the dataset created?

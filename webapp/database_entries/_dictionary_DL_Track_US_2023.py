@@ -4,19 +4,19 @@ template_data = [
         "DOI": "10.17605/OSF.IO/7MJSC",  # Provide a DOI
         "VERSION": 1.0,  # Version of the dataset
         "MUSCLE": [
-            "Medial Gastrocnemius",
+            "Gastrocnemius medialis",
             "Soleus",
-            "Vastus Laterlis",
-            "Tibialis Anterior",
+            "Vastus laterlis",
+            "Tibialis anterior",
         ],  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
         "MUSCLE_REGION": [
             "middle",
         ],  # Which muscle regions are included in the dataset?
         "DEVICE": [
-            "Aloka Alpha-10 Hitachi Healthcare",
-            "ArtUS EXT-1H TELEMED",
-            "HD11 Philips Electronics",
-            "Echo Blaster 128 TELEMED",
+            "Aloka Alpha-10, Hitachi Healthcare, Tokyo, Japan",
+            "ArtUS EXT-1H, TELEMED, Milan, Italy",
+            "HD11, Philips Electronics, Amsterdam, Netherlands",
+            "Echo Blaster 128, TELEMED, Milan, Italy",
         ],  # What US device was used?
         "PROBE": None,  # What probe was used?
         "DATA_TYPE": "images",  # Does the dataset contain images, videos, or volumes?

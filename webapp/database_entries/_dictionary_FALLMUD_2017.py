@@ -4,11 +4,11 @@ template_data = [
         "DOI": None,  # Provide a DOI
         "VERSION": 1.0,  # Version of the dataset
         "MUSCLE": [
-            "Gastrocnemius",
+            "Gastrocnemius medialis",
             "Soleus",
         ],  # What muscle is included in the dataset? If more than one, split the dataset into multiple parts
         "MUSCLE_REGION": "middle",  # Which muscle regions are included in the dataset?
-        "DEVICE": "AlokaSSD-5000 PHD 7.5 MHz",  # What US device was used?
+        "DEVICE": "Aloka SSD-5000 PHD, Hitachi Healthcare, Tokyo, Japan",  # What US device was used?
         "PROBE": None,  # What probe was used?
         "DATA_TYPE": "images",  # Does the dataset contain images, videos, or volumes?
         "FILE_TYPE": "jpg",  # What is the file type of the data?
@@ -36,7 +36,7 @@ template_data = [
         ],  # Provide contact details of the authors.
         "DATASET_LINK": "https://kalisteo.cea.fr/index.php/fallmud/",  # Will be provided by us if not already existent.
         "LICENSE": "Attribution-NonCommercial 4.0 International",  # What is the license of the data?
-        "SCANNING_FREQUENCY": "7.5Hz",  # What is the scanning frequency of the data?
+        "SCANNING_FREQUENCY": "7.5 MHz",  # What is the scanning frequency of the data?
         "SAMPLING_RATE": 25,  # What is the sampling rate or fps of the data collection?
     }
 ]
