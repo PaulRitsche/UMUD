@@ -13,10 +13,9 @@ import json
 from templates.template_dictionary import template_data
 import ast
 
-# TODO https://github.com/lukasmasuch/streamlit-pydantic check out for online form
+# TODO https://github.com/lukasmasuch/streamlit-pydantic check out for online form to enter the template online and not as a dict with validation.
 # TODO upload other dicts
-# TODO include benchmark zip
-# TODO add new DeepACSA dict and add better label description and for DeepACSA and Fallmud
+# TODO include benchmark zip and complete benchmark Tab
 
 
 def clean_dataframe(df):
