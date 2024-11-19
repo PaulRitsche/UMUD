@@ -527,8 +527,6 @@ if selected_tab == "Home":
     </style>
     <div class="news-container">
     """
-
-    news_items = read_newsfeed("webapp_files/newsfeed.txt")
     if news_items:
         for item in news_items:
             newsfeed_container += f'<div class="news-item">- {item}</div>'
@@ -675,20 +673,14 @@ elif selected_tab == "Datasets":
                 st.json(query)
                 results = items.find(query)
 
-                dataset_links = [result["DATASET_LINK"] for result in results]
-                dataset_descriptions = results.distinct("SHORT_DESCRIPTION")
-
-                if dataset_links:
-                    st.markdown("##### Dataset Links:")
-                    for link in dataset_links:
-                        st.markdown(f"- [{link}]({link})")
-
-                    if dataset_descriptions:
-                        st.markdown(f"  {', '.join(dataset_descriptions)}")
-                    else:
-                        st.write(
-                            "No dataset descriptions found for the selected criteria."
-                        )
+                if results:
+                    st.markdown("##### Dataset Links and Descriptions:")
+                    for result in results:
+                        link = result.get("DATASET_LINK", "No link available")
+                        description = result.get("SHORT_DESCRIPTION", "No description available")
+                        # Display the link and its corresponding description
+                        st.markdown(f"- **[{link}]({link})**")
+                        st.markdown(f"  {description}")
                 else:
                     st.write("No datasets found for the selected criteria.")
 
