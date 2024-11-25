@@ -15,226 +15,15 @@ import ast
 import streamlit_pydantic as sp
 from pydantic import BaseModel, Field, EmailStr, HttpUrl, validator
 from typing import List, Optional, Set
-import json
 from enum import Enum
 import re
-
-# TODO https://github.com/lukasmasuch/streamlit-pydantic check out for online form to enter the template online and not as a dict with validation.
+from helpers.pydantic_models import DatasetMetadata 
+from pages.about_us import about_us
 # TODO upload other dicts
 # TODO include benchmark zip and complete benchmark Tab
 
 
-from enum import Enum
 
-
-class SelectionValueMuscle(str, Enum):
-    # Lower limb muscles
-    RECTUS_FEMORIS = "Rectus Femoris"
-    VASTUS_LATERALIS = "Vastus Lateralis"
-    VASTUS_MEDIALIS = "Vastus Medialis"
-    VASTUS_INTERMEDIUS = "Vastus Intermedius"
-    BICEPS_FEMORIS = "Biceps Femoris"
-    SEMITENDINOSUS = "Semitendinosus"
-    SEMIMEMBRANOSUS = "Semimembranosus"
-    GASTROCNEMIUS_MEDIALIS = "Gastrocnemius Medialis"
-    GASTROCNEMIUS_LATERALIS = "Gastrocnemius Lateralis"
-    SOLEUS = "Soleus"
-    TIBIALIS_ANTERIOR = "Tibialis Anterior"
-    PERONEUS_LONGUS = "Peroneus Longus"
-    FLEXOR_HALLUCIS_LONGUS = "Flexor Hallucis Longus"
-    EXTENSOR_HALLUCIS_LONGUS = "Extensor Hallucis Longus"
-    FLEXOR_DIGITORUM_LONGUS = "Flexor Digitorum Longus"
-    EXTENSOR_DIGITORUM_LONGUS = "Extensor Digitorum Longus"
-
-    # Upper limb muscles
-    BICEPS_BRACHII = "Biceps Brachii"
-    TRICEPS_BRACHII = "Triceps Brachii"
-    DELTOID = "Deltoid"
-    BRACHIALIS = "Brachialis"
-    FLEXOR_CARPI_RADIALIS = "Flexor Carpi Radialis"
-    FLEXOR_CARPI_ULNARIS = "Flexor Carpi Ulnaris"
-    PALMARIS_LONGUS = "Palmaris Longus"
-    EXTENSOR_CARPI_RADIALIS = "Extensor Carpi Radialis"
-    EXTENSOR_CARPI_ULNARIS = "Extensor Carpi Ulnaris"
-    EXTENSOR_DIGITORUM = "Extensor Digitorum"
-    PRONATOR_TERES = "Pronator Teres"
-    SUPINATOR = "Supinator"
-    FLEXOR_DIGITORUM_SUPERFICIALIS = "Flexor Digitorum Superficialis"
-    FLEXOR_DIGITORUM_PROFUNDUS = "Flexor Digitorum Profundus"
-
-
-class SelectionValueFileType(str, Enum):
-    # Image types
-    JPG = "jpg"
-    JPEG = "jpeg"
-    PNG = "png"
-    BMP = "bmp"
-    TIFF = "tiff"
-    TIF = "tif"
-    GIF = "gif"
-    WEBP = "webp"
-    SVG = "svg"
-    RAW = "raw"
-
-    # Video types
-    MP4 = "mp4"
-    MOV = "mov"
-    AVI = "avi"
-    MKV = "mkv"
-    WMV = "wmv"
-    FLV = "flv"
-    WEBM = "webm"
-    MPEG = "mpeg"
-    MPG = "mpg"
-    GP3 = "3gp"
-    ASF = "asf"
-
-
-class SelectionValueMuscleRegion(str, Enum):
-    PROXIMAL = "proximal"
-    MIDDLE = "middle"
-    DISTAL = "distal"
-
-
-class SelectionValueCaptureType(str, Enum):
-    IMAGE = "Image"
-    VIDEO = "Video"
-    VOLUME = "Volume"
-
-
-class SelectionValueImageType(str, Enum):
-    STATIC = "Static"
-    PANORAMIC = "Panoramic"
-
-
-class SelectionValueImagePlane(str, Enum):
-    LONGITUDINAL = "Longitudinal"
-    TRANSVERSE = "Transverse"
-
-
-class SelectionValueParticipantSex(str, Enum):
-    FEMALE = "Female"
-    MALE = "Male"
-    BOTH = "Both"
-
-
-# Define the schema using Pydantic
-
-
-class DatasetMetadata(BaseModel):
-    DATASET_NAME: str = Field(
-        ...,
-        description="Name of the dataset containing the name and the year separated by an underscore, e.g., 'DeepACSA_2022'.",
-    )
-    DOI: Optional[str] = Field(
-        ...,
-        description="Digital Object Identifier (DOI) of the dataset.",
-        regex=r"^10\.\d{4,9}/[-._;()/:A-Za-z0-9]+$",
-    )
-    VERSION: str = Field(
-        ..., regex=r"^\d+\.\d+(?:\.\d+)?$", description="Version of the dataset."
-    )
-    MUSCLE: Set[SelectionValueMuscle] = Field(
-        ..., description="List of muscles included in the dataset."
-    )
-    MUSCLE_REGION: Set[SelectionValueMuscleRegion] = Field(
-        ..., description="List of muscle regions (proximal, middle, distal)."
-    )
-    DEVICE: Optional[str] = Field(
-        ..., description="Ultrasound device used to collect the data."
-    )
-    PROBE: Optional[str] = Field(
-        ..., description="Model of the probe used during data collection."
-    )
-    DATA_TYPE: SelectionValueCaptureType = Field(
-        ..., description="Type of data in the dataset (Images, Videos, Volumes)."
-    )
-    FILE_TYPE: SelectionValueFileType = Field(
-        ..., description="File type of the data (e.g., jpg, png, mp4)."
-    )
-    IMAGE_TYPE: SelectionValueImageType = Field(
-        ..., description="Image type (Static, Panoramic)."
-    )
-    DATA_PLANE: SelectionValueImagePlane = Field(
-        ..., description="Plane in which the images/videos were collected."
-    )
-    PARTICIPANT_AGE: float = Field(
-        ..., ge=0, le=100, description="Mean age of participants (0-100)."
-    )
-    PARTICIPANT_HEIGHT: float = Field(
-        ..., ge=0, le=220, description="Mean height of participants in cm (0-220)."
-    )
-    PARTICIPANT_WEIGHT: float = Field(
-        ..., ge=0, le=200, description="Mean weight of participants in kg (0-200)."
-    )
-    PARTICIPANT_SEX: SelectionValueParticipantSex = Field(
-        ..., description="Sex of participants (Male, Female, Both)."
-    )
-    SAMPLE_SIZE: int = Field(
-        ...,
-        ge=1,
-        description="Number of participants included in the dataset (minimum 1).",
-    )
-    DATA_LABELS: bool = Field(
-        ..., description="Whether labels are provided for the data."
-    )
-    DATA_LABELS_DESCRIPTION: Optional[str] = Field(
-        None, description="Description of the labels provided."
-    )
-    SHORT_DESCRIPTION: str = Field(
-        ...,
-        max_length=500,
-        description="Brief description of the dataset (max 500 characters).",
-    )
-    DATASET_YEAR: str = Field(
-        ...,
-        regex=r"^\d{4}$",
-        description="Year the dataset was created (4-digit year).",
-    )
-    PUBLICATION_LINK: Optional[str] = Field(
-        ..., description="Link to the publication containing the data."
-    )
-    AUTHORS: str = Field(
-        ...,
-        description="List of authors of the dataset, separated by commas.",
-        max_length=500,
-    )
-    CONTACT: str = Field(
-        ...,
-        description="List of contact emails of the authors, separated by commas.",
-        max_length=500,
-    )
-    DATASET_LINK: HttpUrl = Field(..., description="Link to the dataset.")
-    LICENSE: str = Field(..., description="License under which the data is shared.")
-    SCANNING_FREQUENCY: Optional[int] = Field(
-        None, ge=1, le=100, description="Scanning frequency in Hz (1-100)."
-    )
-    SAMPLING_RATE: Optional[int] = Field(
-        None, ge=0, le=200, description="Sampling rate or fps (0-200)."
-    )
-
-    @validator("CONTACT")
-    def validate_emails(cls, value):
-        """Validate comma-separated emails."""
-        emails = [email.strip() for email in value.split(",")]
-        for email in emails:
-            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                raise ValueError(f"Invalid email address: {email}")
-        return value
-
-    @validator("AUTHORS")
-    def validate_authors(cls, value):
-        """Ensure authors field is not empty."""
-        if not value.strip():
-            raise ValueError("Authors field cannot be empty.")
-        return value
-
-    @validator("SHORT_DESCRIPTION")
-    def validate_description(cls, value):
-        """Ensure the description is not empty."""
-        if not value.strip():
-            raise ValueError("Short description cannot be empty.")
-        return value
 
 
 def clean_dataframe(df):
@@ -651,7 +440,7 @@ def get_data():
 # Specify tabs
 with st.sidebar:
     logo_image_path = str(Path(__file__).with_name("webapp_files"))
-    st.image(logo_image_path + "/logo.png", use_column_width=True)
+    st.image(logo_image_path + "/logo.png", use_container_width=True)
 
     "---"
     selected_tab = option_menu(
@@ -794,7 +583,7 @@ if selected_tab == "Home":
             st.markdown(
                 f"<a href='{partner['link']}' target='_blank'>", unsafe_allow_html=True
             )
-            st.image(partner["logo"], use_column_width=True)
+            st.image(partner["logo"], use_container_width=True)
             st.markdown("</a>", unsafe_allow_html=True)
 
     # Closing message
@@ -1211,17 +1000,27 @@ elif selected_tab == "Benchmarks":
 
 elif selected_tab == "Contributing":
     "---"
-    st.header("Contributing")
+    st.markdown("---")
 
-    st.write(
-        "We welcome contributions from the community to help improve and expand UMUD. Here's how you can get involved:"
+    st.markdown(
+        """
+        <div style="padding: 20px; border: 2px solid #008080; border-radius: 10px;">
+            <h3 style="text-align: center; color: #000000;">Want to Contribute Your Data to UMUD?</h3>
+            <p>
+                By sharing your datasets, you help create a valuable resource for researchers worldwide. Follow four steps to contribute: 1. Data Preparation,
+                2. Metadata Submission, 3. Metadata Review, 4. Metadata Integration. These steps are explained in detail below.
+                Moreover, you can also give feedback and contribute to the codebase. Thank you for helping us build a resource for the research community!
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    st.subheader("1. Contributing Data")
+    st.markdown("---")
+
+    st.subheader("Contributing Data")
     st.write(
         """
-    **Want to Contribute Your Muscle Ultrasound Data to UMUD?**
-
     If you have muscle ultrasound datasets that you would like to share with the scientific community, you can contribute them to the UMUD database. 
     **Important:** Make sure you have permission to share the data openly. UMUD is not responsible for any ethical or legal issues that may arise from sharing your data.
 
@@ -1232,12 +1031,34 @@ elif selected_tab == "Contributing":
 
     1. **Prepare Your Data:**
         - Make sure your data is properly labeled and formatted according to UMUD standards.  
-        - Use the metadata dictionary template provided below to organize your data.  
-        - You need a tool that can open Python files, such as [VSCode](https://code.visualstudio.com/), to use the template.  
+        - Use the metadata entryfields below to create a metadata .json file for your data.   
         - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
         - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
-        - Organize your images into folders based on the muscle and muscle region they belong to (if possible). You can view our [sample dataset LINK](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef) to see how this is done.
+        - Organize your images according to our [sample dataset LINK](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef).
+    """)
+    # Pydantic form in a styled popover
+    with st.expander("📝 Fill Out Dataset Metadata", expanded=False):
+        st.markdown(
+            """
+            <p style="color: #008080;">
+                Use this form to enter your dataset metadata. Once completed, you can generate and download a JSON file
+                for submission. Make sure all fields are correctly filled to comply with UMUD standards.
+            </p>
+            """,
+            unsafe_allow_html=True,
+        )
+        validated_data = sp.pydantic_form(key="DatasetMetadata", model=DatasetMetadata)
 
+    # Generate and download JSON file
+    if validated_data and st.button("Generate JSON", type="primary"):
+        json_data = json.dumps(validated_data.dict(), indent=4)
+        st.download_button(
+            label="Download JSON",
+            data=json_data,
+            file_name="dataset_metadata.json",
+            mime="application/json",
+        )
+    st.write("""
     2. **Submit Your Data:**
         - Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
         - Use the subject line "Dataset Contribution".
@@ -1255,56 +1076,22 @@ elif selected_tab == "Contributing":
     """
     )
 
-    # Streamlit app
-    st.title("UMUD Dataset Metadata Entry")
-
-    # Validate and input data using Pydantic
-    st.markdown("### Fill out the form to generate a dataset JSON:")
-    validated_data = sp.pydantic_form(key="DatasetMetadata", model=DatasetMetadata)
-    print(validated_data)
-
-    # Button to generate and download the JSON file
-    json_data = "afklsdjfasdlkj"
-    if validated_data and st.button("Generate JSON"):
-        print(validated_data)
-        json_data = json.dumps(validated_data.dict(), indent=4)
-
-    st.download_button(
-        label="Download JSON",
-        data=json_data,
-        file_name="dataset_metadata.json",
-        mime="application/json",
-    )
-
-    # Add a button to download the template dictionary
-    template_dict_path = str(Path(__file__).with_name("templates"))
-
-    with open(template_dict_path + "/template_dictionary.py") as f:
-        template_dict_content = f.read()
-
-    st.download_button(
-        label="Download Template Dictionary",
-        data=template_dict_content,
-        file_name=template_dict_path + "/template_dictionary.py",
-        mime="application/python",
-    )
-
-    st.subheader("2. Providing Feedback")
+    st.subheader("Providing Feedback")
     st.write(
         """
     Your feedback is invaluable in helping us improve UMUD. Whether you have suggestions for new features, improvements to existing functionalities, or general comments, we want to hear from you.
-    
+
     - **Feature Requests**: If you have ideas for new features or enhancements, please email [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Feature Request".
     - **Bug Reports**: If you encounter any issues or bugs, please report them by emailing [umudrepository@gmail.com](mailto:umudrepository@gmail.com) with the subject line "Bug Report". Include detailed information about the issue and steps to reproduce it.
     - **General Feedback**: For any other feedback or comments, you can also use the above email address.
     """
     )
 
-    st.subheader("3. Contributing to the Codebase")
+    st.subheader("Contributing to the Codebase")
     st.write(
         """
     We encourage developers to contribute to the UMUD codebase. Whether you're fixing bugs, adding new features, or improving documentation, your contributions are welcome.
-    
+
     - **Fork the Repository**: Start by forking the [UMUD Repository](https://github.com/PaulRitsche/UMUD) to your own GitHub account.
     - **Make Your Changes**: Clone your forked repository to your local machine and make the desired changes. Ensure your code follows our contribution guidelines and coding standards. You can take a look at the Readme file for more information on how to do this.
     - **Submit a Pull Request**: Once you've made your changes, push them to your forked repository and submit a pull request to the main repository. Provide a detailed description of your changes and reference any relevant issues or feature requests.
@@ -1316,86 +1103,86 @@ elif selected_tab == "Contributing":
 elif selected_tab == "About Us":
 
     "---"
+    about_us()
+    # # Intro section with concise and readable text
+    # st.markdown(
+    #     """
+    #     <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+    #         <h4 style="text-align: center;">The Idea Behind UMUD </h4>
+    #         <p style="text-align: center;">
+    #             UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video dataset metadata. 
+    #             Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies.
+    #             The aim is to facilitate advancements in muscle research, biomechanics, and physiology by providing high-quality, labeled data for model training and analysis.
+    #        </p>
+    #     </div>
+    #     """,
+    #     unsafe_allow_html=True,
+    # )
+    # st.markdown("---")
 
-    # Intro section with concise and readable text
-    st.markdown(
-        """
-        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
-            <h4 style="text-align: center;">The Idea Behind UMUD </h4>
-            <p style="text-align: center;">
-                UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video dataset metadata. 
-                Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies.
-                The aim is to facilitate advancements in muscle research, biomechanics, and physiology by providing high-quality, labeled data for model training and analysis.
-           </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.markdown("<br>", unsafe_allow_html=True)
+    # st.subheader("The Main Developers")
+    # # Neil Cronin
+    # images = str(Path(__file__).with_name("webapp_files"))
+    # st.image(
+    #     images + "/neil_cronin.png", caption="Neil Cronin", width=150
+    # )  # Add the path to Neil Cronin's image
+    # st.write(
+    #     """
+    # Neil Cronin is the main visionary behind the UMUD Repository. He had the original idea and has been instrumental in guiding the project. Neil is known for his expertise in biomechanics and musculoskeletal imaging research.
+    # """
+    # )
+    # st.write("[Read more about Neil](http://users.jyu.fi/~necronin/)")
 
-    st.subheader("The Main Developers")
-    # Neil Cronin
-    images = str(Path(__file__).with_name("webapp_files"))
-    st.image(
-        images + "/neil_cronin.png", caption="Neil Cronin", width=150
-    )  # Add the path to Neil Cronin's image
-    st.write(
-        """
-    Neil Cronin is the main visionary behind the UMUD Repository. He had the original idea and has been instrumental in guiding the project. Neil is known for his expertise in biomechanics and musculoskeletal imaging research.
-    """
-    )
-    st.write("[Read more about Neil](http://users.jyu.fi/~necronin/)")
+    # # Paul Ritsche
+    # images = str(Path(__file__).with_name("webapp_files"))
+    # st.image(
+    #     images + "/paul_ritsche.png", caption="Paul Ritsche", width=150
+    # )  # Add the path to Paul Ritsche's image
+    # st.write(
+    #     """
+    # Paul Ritsche is the lead developer who coded and maintains the UMUD Repository. Together with Neil, he finetuned to original idea of UMUD. Paul has a background in biomechanics and musculoskeletal imaging and a passion for software development and data science.
+    # """
+    # )
+    # st.write("[Read more about Paul](https://github.com/PaulRitsche)")
 
-    # Paul Ritsche
-    images = str(Path(__file__).with_name("webapp_files"))
-    st.image(
-        images + "/paul_ritsche.png", caption="Paul Ritsche", width=150
-    )  # Add the path to Paul Ritsche's image
-    st.write(
-        """
-    Paul Ritsche is the lead developer who coded and maintains the UMUD Repository. Together with Neil, he finetuned to original idea of UMUD. Paul has a background in biomechanics and musculoskeletal imaging and a passion for software development and data science.
-    """
-    )
-    st.write("[Read more about Paul](https://github.com/PaulRitsche)")
+    # # Fabio Sarto
+    # images = str(Path(__file__).with_name("webapp_files"))
+    # st.image(images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
+    # st.write(
+    #     """
+    # Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science
+    # """
+    # )
+    # st.write(
+    #     "[Read more about Fabio](https://www.researchgate.net/profile/Fabio-Sarto-2)"
+    # )
 
-    # Fabio Sarto
-    images = str(Path(__file__).with_name("webapp_files"))
-    st.image(images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
-    st.write(
-        """
-    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science
-    """
-    )
-    st.write(
-        "[Read more about Fabio](https://www.researchgate.net/profile/Fabio-Sarto-2)"
-    )
+    # # Olivier Seynnes
+    # images = str(Path(__file__).with_name("webapp_files"))
+    # st.image(
+    #     images + "/olivier_seynnes.png", caption="Olivier Seynnes", width=150
+    # )  # Add the path to Olivier Seynnes's image
+    # st.write(
+    #     """
+    # Olivier Seynnes has been involved with the UMUD Repository from the beginning, providing valuable insights and support. Olivier is an expert in muscle physiology and musculoskeletal imaging has contributed significantly to the project's development.
+    # """
+    # )
+    # st.write(
+    #     "[Read more about Olivier](https://www.nih.no/english/about/employees/oliviers/)"
+    # )
 
-    # Olivier Seynnes
-    images = str(Path(__file__).with_name("webapp_files"))
-    st.image(
-        images + "/olivier_seynnes.png", caption="Olivier Seynnes", width=150
-    )  # Add the path to Olivier Seynnes's image
-    st.write(
-        """
-    Olivier Seynnes has been involved with the UMUD Repository from the beginning, providing valuable insights and support. Olivier is an expert in muscle physiology and musculoskeletal imaging has contributed significantly to the project's development.
-    """
-    )
-    st.write(
-        "[Read more about Olivier](https://www.nih.no/english/about/employees/oliviers/)"
-    )
+    # # Contributers
 
-    # Contributers
+    # st.subheader("The Contributors")
 
-    st.subheader("The Contributors")
+    # st.write(
+    #     """
+    # [Francesco Santini](https://www.francescosantini.com/wp/)
 
-    st.write(
-        """
-    [Francesco Santini](https://www.francescosantini.com/wp/)
+    # [Oliver Faude](https://www.researchgate.net/profile/Oliver-Faude)
 
-    [Oliver Faude](https://www.researchgate.net/profile/Oliver-Faude)
+    # [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
 
-    [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
-
-    ...
-    """
-    )
+    # ...
+    # """
+    # )
