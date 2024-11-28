@@ -2,6 +2,7 @@ from pathlib import Path
 import streamlit as st
 import pymongo
 
+
 def load_dua():
     """
     Load the data usage agreement from file.
@@ -12,9 +13,55 @@ def load_dua():
         Data usage agreement as a string.
     """
     with open(
-        str(Path(__file__).with_name("webapp_files")) + "/usage_agreement.txt", "r"
+        str(Path(__file__).resolve().parent.parent / "webapp_files" / "usage_agreement.txt"), "r"
     ) as file:
         return file.read()
+
+
+def read_newsfeed(filepath):
+    """
+    Reads news items from a text file and returns them as a list of strings.
+
+    Parameters
+    ----------
+    filepath : str
+        The path to the newsfeed text file.
+
+    Returns
+    -------
+    list
+        A list of news items as strings.
+    """
+    try:
+        with open(filepath, "r") as file:
+            news_items = file.readlines()
+        return [item.strip() for item in news_items]
+    except Exception as e:
+        st.error(f"Error reading newsfeed: {e}")
+        return []
+
+
+# Currently Not Used
+def load_scoreboard():
+    """
+    Load the scoreboard data.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A dataframe containing the scoreboard data.
+    """
+
+    # This function should be modified to load data from database if needed.
+    results = pd.DataFrame(
+        {
+            "Name": ["Neil", "Olivier", "Paul"],
+            "SEM Fascicle Length (cm)": [0.1, 0.5, 0.7],
+            "SEM Pennation Angle (cm)": [0.1, 0.5, 0.7],
+            "SEM Muscle Thickness (cm)": [0.1, 0.5, 0.7],
+        }
+    )
+    return results
 
 
 # Pull data from the collection.
@@ -32,8 +79,8 @@ def get_data():
     client = init_connection()
     db = client.muscle_ultrasound
     items = db.datasets
-    # items = list(items)  # make hashable for st.cache_data
     return items
+
 
 # Initialize connection.
 # Uses st.cache_resource to only run once.

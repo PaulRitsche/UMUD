@@ -170,63 +170,64 @@ class DatasetMetadata(BaseModel):
     )
     DOI: Optional[str] = Field(
         ...,
-        description="Digital Object Identifier (DOI) of the dataset.",
-        regex=r"^10\.\d{4,9}/[-._;()/:A-Za-z0-9]+$",
+        description="Optional. Digital Object Identifier (DOI) of the dataset."
     )
     VERSION: str = Field(
-        ..., regex=r"^\d+\.\d+(?:\.\d+)?$", description="Version of the dataset."
+        ..., regex=r"^\d+\.\d+(?:\.\d+)?$", description="Version of the dataset following semver principles (i.e., 1.0.0)."
     )
     MUSCLE: Set[SelectionValueMuscle] = Field(
-        ..., description="List of muscles included in the dataset."
+        ..., description="List of muscles included in the dataset. Choose one or mulitple from the available options."
     )
     MUSCLE_REGION: Set[SelectionValueMuscleRegion] = Field(
-        ..., description="List of muscle regions (proximal, middle, distal)."
+        ..., description="List of muscle regions (proximal, middle, distal). Choose one or mulitple from the available options."
     )
     DEVICE: Optional[SelectionValueUltrasoundDevice] = Field(
-        ..., description="Ultrasound device used to collect the data."
+        ..., description="Optional. Ultrasound device used to collect the data. Choose one or mulitple from the available options."
     )
     PROBE: Optional[str] = Field(
-        ..., description="Model of the probe used during data collection."
+        ..., description="Optional. Model of the probe used during data collection. Enter one."
     )
     DATA_TYPE: SelectionValueCaptureType = Field(
-        ..., description="Type of data in the dataset (Images, Videos, Volumes)."
+        ..., description="Type of data in the dataset (Images, Videos, Volumes). Choose one."
     )
     FILE_TYPE: SelectionValueFileType = Field(
-        ..., description="File type of the data (e.g., jpg, png, mp4)."
+        ..., description="File type of the data (e.g., jpg, png, mp4). Choose one."
     )
     IMAGE_TYPE: SelectionValueImageType = Field(
-        ..., description="Image type (Static, Panoramic)."
+        ..., description="Image type (Static, Panoramic). Choose one."
     )
     DATA_PLANE: SelectionValueImagePlane = Field(
-        ..., description="Plane in which the images/videos were collected."
+        ..., description="Plane in which the images/videos were collected. Choose one."
     )
-    PARTICIPANT_AGE: float = Field(
-        ..., ge=0, le=100, description="Mean age of participants (0-100)."
+    PARTICIPANT_AGE: Optional[float] = Field(
+        ..., ge=0, le=100, description="Optional. Mean age of participants (0-100). Select mean value."
     )
-    PARTICIPANT_HEIGHT: float = Field(
-        ..., ge=0, le=220, description="Mean height of participants in cm (0-220)."
+    PARTICIPANT_HEIGHT: Optional[float] = Field(
+        ..., ge=0, le=220, description="Optional. Mean height of participants in cm (0-220). Select mean value."
     )
-    PARTICIPANT_WEIGHT: float = Field(
-        ..., ge=0, le=200, description="Mean weight of participants in kg (0-200)."
+    PARTICIPANT_WEIGHT: Optional[float] = Field(
+        ..., ge=0, le=200, description="Optional. Mean weight of participants in kg (0-200). Select mean value."
     )
     PARTICIPANT_SEX: SelectionValueParticipantSex = Field(
-        ..., description="Sex of participants (Male, Female, Both)."
+        ..., description="Sex of participants (Male, Female, Both). Choose one."
     )
     SAMPLE_SIZE: int = Field(
         ...,
         ge=1,
-        description="Number of participants included in the dataset (minimum 1).",
+        description="Number of participants included in the dataset (minimum 1). Enter n.",
     )
     DATA_LABELS: bool = Field(
-        ..., description="Whether labels are provided for the data."
+        ..., description="Whether labels are provided for the data. Select Checkbox."
     )
     DATA_LABELS_DESCRIPTION: Optional[str] = Field(
-        None, description="Description of the labels provided."
+        ...,
+        max_length=500,
+        description="Optional. Description of the labels provided. As detailed as necessary but as short as possible."
     )
     SHORT_DESCRIPTION: str = Field(
         ...,
         max_length=500,
-        description="Brief description of the dataset (max 500 characters).",
+        description="Brief description of the dataset (max 500 characters). As detailed as necessary but as short as possible.",
     )
     DATASET_YEAR: str = Field(
         ...,
@@ -234,7 +235,7 @@ class DatasetMetadata(BaseModel):
         description="Year the dataset was created (4-digit year).",
     )
     PUBLICATION_LINK: Optional[str] = Field(
-        ..., description="Link to the publication containing the data."
+        ..., description="Optional. URL Link to the publication containing the data."
     )
     AUTHORS: str = Field(
         ...,
@@ -249,11 +250,12 @@ class DatasetMetadata(BaseModel):
     DATASET_LINK: HttpUrl = Field(..., description="Link to the dataset.")
     LICENSE: SelectionValueSoftwareLicense = Field(..., description="License under which the data is shared.")
     SCANNING_FREQUENCY: Optional[int] = Field(
-        None, ge=1, le=100, description="Scanning frequency in Hz (1-100)."
+        None, ge=1, le=100, description="Optional. Scanning frequency in Hz (1-100). Select value."
     )
     SAMPLING_RATE: Optional[int] = Field(
-        None, ge=0, le=200, description="Sampling rate or fps (0-200)."
+        None, ge=0, le=200, description="Optional. Sampling rate or fps (0-200). Select value."
     )
+
 
     @validator("CONTACT", allow_reuse=True)
     def validate_emails(cls, value):
@@ -264,6 +266,7 @@ class DatasetMetadata(BaseModel):
                 raise ValueError(f"Invalid email address: {email}")
         return value
 
+
     @validator("AUTHORS", allow_reuse=True)
     def validate_authors(cls, value):
         """Ensure authors field is not empty."""
@@ -271,9 +274,52 @@ class DatasetMetadata(BaseModel):
             raise ValueError("Authors field cannot be empty.")
         return value
 
+
     @validator("SHORT_DESCRIPTION", allow_reuse=True)
     def validate_description(cls, value):
         """Ensure the description is not empty."""
         if not value.strip():
             raise ValueError("Short description cannot be empty.")
+        return value
+    
+
+    @validator("DOI", allow_reuse=True)
+    def validate_doi(cls, value: str) -> str:
+        """Ensure DOI matches the correct pattern."""
+        if value is not None and value.strip():  # Check if value is not None or empty
+            regex = r"^10\.\d{4,9}/[-._;()/:A-Za-z0-9]+$"
+            if not re.match(regex, value.strip()):
+                raise ValueError(f"DOI '{value}' is not in a valid format.")
+        return value
+    
+
+    @validator("PUBLICATION_LINK", allow_reuse=True)
+    def validate_publication_link(cls, value: str) -> str:
+        """Ensure PUBLICATION_LINK is a valid URL."""
+        if value is not None and value.strip():  # Check if value is not None or empty
+            regex = (
+                r"^(https?|ftp):\/\/"  # Protocol
+                r"(([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}"  # Domain
+                r"|localhost"  # Allow localhost
+                r"|((\d{1,3}\.){3}\d{1,3}))"  # IP Address
+                r"(:\d+)?(\/[-A-Za-z0-9@:%_+.~#?&/=]*)?$"  # Port and path
+            )
+            if not re.match(regex, value.strip()):
+                raise ValueError(f"Publication link '{value}' is not in a valid format.")
+        return value
+    
+
+    @validator("DATASET_LINK", allow_reuse=True)
+    def validate_dataset_link(cls, value: str) -> str:
+        """Ensure DATASET_LINK is a valid URL."""
+        # Regular expression to validate a proper URL (if HttpUrl is not enough)
+        regex = (
+            r"^(https?|ftp):\/\/"  # Protocol
+            r"(([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}"  # Domain
+            r"|localhost"  # Allow localhost
+            r"|((\d{1,3}\.){3}\d{1,3}))"  # IP Address
+            r"(:\d+)?(\/[-A-Za-z0-9@:%_+.~#?&/=]*)?$"  # Port and path
+        )
+        if not re.match(regex, value.strip()):
+            raise ValueError(f"Dataset link '{value}' is not in a valid format.")
         return value
