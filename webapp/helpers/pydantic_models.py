@@ -184,7 +184,7 @@ class DatasetMetadata(BaseModel):
     DEVICE: Optional[SelectionValueUltrasoundDevice] = Field(
         ..., description="Optional. Ultrasound device used to collect the data. Choose one or mulitple from the available options."
     )
-    PROBE: Optional[str] = Field(
+    TRANSDUCER: Optional[str] = Field(
         ..., description="Optional. Model of the probe used during data collection. Enter one."
     )
     DATA_TYPE: SelectionValueCaptureType = Field(

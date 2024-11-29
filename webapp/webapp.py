@@ -11,7 +11,7 @@ import streamlit_pydantic as sp
 from helpers.loading_functions import load_dua, read_newsfeed, get_data
 from helpers.display_functions import display_charts, display_training_metrics
 from helpers.data_tools import *
-from helpers.pydantic_models import DatasetMetadata 
+from helpers.pydantic_models import DatasetMetadata
 from helpers.footer import add_footer
 import numpy as np
 import seaborn as sns
@@ -20,8 +20,10 @@ import seaborn as sns
 # TODO include benchmark zip and complete benchmark Tab
 # TODO discuss how we actually approach this? Should we refer to the training images of DLTrack/DeepACSA and the report the training data?
 # I mean, we do not even know that ML models are superior, but other algorithms cannot report this?
-# TODO update links of benchmark models. 
+# TODO update links of benchmark models.
 # TODO complete the algorithm list
+# TODO create model page on UMUD repo
+# TODO add regex for dataset name
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -39,7 +41,7 @@ st.markdown(
 # Specify tabs
 with st.sidebar:
     logo_image_path = str(Path(__file__).with_name("webapp_files"))
-    st.image(logo_image_path + "/logo.png", use_container_width=True)
+    st.image(logo_image_path + "/logo.png", use_column_width=True)
 
     "---"
     selected_tab = option_menu(
@@ -210,7 +212,7 @@ elif selected_tab == "Datasets":
         <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
             <h4 style="text-align: center;">📈 Explore Muscle Ultrasound Datasets</h4>
             <p style="text-align: center;">
-                Use this tab to query datasets by applying specific metadata filters. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
+                Use this tab to <b>query datasets by applying specific metadata filters</b>. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
                 Choose the filters you want to apply from the list below. You can apply multiple filters for more precise results.
             </p>
         </div>
@@ -307,7 +309,7 @@ elif selected_tab == "Database":
         <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
             <h4 style="text-align: center;">💾 Database Exploration Tool</h4>
             <p style="text-align: center;">
-                In this tab, you can explore the entire musculoskeletal ultrasonography datasets stored in the database. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
+                In this tab, you can <b>explore the entire musculoskeletal ultrasonography datasets</b> stored in the database. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
                 You can filter the data, visualize different aspects of the dataset through interactive charts, and download the filtered data for further analysis. 
             </p>
         </div>
@@ -514,7 +516,7 @@ elif selected_tab == "Benchmarks":
 
     # Benchmark Tab Header
     st.markdown(
-    """
+        """
     <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #f9f9f9;">
         <h3 style="text-align: center; color: #008080;">✨ Benchmarking Muscle Ultrasound Analysis</h3>
         <p style="text-align: center;">
@@ -527,9 +529,8 @@ elif selected_tab == "Benchmarks":
         </p>
     </div>
     """,
-    unsafe_allow_html=True,
+        unsafe_allow_html=True,
     )
-
 
     st.markdown("---")
 
@@ -559,14 +560,15 @@ elif selected_tab == "Benchmarks":
 
     # Benchmark Models Section
     st.markdown("---")
-    
+
     st.markdown(
         """
         ### 🧠 Benchmark Models
         We offer benchmark models for muscle architecture and ACSA analysis, implemented in Python and integrated with 
         openly available datasets. These models are derived from published research:
-        - **ACSA Analysis Models**: [Ritsche et al. (2022) MSSE](https://journals.lww.com/acsm-msse/fulltext/2022/12000/deepacsa__automatic_segmentation_of.21.aspx)
-        - **Muscle Architecture Models**: [Ritsche et al. (2024) UMD](https://www.sciencedirect.com/science/article/abs/pii/S0301562923003423)
+        - **ACSA Analysis Models**: [Vastus Lateralis, Rectus Femoris, Biceps Femoris, Vastus Medialis](LINK)
+        - **Muscle Architecture Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
+        - **Muscle Aponeurosis Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
 
         These models are selected to serve as reliable benchmarks, not for publicity but to encourage collaboration and improvement. 
         Additional benchmark models for other segmentation tasks are under development.
@@ -575,7 +577,7 @@ elif selected_tab == "Benchmarks":
 
     # Performance Metrics Section
     st.markdown("---")
-    
+
     st.markdown(
         """
         ### 📊 Performance Metrics
@@ -591,9 +593,11 @@ elif selected_tab == "Benchmarks":
 
         st.markdown("#### Algorithm Training Metrics")
         # Description of Calculation
-        st.markdown("""
+        st.markdown(
+            """
                     All metrics are calculated during model training...
-                    """)
+                    """
+        )
 
         fig = display_training_metrics()
         st.pyplot(fig)
@@ -627,27 +631,29 @@ elif selected_tab == "Benchmarks":
     with st.expander("📐 Muscle Geometry Comparability Metrics", expanded=False):
         st.markdown("#### Select Filters")
         selected_models = st.multiselect(
-            "Select Models/Algorithms to Compare", 
-            options=df["Model"], 
+            "Select Models/Algorithms to Compare",
+            options=df["Model"],
             default=df["Model"],
-            help="Choose the models you want to compare."
+            help="Choose the models you want to compare.",
         )
         selected_metric = st.selectbox(
-            "Select Metric", 
-            ["ICC", "MD", "CV%", "SEM"], 
-            help="Choose a performance metric to compare."
+            "Select Metric",
+            ["ICC", "MD", "CV%", "SEM"],
+            help="Choose a performance metric to compare.",
         )
         selected_variable = st.selectbox(
-            "Select Variable", 
-            ["FL", "PA", "MT", "RF.ACSA"], 
-            help="Choose a variable (Fascicle Length, Pennation Angle, Muscle Thickness)."
+            "Select Variable",
+            ["FL", "PA", "MT", "RF.ACSA"],
+            help="Choose a variable (Fascicle Length, Pennation Angle, Muscle Thickness).",
         )
 
         # Filter data based on selected models
         filtered_df = df[df["Model"].isin(selected_models)]
 
         # Dynamic Table for Selected Metric and Variable
-        st.markdown(f"#### Comparability for **{selected_variable} - {selected_metric}**")
+        st.markdown(
+            f"#### Comparability for **{selected_variable} - {selected_metric}**"
+        )
         metric_column = f"{selected_variable}_{selected_metric}"
         table_data = filtered_df[["Model", metric_column]].rename(
             columns={metric_column: selected_metric}
@@ -668,7 +674,17 @@ elif selected_tab == "Benchmarks":
         mask = heatmap_data.isnull()
 
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap=ListedColormap(['#D3D3D3']), ax=ax, mask=mask, linewidths=0.5, linecolor="#008080", cbar=False,)
+        sns.heatmap(
+            heatmap_data,
+            annot=True,
+            fmt=".2f",
+            cmap=ListedColormap(["#D3D3D3"]),
+            ax=ax,
+            mask=mask,
+            linewidths=0.5,
+            linecolor="#008080",
+            cbar=False,
+        )
         ax.set_title(f"All Metrics for {selected_variable}")
         st.pyplot(fig)
 
@@ -680,8 +696,8 @@ elif selected_tab == "Image Analysis":
             <h3 style="color: #000000; text-align: center;">🧙‍♂️ Automatic Analysis Algorithms</h3>
             <p style="text-align: center;">
                 Automated image analysis algorithms are pivotal for driving progress in the understanding of muscle function, 
-                adaptation, and structural assessments. At UMUD, we aim to empower researchers with state-of-the-art tools 
-                that enhance analysis efficiency and accuracy. Below, you’ll find a curated list of available automatic 
+                adaptation, and structural assessments. At UMUD, <b>we aim to empower researchers with state-of-the-art tools 
+                that enhance analysis efficiency and accuracy</b>. Below, you’ll find a curated list of available automatic 
                 analysis algorithms that have been widely used and validated in the field.
             </p>
         </div>
@@ -769,7 +785,8 @@ elif selected_tab == "Contributing":
         - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
         - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
         - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef).
-    """)
+    """
+    )
     # Pydantic form in a styled popover
     with st.expander("📝 Fill Out Dataset Metadata", expanded=False):
         st.markdown(
@@ -781,12 +798,14 @@ elif selected_tab == "Contributing":
             """,
             unsafe_allow_html=True,
         )
-        
-        validated_data = sp.pydantic_form(key="DatasetMetadataForm", model=DatasetMetadata)
+
+        validated_data = sp.pydantic_form(
+            key="DatasetMetadataForm", model=DatasetMetadata
+        )
 
         if validated_data:
             st.success("Form validated successfully!")
-            
+
             # Convert set fields to list before serialization
             validated_dict = dict(validated_data)
             for key, value in validated_dict.items():
@@ -803,7 +822,8 @@ elif selected_tab == "Contributing":
         else:
             st.warning("Please complete all required fields.")
 
-    st.write("""
+    st.write(
+        """
     2. **Submit Your Data:**
         - Email your filled-out template dictionary to [umudrepository@gmail.com](mailto:umudrepository@gmail.com).
         - Use the subject line "Dataset Contribution".
@@ -927,6 +947,73 @@ elif selected_tab == "About Us":
 
     [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
 
-    ...
+    [Christoph Leinter](https://www.chriskross.org/)
     """
     )
+
+    st.markdown("---")
+
+    st.subheader("The UMUD Roadmap")
+    # Roadmap
+    st.write(
+        "If you want to know about the future of UMUD, you can check out the roadmap below."
+    )
+    with st.expander(" 🛤️ Project Roadmap", expanded=False):
+
+        st.markdown(
+            """
+            ---
+
+            ### **Phase 1: Initial Setup (✅ Completed)**
+
+            #### Key Achievements:
+            - ✅ Established project scope and long-term goals.
+            - ✅ Built core infrastructure for the database.
+            - ✅ Designed metadata schema using Pydantic models.
+            - ✅ Set up the Streamlit-based web application.
+
+            ---
+
+            ### **Phase 2: Beta Testing (🔄 Ongoing)**
+
+            #### Objectives:
+            - 🚀 Launch a beta version of the UMUD repository for select users.
+            - 🔍 Validate metadata entries with automated tools.
+            - 📋 Collect user feedback to improve usability and functionality.
+            - 🛠️ Optimize performance and debug issues in the platform.
+
+            ---
+
+            ### **Phase 3: Community Engagement (🌟 Upcoming)**
+
+            #### Planned Actions:
+            - 🌐 Public launch of the UMUD repository.
+            - 🏆 Host a community challenge (e.g., Kaggle-style competition) for muscle ultrasound analysis.
+            - 🤝 Partner with universities and research institutions to expand the database.
+            - 📝 Provide detailed documentation for dataset submission and usage.
+
+            ---
+
+            ### **Phase 4: Expansion (🌟 Upcoming)**
+
+            #### Goals:
+            - 📊 Integrate benchmark datasets and models for muscle analysis.
+            - 📈 Add support for advanced querying and visualization features.
+            - 📦 Expand database to include new data types (e.g., elastography).
+            - 📚 Develop tutorials and educational resources for users.
+
+            ---
+
+            ### **Phase 5: Long-Term Vision (🌍 Future)**
+
+            #### Aspirations:
+            - 🏛️ Establish UMUD as the leading repository for muscle ultrasound metadata.
+            - 🔄 Continuously validate and update datasets and benchmark models.
+            - 🌎 Foster international collaboration for data sharing and research.
+            - 📖 Promote open science and transparency in musculoskeletal research.
+            ---
+
+            **Last Updated:** November 2024
+
+            """
+        )
