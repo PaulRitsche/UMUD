@@ -23,6 +23,7 @@ import seaborn as sns
 # TODO update links of benchmark models.
 # TODO complete the algorithm list
 # TODO create model page on UMUD repo
+# TODO add regex for dataset name
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -40,7 +41,7 @@ st.markdown(
 # Specify tabs
 with st.sidebar:
     logo_image_path = str(Path(__file__).with_name("webapp_files"))
-    st.image(logo_image_path + "/logo.png", use_container_width=True)
+    st.image(logo_image_path + "/logo.png", use_column_width=True)
 
     "---"
     selected_tab = option_menu(
