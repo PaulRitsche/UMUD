@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from st_aggrid import AgGrid, GridOptionsBuilder
+import seaborn as sns
+from matplotlib.colors import ListedColormap
 
 
 def display_charts(df, selected_plots, group_by_column):
@@ -115,6 +117,40 @@ def display_scoreboard(df):
 
 def display_training_metrics():
     """
+    Display the algorithm training metrics in a table format with medals for the top three models.
+    """
+    # Metrics Data
+    models = ["DeepACSA_VGG16Unet", "DLTrack_VGG16Unet"]
+    task = ["ACSA", "Fascicles"] # Keep naming constant
+    val_iou_scores = [0.89, 0.87]
+    val_dice_scores = [0.91, 0.88]
+    loss_functions = ["Binary Cross Entropy", "Binary Cross Entropy"]
+    training_epochs = [50, 60]
+    optimizers = ["Adam", "Adam"]
+
+    # Add medals for top three models
+    medals = ["🥇", "🥈"]
+
+    # Create DataFrame
+    metrics_df = pd.DataFrame({
+        "Rank": medals,
+        "Model": models,
+        "Segmentation Task": task,
+        "Validation IoU": val_iou_scores,
+        "Validation Dice": val_dice_scores,
+        "Loss Function": loss_functions,
+        "Training Epochs": training_epochs,
+        "Optimizer": optimizers
+    })
+
+    # Display the table in Streamlit
+    st.markdown("### Model Performance Metrics")
+    st.dataframe(metrics_df, hide_index=True)
+
+
+# Currently not used
+def display_training_metrics_barplot():
+    """
     Display the algorithm training metrics based on entered data.
 
     Returns
@@ -126,6 +162,7 @@ def display_training_metrics():
     models = ["DeepACSA", "DL_Track_US", "Ultratrack", "SMA"]
     val_iou_scores = [0.89, 0.87, 0.81, 0.77]
     val_dice_scores = [0.91, 0.88, 0.84, 0.80]
+
 
     # Create Bar Chart
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -143,3 +180,193 @@ def display_training_metrics():
     ax.legend()
 
     return fig
+
+
+def display_data_warning():
+    """
+    Function to display warning about algorithm performance.
+    """
+    with st.expander("⚠️ **Garbage In, Garbage Out** ⚠️", expanded=False):
+        st.markdown(
+            """
+            <style>
+            .custom-expander .streamlit-expanderHeader {
+                justify-content: center;
+            }
+            </style>
+            <div style="padding: 10px; border-left: 4px solid #FF0000; background-color: #FFF5F5;">
+                <p style="text-align: justify; font-size: 14px;">
+                    Analysis algorithms and neural networks are only as good as the data they are trained/tested on. <b>Poor data quality</b>, lack of diversity, or biases in training 
+                    datasets can result in models with limited generalizability and <b>unreliable outcomes</b>.
+                </p>
+                <p style="text-align: justify; font-size: 14px;">
+                    Muscle ultrasonography poses challenges such as variability in protocols, anatomical differences, and inconsistencies in manual analyses. 
+                    These factors directly impact algorithm performance, and <b>results may not always meet expectations on your specific data.</b>
+                </p>
+                <p style="text-align: justify; font-size: 14px;">
+                    Always validate findings rigorously and <b>critically evaluate the accuracy, reliability and reproducibility of the tools you use.</b>
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+def display_roadmap():
+    """
+    Function to display UMUD Roadmap.
+    """
+    with st.expander(" 🛤️ **Project Roadmap**", expanded=False):
+
+        st.markdown(
+            """
+            ---
+
+            ### **Phase 1: Initial Setup (✅ Completed)**
+
+            #### Key Achievements:
+            - ✅ Established project scope and long-term goals.
+            - ✅ Built core infrastructure for the database.
+            - ✅ Designed metadata schema using Pydantic models.
+            - ✅ Set up the Streamlit-based web application.
+
+            ---
+
+            ### **Phase 2: Beta Testing (🔄 Ongoing)**
+
+            #### Objectives:
+            - 🚀 Launch a beta version of the UMUD repository for select users.
+            - 🔍 Validate metadata entries with automated tools.
+            - 📋 Collect user feedback to improve usability and functionality.
+            - 🛠️ Optimize performance and debug issues in the platform.
+
+            ---
+
+            ### **Phase 3: Community Engagement (🌟 Upcoming)**
+
+            #### Planned Actions:
+            - 🌐 Public launch of the UMUD repository.
+            - 🏆 Host a community challenge (e.g., Kaggle-style competition) for muscle ultrasound analysis.
+            - 🤝 Partner with universities and research institutions to expand the database.
+            - 📝 Provide detailed documentation for dataset submission and usage.
+
+            ---
+
+            ### **Phase 4: Expansion (🌟 Upcoming)**
+
+            #### Goals:
+            - 📊 Integrate benchmark datasets and models for muscle analysis.
+            - 📈 Add support for advanced querying and visualization features.
+            - 📦 Expand database to include new data types (e.g., elastography).
+            - 📚 Develop tutorials and educational resources for users.
+
+            ---
+
+            ### **Phase 5: Long-Term Vision (🌍 Future)**
+
+            #### Aspirations:
+            - 🏛️ Establish UMUD as the leading repository for muscle ultrasound metadata.
+            - 🔄 Continuously validate and update datasets and benchmark models.
+            - 🌎 Foster international collaboration for data sharing and research.
+            - 📖 Promote open science and transparency in musculoskeletal research.
+            ---
+
+            **Last Updated:** November 2024
+
+            """
+        )
+
+
+def display_comparability_statistics():
+    """
+    Display comparability statistics for muscle geometry models in an interactive Streamlit UI.
+
+    Parameters:
+    - data: dict
+        The dataset containing models and metrics.
+    """
+    data = {
+        "Model": ["DeepACSA", "DL_Track_US", "Ultratrack", "SMA"],
+        "RF.ACSA_ICC": [0.99, None, None, None],
+        "RF.ACSA_MD": [0.99, None, None, None],
+        "RF.ACSA_CV%": [0.99, None, None, None],
+        "FL_ICC": [None, 0.88, 0.85, 0.80],
+        "FL_MD": [None, 1.5, 1.8, 2.0],
+        "FL_CV%": [None, 5.0, 5.5, 6.0],
+        "PA_ICC": [None, 0.87, 0.84, 0.78],
+        "PA_MD": [None, 2.3, 2.5, 2.7],
+        "PA_CV%": [None, 5.5, 6.0, 6.5],
+        "MT_ICC": [None, 0.89, 0.86, 0.81],
+        "MT_MD": [None, 1.2, 1.4, 1.6],
+        "MT_CV%": [None, 4.0, 4.2, 4.5],
+    }
+    df = pd.DataFrame(data)
+
+    st.markdown("#### Select Filters")
+    selected_models = st.multiselect(
+        "Select Models/Algorithms to Compare",
+        options=df["Model"],
+        default=df["Model"],
+        help="Choose the models you want to compare.",
+    )
+    selected_metric = st.selectbox(
+        "Select Metric",
+        ["ICC", "MD", "CV%"],
+        help="Choose a performance metric to compare.",
+    )
+    selected_variable = st.selectbox(
+        "Select Variable",
+        ["FL", "PA", "MT", "RF.ACSA"],
+        help="Choose a variable (Fascicle Length, Pennation Angle, Muscle Thickness).",
+    )
+
+    # Filter data based on selected models
+    filtered_df = df[df["Model"].isin(selected_models)]
+
+    # Define metric column based on the selected variable and metric
+    metric_column = f"{selected_variable}_{selected_metric}"
+
+    # Filter and rename the table
+    table_data = filtered_df[["Model", metric_column]].rename(
+        columns={metric_column: selected_metric}
+    ).sort_values(by=selected_metric, ascending=False)
+
+    # Assign medals to the top three rows
+    medals = {0: "🥇", 1: "🥈", 2: "🥉"}
+    table_data.insert(0, "Rank", [medals.get(i, "") for i in range(len(table_data))])
+
+    # Display the table with medals
+    st.markdown(f"#### Comparability for **{selected_variable} - {selected_metric}**")
+    st.dataframe(table_data, use_container_width=True, hide_index=True)
+
+
+    # Heatmap for All Metrics of a Selected Variable
+    st.markdown(f"#### Comparability Map for **{selected_variable}**")
+    heatmap_data = filtered_df[
+        [col for col in df.columns if selected_variable in col]
+    ].set_index(filtered_df["Model"])
+    heatmap_data.columns = [col.split("_")[1] for col in heatmap_data.columns]
+
+    # Ensure numeric data
+    heatmap_data = heatmap_data.apply(pd.to_numeric, errors="coerce")
+
+    # Create a mask for NaN values
+    mask = heatmap_data.isnull()
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.heatmap(
+        heatmap_data,
+        annot=True,
+        fmt=".2f",
+        cmap=ListedColormap(["#D3D3D3"]),
+        ax=ax,
+        mask=mask,
+        linewidths=0.5,
+        linecolor="#008080",
+        cbar=False,
+    )
+    ax.set_title(f"All Metrics for {selected_variable}")
+    st.pyplot(fig)
+
+
+

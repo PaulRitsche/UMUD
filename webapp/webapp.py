@@ -9,7 +9,7 @@ import json
 from templates.template_dictionary import template_data
 import streamlit_pydantic as sp
 from helpers.loading_functions import load_dua, read_newsfeed, get_data
-from helpers.display_functions import display_charts, display_training_metrics
+from helpers.display_functions import display_charts, display_training_metrics, display_data_warning, display_roadmap, display_comparability_statistics
 from helpers.data_tools import *
 from helpers.pydantic_models import DatasetMetadata
 from helpers.footer import add_footer
@@ -17,13 +17,11 @@ import numpy as np
 import seaborn as sns
 
 # TODO upload other dicts
-# TODO include benchmark zip and complete benchmark Tab
-# TODO discuss how we actually approach this? Should we refer to the training images of DLTrack/DeepACSA and the report the training data?
-# I mean, we do not even know that ML models are superior, but other algorithms cannot report this?
+# TODO complete benchmark Tab
 # TODO update links of benchmark models.
 # TODO complete the algorithm list
 # TODO create model page on UMUD repo
-# TODO add regex for dataset name
+# TODO adjust rank comparability, high is not always better
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -85,12 +83,14 @@ if selected_tab == "Home":
         unsafe_allow_html=True,
     )
 
+    st.markdown("---")
+
     st.markdown(
         """
     <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
         <h4 style="text-align: center;">Key Features</h4>
         <ul style="list-style-type: none; padding-left: 0; text-align: left; font-size: 16px;">
-            <li>📁 <strong>Variety of Data</strong>: Access images, videos, and 3DUS data.</li>
+            <li>📁 <strong>Variety of Data</strong>: Access images, videos, and volumetric data.</li>
             <li>🏷️ <strong>Labeled Datasets</strong>: Focused on datasets with comprehensive labels.</li>
             <li>🔍 <strong>Metadata Indexing</strong>: Metadata indexing for efficient searching.</li>
             <li>✨ <strong>Expert Standards</strong>: Expert-analyzed benchmarks and models.</li>
@@ -100,25 +100,27 @@ if selected_tab == "Home":
         unsafe_allow_html=True,
     )
 
+    st.markdown("---")
+
     # About UMUD Section
-    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(
         """
         ### About UMUD
         **⚠️ This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions. ⚠️**
 
-        The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos, 3DUS data, and shear wave elastography data, with a focus on providing labeled datasets for training and research purposes.
+        The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos and volumetric data, with a focus on providing labeled datasets for training and research purposes.
         
         Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeltal ultrasonography datasets.
         
         Moreover, as part of the [ORMIR](https://www.ormir.org/) community, we aim to set analysis standards by offering benchmark datasets and models, and organizing community challenges.
         """
     )
+    
+    st.markdown("---")
 
     news_items_path = str(Path(__file__).with_name("webapp_files"))
     news_items = read_newsfeed(news_items_path + "/newsfeed.txt")
 
-    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### 📰 Newsfeed")
     newsfeed_container = """
     <style>
@@ -147,8 +149,8 @@ if selected_tab == "Home":
     newsfeed_container += "</div>"
     st.markdown(newsfeed_container, unsafe_allow_html=True)
 
-    # Partner Section
-    st.markdown("<br>", unsafe_allow_html=True)
+    # Collaborator Section
+    st.markdown("---")
     st.markdown("### Our Collaborators")
 
     partners = [
@@ -186,7 +188,7 @@ if selected_tab == "Home":
             st.markdown(
                 f"<a href='{partner['link']}' target='_blank'>", unsafe_allow_html=True
             )
-            st.image(partner["logo"], use_container_width=True)
+            st.image(partner["logo"], use_column_width=True)
             st.markdown("</a>", unsafe_allow_html=True)
 
     # Closing message
@@ -261,7 +263,7 @@ elif selected_tab == "Datasets":
             st.markdown("---")
 
             # Data Usage Agreement section in an expander
-            with st.expander("Data Usage Agreement", expanded=False):
+            with st.expander("** 📜 Data Usage Agreement**", expanded=False):
                 st.markdown(load_dua())  # Display DUA content
 
             # Warning and submit button
@@ -320,7 +322,7 @@ elif selected_tab == "Database":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    with st.expander("Data Usage Agreement"):
+    with st.expander("**📜 Data Usage Agreement**"):
         st.warning("You must agree to the Data Usage Agreement before proceeding.")
         st.markdown(load_dua())  # Display DUA content
 
@@ -344,7 +346,7 @@ elif selected_tab == "Database":
         st.markdown("##### Dataset Overview")
         filtered_df = filter_dataframe(df_clean)
 
-        with st.expander("Download Filtered Datasets...", expanded=False):
+        with st.expander("**📥 Download Filtered Datasets...**", expanded=False):
             st.write(filtered_df)
             # Add download button for the filtered dataframe
             get_download_button(filtered_df)
@@ -521,11 +523,11 @@ elif selected_tab == "Benchmarks":
         <h3 style="text-align: center; color: #008080;">✨ Benchmarking Muscle Ultrasound Analysis</h3>
         <p style="text-align: center;">
             The Benchmark tab helps evaluate <b>muscle geometry analysis algorithms</b> in ultrasonography. Key parameters include 
-            <b>anatomical cross-sectional area, fascicle length, pennation angle, and muscle thickness</b>, essential for understanding muscle function 
+            <b>anatomical cross-sectional area (ACSA), fascicle length, pennation angle, and muscle thickness</b>, essential for understanding muscle function 
             and adaptation. Manual analysis, though a gold standard, is labor-intensive and subjective.  
         </p>
         <p style="text-align: center;">
-            This platform provides a <b>common ground for comparing and benchmarking</b> manual and automated methods, advancing research with standardized evaluations.
+            We try to provide a <b>common ground for comparing and benchmarking</b> manual and automated methods, advancing research with standardized evaluations.
         </p>
     </div>
     """,
@@ -538,21 +540,24 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 📂 Benchmark Image Dataset
-        To support operator training and the development of automated image analysis algorithms, we provide a downloadable dataset 
-        with manual analyses by **five expert raters**. The dataset includes:
-        - **Cross-sectional area (ACSA) images**
-        - **Muscle architecture images**
+        UMUD provides the first downloadable benchmark muscle architecture and morphology datasets, analyzed by **six expert raters**. 
+        Additionally, we provide two training datasets (vastus lateralis ACSA & lower limb muscle architecture) as a training benchmark for neural networks. A detailed description of the analyses can be found in the Readme.md accompanying the dataset.
+
+        The datasets include:
+        - **ACSA images**
+        - **Muscle architecture images** (including images with annotations)
 
         This dataset allows you to:
-        - Evaluate your models/algorithm agains a common geound truth.
-        - Compare your manual analysis with expert annotations.
-        - Learn how to analyse muscle geometry in ultrasonography images.
+        - **Evaluate** your models/algorithm agains a common ground truth.
+        - **Compare** your manual analysis with expert annotations.
+        - **Learn** how to analyse muscle geometry in ultrasonography images.
 
         📥 **[Download the Dataset from the UMUD Repository](#TODO)**  
 
-        The dataset contains original muscle geometry ultrasound images, the analysed images and the corresponding manual analysis results:
+        The dataset contains original muscle geometry ultrasound images, the analysed images and the corresponding manual analysis results: 
         - **35 architectural images** from the vastus lateralis, gastrocnemius medialis and tibialis anterior acquired with different devices are included.
-        - **30 panoramic images of rectus femoris anatomical cross-sectional area** acquired with different devices and at different muscle regions are included as well.
+        - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions are included as well.
+        - **Rectus femoris ACSA and lower limb muscle architecture training datasets** for neural networks containing ~1000 images each.
 
         🔍 We are **continuously inlcuding more images and muscles** in our benchmark datasets.
         """
@@ -564,16 +569,25 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 🧠 Benchmark Models
-        We offer benchmark models for muscle architecture and ACSA analysis, implemented in Python and integrated with 
-        openly available datasets. These models are derived from published research:
+        """)
+    
+    # Display warning about data quality
+    display_data_warning()
+
+    st.markdown(
+        """
+        Additionally, we provide benchmark models for muscle architecture and ACSA analysis, implemented in Python and integrated with 
+        openly available datasets. These models are derived from published research and python packages (DL_Track, DeepACSA):
         - **ACSA Analysis Models**: [Vastus Lateralis, Rectus Femoris, Biceps Femoris, Vastus Medialis](LINK)
         - **Muscle Architecture Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
         - **Muscle Aponeurosis Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
 
-        These models are selected to serve as reliable benchmarks, not for publicity but to encourage collaboration and improvement. 
-        Additional benchmark models for other segmentation tasks are under development.
+        These models are selected to serve as reliable benchmarks, not for publicity but to encourage collaboration and improvement based on a standardized common ground.
+        The performance of the models is displayed below. Additional benchmark models for other segmentation tasks are under development.
         """
     )
+
+    
 
     # Performance Metrics Section
     st.markdown("---")
@@ -581,112 +595,43 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 📊 Performance Metrics
-        Benchmarking and scoring performance is essential for transparency and reproducibility. The performance metrics are dependent on the dataset
-        which is why we chose them represent the current best practices. Here is a short description of the metrics:
-        - **IoU (Intersection over Union)**: Measures overlap between predicted and ground truth areas.
-        - **Dice Coefficient**: Measures similarity between two sets of data.
+        Benchmarking and scoring performance is essential for comparability, transparency and reproducibility. The performance metrics are dependent on the dataset
+        which is why we chose them represent the current best practices. 
         By expanding the fields below, you can take a detailed look at the model/algorithm performance on our test images.
         """
     )
 
-    with st.expander("🤗 Algorithm Training Metrics"):
+    with st.expander("**🤗 Algorithm Training Metrics**"):
 
         st.markdown("#### Algorithm Training Metrics")
         # Description of Calculation
         st.markdown(
             """
-                    All metrics are calculated during model training...
-                    """
+            All metrics are calculated during model training on the validation folds using the mean value of five fold cross-validation. Here is a short description of the metrics:
+            - **IoU (Intersection over Union)**: Measures overlap between predicted and ground truth areas.
+            - **Dice Coefficient**: Measures similarity between two sets of data.
+            """
         )
 
-        fig = display_training_metrics()
-        st.pyplot(fig)
-
-    # Example data for models, metrics, and variables
-    data = {
-        "Model": ["DeepACSA", "DL_Track_US", "Ultratrack", "SMA"],
-        "RF.ACSA_ICC": [0.99, None, None, None],
-        "RF.ACSA_MD": [0.99, None, None, None],
-        "RF.ACSA_CV%": [0.99, None, None, None],
-        "RF.ACSA_SEM": [None, None, None, None],
-        "FL_ICC": [None, 0.88, 0.85, 0.80],
-        "FL_MD": [None, 1.5, 1.8, 2.0],
-        "FL_CV%": [None, 5.0, 5.5, 6.0],
-        "FL_SEM": [None, 0.9, 1.0, 1.1],
-        "PA_ICC": [None, 0.87, 0.84, 0.78],
-        "PA_MD": [None, 2.3, 2.5, 2.7],
-        "PA_CV%": [None, 5.5, 6.0, 6.5],
-        "PA_SEM": [None, 1.0, 1.1, 1.2],
-        "MT_ICC": [None, 0.89, 0.86, 0.81],
-        "MT_MD": [None, 1.2, 1.4, 1.6],
-        "MT_CV%": [None, 4.0, 4.2, 4.5],
-        "MT_SEM": [None, 0.8, 0.9, 1.0],
-    }
-
-    # Convert to DataFrame
-    df = pd.DataFrame(data)
+        display_training_metrics()
+        # fig = display_training_metrics_barplots()
+        # st.pyplot(fig)
 
     # Dropdowns for model selection and metric filtering
-    # TODO Should we do this muscle specific? Because at least for ACSA it is relevant...
-    with st.expander("📐 Muscle Geometry Comparability Metrics", expanded=False):
-        st.markdown("#### Select Filters")
-        selected_models = st.multiselect(
-            "Select Models/Algorithms to Compare",
-            options=df["Model"],
-            default=df["Model"],
-            help="Choose the models you want to compare.",
-        )
-        selected_metric = st.selectbox(
-            "Select Metric",
-            ["ICC", "MD", "CV%", "SEM"],
-            help="Choose a performance metric to compare.",
-        )
-        selected_variable = st.selectbox(
-            "Select Variable",
-            ["FL", "PA", "MT", "RF.ACSA"],
-            help="Choose a variable (Fascicle Length, Pennation Angle, Muscle Thickness).",
-        )
+    with st.expander("**📐 Muscle Geometry Comparability Statistics**", expanded=False):
 
-        # Filter data based on selected models
-        filtered_df = df[df["Model"].isin(selected_models)]
-
-        # Dynamic Table for Selected Metric and Variable
         st.markdown(
-            f"#### Comparability for **{selected_variable} - {selected_metric}**"
-        )
-        metric_column = f"{selected_variable}_{selected_metric}"
-        table_data = filtered_df[["Model", metric_column]].rename(
-            columns={metric_column: selected_metric}
-        )
-        st.table(table_data)
-
-        # Heatmap for All Metrics of a Selected Variable
-        st.markdown(f"#### Comparability Map for **{selected_variable}**")
-        heatmap_data = filtered_df[
-            [col for col in df.columns if selected_variable in col]
-        ].set_index(filtered_df["Model"])
-        heatmap_data.columns = [col.split("_")[1] for col in heatmap_data.columns]
-
-        # Ensure numeric data
-        heatmap_data = heatmap_data.apply(pd.to_numeric, errors="coerce")
-
-        # Create a mask for NaN values
-        mask = heatmap_data.isnull()
-
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.heatmap(
-            heatmap_data,
-            annot=True,
-            fmt=".2f",
-            cmap=ListedColormap(["#D3D3D3"]),
-            ax=ax,
-            mask=mask,
-            linewidths=0.5,
-            linecolor="#008080",
-            cbar=False,
-        )
-        ax.set_title(f"All Metrics for {selected_variable}")
-        st.pyplot(fig)
+        """
+        All statistics are calculated compared to the manual analysis by our expert raters. Here is a short description of the statistics. (For simplicity we omit compatibility intervals, keep this in mind when interpreting the data.):
+        - **Intraclass Correlation Coefficient (ICC)**:  
+        A statistical measure of reliability that assesses the consistency of measurements made by different observers or instruments. ICC values range from 0 to 1, where higher values indicate better reliability.
+        - **Mean Difference (MD)**:  
+        The average absolute difference between measurements. It quantifies bias between methods or observers, with lower values indicating better agreement.
+        - **Coefficient of Variation (CV%)**:  
+        A measure of relative variability expressed as a percentage. It is the ratio of the standard deviation to the mean, used to compare variability across datasets.
+        """)
+        
+        display_comparability_statistics()
 
 elif selected_tab == "Image Analysis":
     st.markdown("---")
@@ -708,44 +653,53 @@ elif selected_tab == "Image Analysis":
     algorithms = [
         {
             "name": "DeepACSA",
-            "description": "DeepACSA utilizes deep learning techniques to automatically analyze muscle ACSA in ultrasound images, providing quick and reliable measurements.",
+            "description": "DeepACSA is a python package using convolutional neural networks trained on ultrasonography images of the human lower limb. Specifically, the dataset included transversal ultrasonography images from the human gastrocnemius medialis and lateralis, vastus lateralis and rectus femoris. The algorithm is able to analyse muscle anatomical cross-sectional area, echo intensity and muscle volume.",
             "link": "https://deepacsa.readthedocs.io/en/latest/",
         },
         {
             "name": "ACSAuto",
-            "description": "ACSAuto is an automatic analysis tool focused on muscle ACSA measurement, offering a user-friendly interface and high precision.",
+            "description": "ACSAuto is an ImageJ macro script to semi-automatically evaluate the anatomical cross-sectional area of ultrasound images. ACSA preprocesses the image with filtering and ridge detection to enable automatic scaling using a reference line. It then enhances muscle aponeuroses and identifies their boundaries using a custom function, calculating the muscle’s ACSA from a generated polygon.",
             "link": "https://github.com/PaulRitsche/ACSAuto",
         },
         {
             "name": "DL_Track_US",
-            "description": "DL_Track_US employs deep learning models for tracking muscle fascicles and architecture in ultrasound images, designed for high accuracy and reproducibility.",
+            "description": "D_Track_US is a python package using convolutional neural networks trained on a ultrasonography images of the human lower limb. Specifically, the dataset included longitudinal ultrasonography images from the human gastrocnemius medialis, tibialis anterior, soleus and vastus lateralis. The algorithm is able to analyse muscle architectural parameters (muscle thickness, fasciclelength and pennation angle) in both, single image files as well as videos.",
             "link": "https://dltrack.readthedocs.io/en/latest/index.html",
         },
         {
             "name": "UltraTrack",
-            "description": "UltraTrack is a software tool for tracking muscle fascicles in ultrasound images. It provides robust and accurate tracking of muscle architecture parameters.",
+            "description": "UltraTrack is a software program for tracking muscle fascicle length and orientation changes through sequences of B-mode ultrasound images. It implements an affine extension to an optic flow algorithm to track movement of the muscle fascicle end-points throughout the sequence of images.",
             "link": "https://sites.google.com/site/ultratracksoftware/home",
         },
         {
             "name": "SMA",
-            "description": "SMA (Simple Muscle Analysis) offers a semi-automated approach for analyzing muscle architecture, balancing automation with user control for higher accuracy.",
+            "description": "SMA (Simple Muscle Analysis) is an ImageJ macro to automate the analysis of muscle architecture from B-mode ultrasound images and videos. Images/frames are filtered in the spatial and frequency domains with built-in commands and external plugins to highlight aponeuroses and fascicles. Fascicle dominant orientation is then computed in regions of interest using the OrientationJ plugin.",
             "link": "https://github.com/oseynnes/SMA",
         },
+        {
+            "name": "TimTrack",
+            "description": "TimTrack is a drift-free Matlab algorithm for estimating muscle architectures from ultrasound images and image videos. The algorithm uses a combination of image filtering to highlight line-like structures and line-detection procedures to obtain the overall fascicle orientation. ",
+            "link": "https://github.com/timvanderzee/ultrasound-automated-algorithm",
+        },
+
     ]
+    
+    # Display warning about image quality
+    display_data_warning()
 
     for algo in algorithms:
         st.markdown(f"**[{algo['name']}]({algo['link']})**: {algo['description']}")
 
-    dataset_path = str(Path(__file__).with_name("webapp_files"))
-    if os.path.exists(dataset_path):
-        with open(dataset_path + "/muscle_benchmark_dataset.zip", "rb") as file:
-            dataset_content = file.read()
-        st.download_button(
-            label="📦 Download Muscle Benchmark Dataset",
-            data=dataset_content,
-            file_name="muscle_benchmark_dataset.zip",
-            mime="application/zip",
-        )
+    # dataset_path = str(Path(__file__).with_name("webapp_files"))
+    # if os.path.exists(dataset_path):
+    #     with open(dataset_path + "/muscle_benchmark_dataset.zip", "rb") as file:
+    #         dataset_content = file.read()
+    #     st.download_button(
+    #         label="📦 Download Muscle Benchmark Dataset",
+    #         data=dataset_content,
+    #         file_name="muscle_benchmark_dataset.zip",
+    #         mime="application/zip",
+    #     )
 
 
 elif selected_tab == "Contributing":
@@ -788,7 +742,7 @@ elif selected_tab == "Contributing":
     """
     )
     # Pydantic form in a styled popover
-    with st.expander("📝 Fill Out Dataset Metadata", expanded=False):
+    with st.expander("**📝 Fill Out Dataset Metadata**", expanded=False):
         st.markdown(
             """
             <p style="color: #008080;">
@@ -947,7 +901,7 @@ elif selected_tab == "About Us":
 
     [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
 
-    [Christoph Leinter](https://www.chriskross.org/)
+    [Christoph Leitner](https://www.chriskross.org/)
     """
     )
 
@@ -956,64 +910,7 @@ elif selected_tab == "About Us":
     st.subheader("The UMUD Roadmap")
     # Roadmap
     st.write(
-        "If you want to know about the future of UMUD, you can check out the roadmap below."
+        "If you want to know about the future of UMUD, you can check out **the roadmap below**."
     )
-    with st.expander(" 🛤️ Project Roadmap", expanded=False):
-
-        st.markdown(
-            """
-            ---
-
-            ### **Phase 1: Initial Setup (✅ Completed)**
-
-            #### Key Achievements:
-            - ✅ Established project scope and long-term goals.
-            - ✅ Built core infrastructure for the database.
-            - ✅ Designed metadata schema using Pydantic models.
-            - ✅ Set up the Streamlit-based web application.
-
-            ---
-
-            ### **Phase 2: Beta Testing (🔄 Ongoing)**
-
-            #### Objectives:
-            - 🚀 Launch a beta version of the UMUD repository for select users.
-            - 🔍 Validate metadata entries with automated tools.
-            - 📋 Collect user feedback to improve usability and functionality.
-            - 🛠️ Optimize performance and debug issues in the platform.
-
-            ---
-
-            ### **Phase 3: Community Engagement (🌟 Upcoming)**
-
-            #### Planned Actions:
-            - 🌐 Public launch of the UMUD repository.
-            - 🏆 Host a community challenge (e.g., Kaggle-style competition) for muscle ultrasound analysis.
-            - 🤝 Partner with universities and research institutions to expand the database.
-            - 📝 Provide detailed documentation for dataset submission and usage.
-
-            ---
-
-            ### **Phase 4: Expansion (🌟 Upcoming)**
-
-            #### Goals:
-            - 📊 Integrate benchmark datasets and models for muscle analysis.
-            - 📈 Add support for advanced querying and visualization features.
-            - 📦 Expand database to include new data types (e.g., elastography).
-            - 📚 Develop tutorials and educational resources for users.
-
-            ---
-
-            ### **Phase 5: Long-Term Vision (🌍 Future)**
-
-            #### Aspirations:
-            - 🏛️ Establish UMUD as the leading repository for muscle ultrasound metadata.
-            - 🔄 Continuously validate and update datasets and benchmark models.
-            - 🌎 Foster international collaboration for data sharing and research.
-            - 📖 Promote open science and transparency in musculoskeletal research.
-            ---
-
-            **Last Updated:** November 2024
-
-            """
-        )
+    
+    display_roadmap()

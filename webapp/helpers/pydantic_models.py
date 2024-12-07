@@ -71,9 +71,9 @@ class SelectionValueFileType(str, Enum):
 
 
 class SelectionValueMuscleRegion(str, Enum):
-    PROXIMAL = "proximal"
-    MIDDLE = "middle"
-    DISTAL = "distal"
+    PROXIMAL = "Proximal"
+    MIDDLE = "Middle"
+    DISTAL = "Distal"
 
 
 class SelectionValueCaptureType(str, Enum):
@@ -96,6 +96,7 @@ class SelectionValueParticipantSex(str, Enum):
     FEMALE = "Female"
     MALE = "Male"
     BOTH = "Both"
+
 
 class SelectionValueSoftwareLicense(str, Enum):
     MIT = "MIT License"
@@ -120,6 +121,7 @@ class SelectionValueSoftwareLicense(str, Enum):
     ODC_BY = "Open Data Commons Attribution License (ODC-By)"
     ODBL = "Open Data Commons Open Database License (ODbL)"
     ODC_PDDL = "Open Data Commons Public Domain Dedication and License (PDDL)"
+
 
 class SelectionValueUltrasoundDevice(str, Enum):
     GE_LOGIQ_E9 = "GE Logiq E9"
@@ -160,9 +162,8 @@ class SelectionValueUltrasoundDevice(str, Enum):
     TELEMED_LOGICSCAN_128 = "Telemed LogicScan 128"
     TELEMED_VOLUSON_E10 = "Telemed Voluson e10"
 
+
 # Define the schema using Pydantic
-
-
 class DatasetMetadata(BaseModel):
     DATASET_NAME: str = Field(
         ...,
@@ -197,7 +198,13 @@ class DatasetMetadata(BaseModel):
         ..., description="Image type (Static, Panoramic). Choose one."
     )
     DATA_PLANE: SelectionValueImagePlane = Field(
-        ..., description="Plane in which the images/videos were collected. Choose one."
+        ..., description="Plane in which the images/videos were collected (Transverse, Longitudinal). Choose one."
+    )
+    SCANNING_FREQUENCY: Optional[int] = Field(
+        None, ge=1, le=100, description="Optional. Scanning frequency in MHz (1-100). Select value."
+    )
+    SAMPLING_RATE: Optional[int] = Field(
+        None, ge=0, le=1000, description="Optional. Sampling rate or fps (0-200). Select value."
     )
     PARTICIPANT_AGE: Optional[float] = Field(
         ..., ge=0, le=100, description="Optional. Mean age of participants (0-100). Select mean value."
@@ -226,7 +233,7 @@ class DatasetMetadata(BaseModel):
     )
     SHORT_DESCRIPTION: str = Field(
         ...,
-        max_length=500,
+        max_length=1000,
         description="Brief description of the dataset (max 500 characters). As detailed as necessary but as short as possible.",
     )
     DATASET_YEAR: str = Field(
@@ -237,6 +244,7 @@ class DatasetMetadata(BaseModel):
     PUBLICATION_LINK: Optional[str] = Field(
         ..., description="Optional. URL Link to the publication containing the data."
     )
+    DATASET_LINK: HttpUrl = Field(..., description="Link to the dataset.")
     AUTHORS: str = Field(
         ...,
         description="List of authors of the dataset, separated by commas.",
@@ -247,14 +255,17 @@ class DatasetMetadata(BaseModel):
         description="List of contact emails of the authors, separated by commas.",
         max_length=500,
     )
-    DATASET_LINK: HttpUrl = Field(..., description="Link to the dataset.")
     LICENSE: SelectionValueSoftwareLicense = Field(..., description="License under which the data is shared.")
-    SCANNING_FREQUENCY: Optional[int] = Field(
-        None, ge=1, le=100, description="Optional. Scanning frequency in Hz (1-100). Select value."
-    )
-    SAMPLING_RATE: Optional[int] = Field(
-        None, ge=0, le=200, description="Optional. Sampling rate or fps (0-200). Select value."
-    )
+
+    @validator("DATASET_NAME", allow_reuse=True)
+    def validate_dataset_name(cls, value):
+        """
+        Ensure the dataset name follows the format: DeepACSA_2022.
+        """
+        regex = r"^[A-Za-z0-9]+_[0-9]{4}$"
+        if not re.match(regex, value.strip()):
+            raise ValueError(f"Dataset name '{value}' is not in the correct format. It must be in the format 'Name_YYYY'.")
+        return value
 
 
     @validator("CONTACT", allow_reuse=True)
@@ -266,7 +277,6 @@ class DatasetMetadata(BaseModel):
                 raise ValueError(f"Invalid email address: {email}")
         return value
 
-
     @validator("AUTHORS", allow_reuse=True)
     def validate_authors(cls, value):
         """Ensure authors field is not empty."""
@@ -274,14 +284,12 @@ class DatasetMetadata(BaseModel):
             raise ValueError("Authors field cannot be empty.")
         return value
 
-
     @validator("SHORT_DESCRIPTION", allow_reuse=True)
     def validate_description(cls, value):
         """Ensure the description is not empty."""
         if not value.strip():
             raise ValueError("Short description cannot be empty.")
-        return value
-    
+        return value  
 
     @validator("DOI", allow_reuse=True)
     def validate_doi(cls, value: str) -> str:
@@ -291,7 +299,6 @@ class DatasetMetadata(BaseModel):
             if not re.match(regex, value.strip()):
                 raise ValueError(f"DOI '{value}' is not in a valid format.")
         return value
-    
 
     @validator("PUBLICATION_LINK", allow_reuse=True)
     def validate_publication_link(cls, value: str) -> str:
@@ -307,7 +314,6 @@ class DatasetMetadata(BaseModel):
             if not re.match(regex, value.strip()):
                 raise ValueError(f"Publication link '{value}' is not in a valid format.")
         return value
-    
 
     @validator("DATASET_LINK", allow_reuse=True)
     def validate_dataset_link(cls, value: str) -> str:
