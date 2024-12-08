@@ -1,13 +1,17 @@
 [project]
-dynamic = ["version"]
-version = "0.0.1-beta"
-name = "Universal Muscle Ultrasound Database"
+version = "0.0.1"
+name = "UMUD"
 requires-python = ">= 3.9"
-
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GPL-3.0-or-later",
+    "Operating System :: OS Independent",
+]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
@@ -17,3 +21,5 @@ version_provider = "pep621"
 update_changelog_on_bump = true
 major_version_zero = true
 
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
