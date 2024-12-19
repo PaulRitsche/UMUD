@@ -1,0 +1,49 @@
+{
+    "DATASET_NAME": "GasFasTrack_2019",
+    "DOI": "10.5281/zenodo.2598552",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Gastrocnemius Medialis"
+    ],
+    "MUSCLE_REGION": [
+        "Middle"
+    ],
+    "DEVICE": [
+        "Telemed SmartUs EXT"
+    ],
+    "TRANSDUCER": [
+        "LV7.5"
+    ],
+    "DATA_TYPE": "Video",
+    "FILE_TYPE": [
+        "mp4",
+        "avi",
+        "tvd"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "DATA_PLANE": [
+        "Longitudinal"
+    ],
+    "SCANNING_FREQUENCY": null,
+    "SAMPLING_RATE": 60,
+    "PARTICIPANT_AGE": null,
+    "PARTICIPANT_HEIGHT": null,
+    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 5,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "Manual annotations for fascicle length and pennation angle tracking. One fascicle and pennation angle was labelled every couple frames of the videos.",
+    "SHORT_DESCRIPTION": "The study introduced an automatic tracking algorithm to measure fascicle length and pennation angles in the gastrocnemius muscle during maximal effort contractions. Five healthy adults participated, performing isometric and isokinetic contractions on an isokinetic dynamometer, with ultrasound imaging focused on the gastrocnemius medialis. Subjects were positioned prone on a treatment table, with their right foot secured to a foot plate to align the medial malleolus with the dynamometer's spindle. Ultrasound data were captured using a TELEMED SmartUs system with a 6cm transducer (LV7.5/60/128Z-2), recording at 60 frames per second. In total, 75 videos were analyzed, with each video containing between 50 and 150 frames, producing a substantial dataset of individual images. Annotations for fascicle length and pennation angle were made manually in select frames to validate the automatic tracking algorithm. This sparse labeling approach, focusing on key frames rather than every image, enabled effective validation and provided a comparison metric between manual and automatic measurements.",
+    "DATASET_YEAR": "2019",
+    "PUBLICATION_LINK": "https://doi.org/10.7717/peerj.7120",
+    "DATASET_LINK": "https://zenodo.org/records/2598553",
+    "AUTHORS": [
+        "John F. Drazan",
+        "Todd J. Hullfish",
+        "Josh R. Baxter"
+    ],
+    "CONTACT": "josh.baxter@uphs.upenn.edu",
+    "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}

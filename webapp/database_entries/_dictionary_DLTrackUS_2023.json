@@ -1,0 +1,48 @@
+{
+    "DATASET_NAME": "DLTrackUS_2023",
+    "DOI": "10.17605/OSF.IO/7MJSC",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Gastrocnemius Medialis",
+        "Soleus",
+        "Tibialis Anterior",
+        "Vastus Lateralis"
+    ],
+    "MUSCLE_REGION": [
+        "Middle"
+    ],
+    "DEVICE": [
+        "Hitachi Aloka Alpha-10",
+        "Telemed Echo Blaster 128",
+        "Philips HD11",
+        "Telemed ArtUs EXT-1H"
+    ],
+    "TRANSDUCER": null,
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": "tif",
+    "IMAGE_TYPE": "Static",
+    "DATA_PLANE": "Longitudinal",
+    "SCANNING_FREQUENCY": null,
+    "SAMPLING_RATE": null,
+    "PARTICIPANT_AGE": null,
+    "PARTICIPANT_HEIGHT": null,
+    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 1,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "The labels are provided as binary masks with visible fascicle fragments and aponeuroses being labeled.",
+    "SHORT_DESCRIPTION": "The dataset includes males and females and most images were from young participants (age range:18\u221235y, 57% males), although data from older participants aged up to about 70 and older than 60 are also included (20% of whole data set and 60% of those were males). Around 570 images for the aponeurosis model and 310 images for the muscle fascicle model were included. Along with the corresponding images, the manually created binary masks were used as ground truth labels to train the two deep neural networks. The data is augmented to approximately 1700 aponeurosis and fascicle images using height and width shift, brightness and rotation. The augmentation operations are all applied in random order to an image with in the specified range. The images are sampled at random from ultrasound video data during several dynamic conditions.",
+    "DATASET_YEAR": "2024",
+    "PUBLICATION_LINK": "https://doi.org/10.1016/j.ultrasmedbio.2023.10.011",
+    "DATASET_LINK": "https://osf.io/xbawc/",
+    "AUTHORS": [
+        "Paul Ritsche",
+        "Martino V. Franchi",
+        "Oliver Faude",
+        "Taija Finni",
+        "Olivier Seynnes",
+        "Neil J. Cronin"
+    ],
+    "CONTACT": "paul.ritsche@unibas.ch",
+    "LICENSE": "Apache License 2.0"
+}

@@ -9,7 +9,13 @@ import json
 from templates.template_dictionary import template_data
 import streamlit_pydantic as sp
 from helpers.loading_functions import load_dua, read_newsfeed, get_data
-from helpers.display_functions import display_charts, display_training_metrics, display_data_warning, display_roadmap, display_comparability_statistics
+from helpers.display_functions import (
+    display_charts,
+    display_training_metrics,
+    display_data_warning,
+    display_roadmap,
+    display_comparability_statistics,
+)
 from helpers.data_tools import *
 from helpers.pydantic_models import DatasetMetadata
 from helpers.footer import add_footer
@@ -22,6 +28,7 @@ import seaborn as sns
 # TODO complete the algorithm list
 # TODO create model page on UMUD repo
 # TODO adjust rank comparability, high is not always better
+# TODO adjust jscon schema based on new pydanntic models
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -87,7 +94,7 @@ if selected_tab == "Home":
 
     st.markdown(
         """
-    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
+    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px; background-color: #ccdfe1;">
         <h4 style="text-align: center;">Key Features</h4>
         <ul style="list-style-type: none; padding-left: 0; text-align: left; font-size: 16px;">
             <li>📁 <strong>Variety of Data</strong>: Access images, videos, and volumetric data.</li>
@@ -106,8 +113,15 @@ if selected_tab == "Home":
     st.markdown(
         """
         ### About UMUD
-        **⚠️ This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions. ⚠️**
+        """
+    )
 
+    st.warning(
+        "**This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions.**",
+        icon=":material/warning:",
+    )
+    st.markdown(
+        """
         The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos and volumetric data, with a focus on providing labeled datasets for training and research purposes.
         
         Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeltal ultrasonography datasets.
@@ -115,7 +129,7 @@ if selected_tab == "Home":
         Moreover, as part of the [ORMIR](https://www.ormir.org/) community, we aim to set analysis standards by offering benchmark datasets and models, and organizing community challenges.
         """
     )
-    
+
     st.markdown("---")
 
     news_items_path = str(Path(__file__).with_name("webapp_files"))
@@ -211,7 +225,7 @@ elif selected_tab == "Datasets":
     # Intro section with concise and readable text
     st.markdown(
         """
-        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px; background-color: #ccdfe1;">
             <h4 style="text-align: center;">📈 Explore Muscle Ultrasound Datasets</h4>
             <p style="text-align: center;">
                 Use this tab to <b>query datasets by applying specific metadata filters</b>. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
@@ -263,7 +277,7 @@ elif selected_tab == "Datasets":
             st.markdown("---")
 
             # Data Usage Agreement section in an expander
-            with st.expander("** 📜 Data Usage Agreement**", expanded=False):
+            with st.expander("**📜 Data Usage Agreement**", expanded=False):
                 st.markdown(load_dua())  # Display DUA content
 
             # Warning and submit button
@@ -308,7 +322,7 @@ elif selected_tab == "Database":
     # Intro section with concise and readable text
     st.markdown(
         """
-        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px; background-color: #ccdfe1;">
             <h4 style="text-align: center;">💾 Database Exploration Tool</h4>
             <p style="text-align: center;">
                 In this tab, you can <b>explore the entire musculoskeletal ultrasonography datasets</b> stored in the database. Select the relevant filters, input the values, and retrieve datasets that meet your criteria.
@@ -387,7 +401,7 @@ elif selected_tab == "Challenge":
     # Intro section with concise and readable text
     st.markdown(
         """
-    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px;">
+    <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px; background-color: #ccdfe1;">
         <h4 style="text-align: center;">🏆 UMUD Community Challenge</h4>
         <p style="text-align: center;">
         <strong>⚠️ The challenge is currently not active ⚠️</strong>
@@ -519,7 +533,7 @@ elif selected_tab == "Benchmarks":
     # Benchmark Tab Header
     st.markdown(
         """
-    <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #f9f9f9;">
+    <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #ccdfe1;">
         <h3 style="text-align: center; color: #008080;">✨ Benchmarking Muscle Ultrasound Analysis</h3>
         <p style="text-align: center;">
             The Benchmark tab helps evaluate <b>muscle geometry analysis algorithms</b> in ultrasonography. Key parameters include 
@@ -569,8 +583,9 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 🧠 Benchmark Models
-        """)
-    
+        """
+    )
+
     # Display warning about data quality
     display_data_warning()
 
@@ -586,8 +601,6 @@ elif selected_tab == "Benchmarks":
         The performance of the models is displayed below. Additional benchmark models for other segmentation tasks are under development.
         """
     )
-
-    
 
     # Performance Metrics Section
     st.markdown("---")
@@ -621,7 +634,7 @@ elif selected_tab == "Benchmarks":
     with st.expander("**📐 Muscle Geometry Comparability Statistics**", expanded=False):
 
         st.markdown(
-        """
+            """
         All statistics are calculated compared to the manual analysis by our expert raters. Here is a short description of the statistics. (For simplicity we omit compatibility intervals, keep this in mind when interpreting the data.):
         - **Intraclass Correlation Coefficient (ICC)**:  
         A statistical measure of reliability that assesses the consistency of measurements made by different observers or instruments. ICC values range from 0 to 1, where higher values indicate better reliability.
@@ -629,15 +642,16 @@ elif selected_tab == "Benchmarks":
         The average absolute difference between measurements. It quantifies bias between methods or observers, with lower values indicating better agreement.
         - **Coefficient of Variation (CV%)**:  
         A measure of relative variability expressed as a percentage. It is the ratio of the standard deviation to the mean, used to compare variability across datasets.
-        """)
-        
+        """
+        )
+
         display_comparability_statistics()
 
 elif selected_tab == "Image Analysis":
     st.markdown("---")
     st.markdown(
         """
-        <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #f9f9f9;">
+        <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #ccdfe1;">
             <h3 style="color: #000000; text-align: center;">🧙‍♂️ Automatic Analysis Algorithms</h3>
             <p style="text-align: center;">
                 Automated image analysis algorithms are pivotal for driving progress in the understanding of muscle function, 
@@ -681,11 +695,12 @@ elif selected_tab == "Image Analysis":
             "description": "TimTrack is a drift-free Matlab algorithm for estimating muscle architectures from ultrasound images and image videos. The algorithm uses a combination of image filtering to highlight line-like structures and line-detection procedures to obtain the overall fascicle orientation. ",
             "link": "https://github.com/timvanderzee/ultrasound-automated-algorithm",
         },
-
     ]
-    
+
     # Display warning about image quality
     display_data_warning()
+
+    st.markdown("---")
 
     for algo in algorithms:
         st.markdown(f"**[{algo['name']}]({algo['link']})**: {algo['description']}")
@@ -708,7 +723,7 @@ elif selected_tab == "Contributing":
 
     st.markdown(
         """
-        <div style="padding: 20px; border: 2px solid #008080; border-radius: 10px;">
+        <div style="padding: 20px; border: 2px solid #008080; border-radius: 10px; background-color: #ccdfe1">
             <h3 style="text-align: center; color: #000000;">💕 Contribute Your Data to UMUD</h3>
             <p>
                 By sharing your datasets, you help create a valuable resource for researchers worldwide. <b>Follow four steps to contribute: Data Preparation,
@@ -723,22 +738,20 @@ elif selected_tab == "Contributing":
     st.markdown("---")
 
     st.subheader("Contributing Data")
+
+    st.warning(
+        "**Important:** Make sure you have permission to share the data openly. UMUD is not responsible for any ethical or legal issues that may arise from sharing your data.",
+        icon=":material/warning:",
+    )
+
     st.write(
         """
-    If you have muscle ultrasound datasets that you would like to share with the scientific community, you can contribute them to the UMUD database. 
-    **Important:** Make sure you have permission to share the data openly. UMUD is not responsible for any ethical or legal issues that may arise from sharing your data.
-
-    **Why Contribute?**  
-    By sharing your data, you help create a valuable resource for researchers and developers. Your contribution can lead to new discoveries and advancements in muscle research.
-
-    **How to Contribute Your Data - Step by Step:**
-
-    1. **Prepare Your Data:**
-        - Make sure your data is properly labeled and formatted according to UMUD standards.  
-        - Use the metadata entryfields below to create a metadata .json file for your data.   
-        - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
-        - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
-        - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef).
+        1. **Prepare Your Data:**
+            - Make sure your data is properly labeled and formatted according to UMUD standards.  
+            - Use the metadata entryfields below to create a metadata .json file for your data.   
+            - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
+            - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
+            - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef).
     """
     )
     # Pydantic form in a styled popover
@@ -795,6 +808,8 @@ elif selected_tab == "Contributing":
     """
     )
 
+    st.markdown("---")
+
     st.subheader("Providing Feedback")
     st.write(
         """
@@ -805,6 +820,8 @@ elif selected_tab == "Contributing":
     - **General Feedback**: For any other feedback or comments, you can also use the above email address.
     """
     )
+
+    st.markdown("---")
 
     st.subheader("Contributing to the Codebase")
     st.write(
@@ -825,7 +842,7 @@ elif selected_tab == "About Us":
     # Intro section with concise and readable text
     st.markdown(
         """
-        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px">
+        <div style="padding: 10px; border: 2px solid #008080; border-radius: 10px; border-width: 3px; background-color: #ccdfe1;">
             <h4 style="text-align: center;">💡 The Idea Behind UMUD </h4>
             <p style="text-align: center;">
                 UMUD was conceived to provide researchers and developers with a comprehensive and accessible platform for musculoskeletal ultrasound image/video dataset metadata. 
@@ -912,5 +929,5 @@ elif selected_tab == "About Us":
     st.write(
         "If you want to know about the future of UMUD, you can check out **the roadmap below**."
     )
-    
+
     display_roadmap()

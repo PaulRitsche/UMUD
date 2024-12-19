@@ -121,7 +121,7 @@ def display_training_metrics():
     """
     # Metrics Data
     models = ["DeepACSA_VGG16Unet", "DLTrack_VGG16Unet"]
-    task = ["ACSA", "Fascicles"] # Keep naming constant
+    task = ["ACSA", "Fascicles"]  # Keep naming constant
     val_iou_scores = [0.89, 0.87]
     val_dice_scores = [0.91, 0.88]
     loss_functions = ["Binary Cross Entropy", "Binary Cross Entropy"]
@@ -132,16 +132,18 @@ def display_training_metrics():
     medals = ["🥇", "🥈"]
 
     # Create DataFrame
-    metrics_df = pd.DataFrame({
-        "Rank": medals,
-        "Model": models,
-        "Segmentation Task": task,
-        "Validation IoU": val_iou_scores,
-        "Validation Dice": val_dice_scores,
-        "Loss Function": loss_functions,
-        "Training Epochs": training_epochs,
-        "Optimizer": optimizers
-    })
+    metrics_df = pd.DataFrame(
+        {
+            "Rank": medals,
+            "Model": models,
+            "Segmentation Task": task,
+            "Validation IoU": val_iou_scores,
+            "Validation Dice": val_dice_scores,
+            "Loss Function": loss_functions,
+            "Training Epochs": training_epochs,
+            "Optimizer": optimizers,
+        }
+    )
 
     # Display the table in Streamlit
     st.markdown("### Model Performance Metrics")
@@ -156,21 +158,24 @@ def display_training_metrics_barplot():
     Returns
     -------
     plt.fig
-        The barchart displaying the performance scores. 
+        The barchart displaying the performance scores.
     """
     # Metrics Data
     models = ["DeepACSA", "DL_Track_US", "Ultratrack", "SMA"]
     val_iou_scores = [0.89, 0.87, 0.81, 0.77]
     val_dice_scores = [0.91, 0.88, 0.84, 0.80]
 
-
     # Create Bar Chart
     fig, ax = plt.subplots(figsize=(8, 4))
     x = np.arange(len(models))
     width = 0.35
 
-    ax.bar(x - width / 2, val_iou_scores, width, label="Validation IoU", color="#008080")
-    ax.bar(x + width / 2, val_dice_scores, width, label="Validation Dice", color="#00a1a1")
+    ax.bar(
+        x - width / 2, val_iou_scores, width, label="Validation IoU", color="#008080"
+    )
+    ax.bar(
+        x + width / 2, val_dice_scores, width, label="Validation Dice", color="#00a1a1"
+    )
 
     # Chart Formatting
     ax.set_ylabel("Scores")
@@ -186,30 +191,14 @@ def display_data_warning():
     """
     Function to display warning about algorithm performance.
     """
-    with st.expander("⚠️ **Garbage In, Garbage Out** ⚠️", expanded=False):
-        st.markdown(
-            """
-            <style>
-            .custom-expander .streamlit-expanderHeader {
-                justify-content: center;
-            }
-            </style>
-            <div style="padding: 10px; border-left: 4px solid #FF0000; background-color: #FFF5F5;">
-                <p style="text-align: justify; font-size: 14px;">
-                    Analysis algorithms and neural networks are only as good as the data they are trained/tested on. <b>Poor data quality</b>, lack of diversity, or biases in training 
-                    datasets can result in models with limited generalizability and <b>unreliable outcomes</b>.
-                </p>
-                <p style="text-align: justify; font-size: 14px;">
-                    Muscle ultrasonography poses challenges such as variability in protocols, anatomical differences, and inconsistencies in manual analyses. 
-                    These factors directly impact algorithm performance, and <b>results may not always meet expectations on your specific data.</b>
-                </p>
-                <p style="text-align: justify; font-size: 14px;">
-                    Always validate findings rigorously and <b>critically evaluate the accuracy, reliability and reproducibility of the tools you use.</b>
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    st.warning(
+        """
+        Analysis algorithms and neural networks are only as good as the data they are trained/tested on. **Poor data quality**, lack of diversity, or biases in training 
+        datasets can result in models with limited generalizability and **unreliable outcomes**. 
+        These factors directly impact algorithm performance, and **results may not always meet expectations on your specific data**.
+        """,
+        icon=":material/warning:",
+    )
 
 
 def display_roadmap():
@@ -327,9 +316,11 @@ def display_comparability_statistics():
     metric_column = f"{selected_variable}_{selected_metric}"
 
     # Filter and rename the table
-    table_data = filtered_df[["Model", metric_column]].rename(
-        columns={metric_column: selected_metric}
-    ).sort_values(by=selected_metric, ascending=False)
+    table_data = (
+        filtered_df[["Model", metric_column]]
+        .rename(columns={metric_column: selected_metric})
+        .sort_values(by=selected_metric, ascending=False)
+    )
 
     # Assign medals to the top three rows
     medals = {0: "🥇", 1: "🥈", 2: "🥉"}
@@ -338,7 +329,6 @@ def display_comparability_statistics():
     # Display the table with medals
     st.markdown(f"#### Comparability for **{selected_variable} - {selected_metric}**")
     st.dataframe(table_data, use_container_width=True, hide_index=True)
-
 
     # Heatmap for All Metrics of a Selected Variable
     st.markdown(f"#### Comparability Map for **{selected_variable}**")
@@ -367,6 +357,3 @@ def display_comparability_statistics():
     )
     ax.set_title(f"All Metrics for {selected_variable}")
     st.pyplot(fig)
-
-
-
