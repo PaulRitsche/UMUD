@@ -13,7 +13,6 @@ from helpers.display_functions import (
     display_charts,
     display_training_metrics,
     display_data_warning,
-    display_roadmap,
     display_comparability_statistics,
 )
 from helpers.data_tools import *
@@ -22,13 +21,12 @@ from helpers.footer import add_footer
 import numpy as np
 import seaborn as sns
 
-# TODO upload other dicts
+
 # TODO complete benchmark Tab
 # TODO update links of benchmark models.
-# TODO complete the algorithm list
 # TODO create model page on UMUD repo
 # TODO adjust rank comparability, high is not always better
-# TODO adjust jscon schema based on new pydanntic models
+
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -695,6 +693,11 @@ elif selected_tab == "Image Analysis":
             "description": "TimTrack is a drift-free Matlab algorithm for estimating muscle architectures from ultrasound images and image videos. The algorithm uses a combination of image filtering to highlight line-like structures and line-detection procedures to obtain the overall fascicle orientation. ",
             "link": "https://github.com/timvanderzee/ultrasound-automated-algorithm",
         },
+        {
+            "name": "DeepMTJ",
+            "description": "DeepMTJ is a machine learning approach for automatically tracking of muscle-tendon junctions (MTJ) in ultrasound images. Our method is based on a convolutional neural network trained to infer MTJ positions across various ultrasound systems from different vendors, collected in independent laboratories from diverse observers, on distinct muscles and movements. We built DeepMTJ to support clinical biomechanists and locomotion researchers with an open-source tool for gait analyses.",
+            "link": "https://github.com/luuleitner/deepMTJ",
+        }
     ]
 
     # Display warning about image quality
@@ -715,6 +718,14 @@ elif selected_tab == "Image Analysis":
     #         file_name="muscle_benchmark_dataset.zip",
     #         mime="application/zip",
     #     )
+
+    st.markdown("---")
+    st.info("""
+            We acknowledge that the list of algorithms is not exhaustive. 
+            Our selection criteria, are open-source code and documentation combined with clear usae-instructions and some kind of testing or validation.
+            Ideally, the algorithm should have a UI an be as user-friendly as possible.
+            """,
+            icon=":material/info:")
 
 
 elif selected_tab == "Contributing":
@@ -927,7 +938,10 @@ elif selected_tab == "About Us":
     st.subheader("The UMUD Roadmap")
     # Roadmap
     st.write(
-        "If you want to know about the future of UMUD, you can check out **the roadmap below**."
+        """We at UMUD are not only concernig with the present state of the project but already have in mind what our next steps are.
+        If you want to know about the future of UMUD, you can check out our roadmap below."""
     )
+    st.image(
+        images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500
+    )  # Add the path to Olivier Seynnes's image
 
-    display_roadmap()

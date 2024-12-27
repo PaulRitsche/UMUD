@@ -44,19 +44,19 @@
             "description": "Optional. Model of the probe used during data collection. Enter one."
         },
         "DATA_TYPE": {
-            "type": "string",
+            "type": "array",
             "description": "Type of data in the dataset (Images, Videos, Volumes). Choose one."
         },
         "FILE_TYPE": {
-            "type": "string",
+            "type": "array",
             "description": "File type of the data (e.g., jpg, png, mp4). Choose one."
         },
         "IMAGE_TYPE": {
-            "type": "string",
+            "type": "array",
             "description": "Image type (Static, Panoramic). Choose one."
         },
         "DATA_PLANE": {
-            "type": "string",
+            "type": "array",
             "description": "Plane in which the images/videos were collected (Transverse, Longitudinal). Choose one."
         },
         "SCANNING_FREQUENCY": {
