@@ -10,7 +10,10 @@
             "description": "Name of the dataset containing the name and the year separated by an underscore, e.g., 'DeepACSA_2022'."
         },
         "DOI": {
-            "type": ["string", "null"],
+            "type": [
+                "string",
+                "null"
+            ],
             "description": "Optional. Digital Object Identifier (DOI) of the dataset."
         },
         "VERSION": {
@@ -117,12 +120,18 @@
             "description": "Year the dataset was created (4-digit year)."
         },
         "PUBLICATION_LINK": {
-            "type": ["string", "null"],
+            "type": [
+                "string",
+                "null"
+            ],
             "pattern": "^(https?|ftp):\/\/[^\\s/$.?#].[^\\s]*$",
             "description": "Optional. URL Link to the publication containing the data."
         },
         "DATASET_LINK": {
-            "type": ["string", "null"],
+            "type": [
+                "string",
+                "null"
+            ],
             "pattern": "^(https?|ftp):\/\/[^\\s/$.?#].[^\\s]*$",
             "description": "Optional. URL Link to the publiccation containing the data."
         },
@@ -142,7 +151,7 @@
                 "type": "string"
             },
             "description": "License under which the data is shared."
-        },x
+        },
     },
     "required": [
         "DATASET_NAME",

@@ -25,8 +25,12 @@ import seaborn as sns
 # TODO complete benchmark Tab
 # TODO update links of benchmark models.
 # TODO create model page on UMUD repo
+<<<<<<< HEAD
 # TODO adjust rank comparability, high is not always better
 
+=======
+# TODO adjust jscon schema based on new pydanntic models
+>>>>>>> 7406d17c6cecd4e4eadb198a4014a16d16b4e728
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -385,6 +389,7 @@ elif selected_tab == "Database":
             "Select Column to Group By",
             options=categorical_columns,
             help="Select which column you want to group the data by.",
+            index=4,
         )
 
         # Display interactive charts
