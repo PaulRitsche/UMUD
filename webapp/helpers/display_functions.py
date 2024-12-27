@@ -315,14 +315,17 @@ def display_comparability_statistics():
     # Define metric column based on the selected variable and metric
     metric_column = f"{selected_variable}_{selected_metric}"
 
+    # Determine sorting order: True for ascending (MD, CV%), False for descending (ICC)
+    ascending = selected_metric in ["MD", "CV%"]
+
     # Filter and rename the table
     table_data = (
         filtered_df[["Model", metric_column]]
         .rename(columns={metric_column: selected_metric})
-        .sort_values(by=selected_metric, ascending=False)
+        .sort_values(by=selected_metric, ascending=ascending)
     )
 
-    # Assign medals to the top three rows
+    # Assign medals to the top three rows based on the ranking
     medals = {0: "🥇", 1: "🥈", 2: "🥉"}
     table_data.insert(0, "Rank", [medals.get(i, "") for i in range(len(table_data))])
 
