@@ -23,14 +23,7 @@ import seaborn as sns
 
 
 # TODO complete benchmark Tab
-# TODO update links of benchmark models.
-# TODO create model page on UMUD repo
-<<<<<<< HEAD
-# TODO adjust rank comparability, high is not always better
-
-=======
 # TODO adjust jscon schema based on new pydanntic models
->>>>>>> 7406d17c6cecd4e4eadb198a4014a16d16b4e728
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -539,7 +532,7 @@ elif selected_tab == "Benchmarks":
     <div style="padding: 15px; border: 2px solid #008080; border-radius: 10px; background-color: #ccdfe1;">
         <h3 style="text-align: center; color: #008080;">✨ Benchmarking Muscle Ultrasound Analysis</h3>
         <p style="text-align: center;">
-            The Benchmark tab helps evaluate <b>muscle geometry analysis algorithms</b> in ultrasonography. Key parameters include 
+            This section helps evaluate <b>muscle geometry analysis algorithms</b> in ultrasonography. Key parameters include 
             <b>anatomical cross-sectional area (ACSA), fascicle length, pennation angle, and muscle thickness</b>, essential for understanding muscle function 
             and adaptation. Manual analysis, though a gold standard, is labor-intensive and subjective.  
         </p>
@@ -558,25 +551,21 @@ elif selected_tab == "Benchmarks":
         """
         ### 📂 Benchmark Image Dataset
         UMUD provides the first downloadable benchmark muscle architecture and morphology datasets, analyzed by **six expert raters**. 
-        Additionally, we provide two training datasets (vastus lateralis ACSA & lower limb muscle architecture) as a training benchmark for neural networks. A detailed description of the analyses can be found in the Readme.md accompanying the dataset.
+        Additionally, we provide benchmark training datasets for analysis algorithm training (lower limb muscle ACSA and architecture). A detailed description of the data and analyses can be found in the Readme.md accompanying the dataset.
 
-        The datasets include:
-        - **ACSA images**
-        - **Muscle architecture images** (including images with annotations)
-
-        This dataset allows you to:
+        These datasets allow you to:
         - **Evaluate** your models/algorithm agains a common ground truth.
         - **Compare** your manual analysis with expert annotations.
         - **Learn** how to analyse muscle geometry in ultrasonography images.
 
-        📥 **[Download the Dataset from the UMUD Repository](#TODO)**  
+        Specifically, the expert analysed dataset contains original muscle geometry ultrasound images, analysed and annotated images and the corresponding manual analysis results of: 
+        - **35 architectural images** from the vastus lateralis, gastrocnemius medialis, tibialis anterior and soleus acquired with different devices.
+        - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions.
+        - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle architecture.
 
-        The dataset contains original muscle geometry ultrasound images, the analysed images and the corresponding manual analysis results: 
-        - **35 architectural images** from the vastus lateralis, gastrocnemius medialis and tibialis anterior acquired with different devices are included.
-        - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions are included as well.
-        - **Rectus femoris ACSA and lower limb muscle architecture training datasets** for neural networks containing ~1000 images each.
+        📥 **[Download the Dataset from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
 
-        🔍 We are **continuously inlcuding more images and muscles** in our benchmark datasets.
+        🔍 We are **continuously inlcuding more images and muscles** in our expert analysed benchmark datasets.
         """
     )
 
@@ -594,14 +583,16 @@ elif selected_tab == "Benchmarks":
 
     st.markdown(
         """
-        Additionally, we provide benchmark models for muscle architecture and ACSA analysis, implemented in Python and integrated with 
+        Additionally, we provide benchmark models (and their corresponding training datasets) for muscle architecture and ACSA analysis, implemented in Python and integrated with 
         openly available datasets. These models are derived from published research and python packages (DL_Track, DeepACSA):
-        - **ACSA Analysis Models**: [Vastus Lateralis, Rectus Femoris, Biceps Femoris, Vastus Medialis](LINK)
-        - **Muscle Architecture Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
-        - **Muscle Aponeurosis Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](LINK)
+        - **ACSA Analysis Models**: [Vastus Lateralis, Rectus Femoris, Biceps Femoris, Vastus Medialis](https://osf.io/xbawc/files/osfstorage#)
+        - **Muscle Architecture Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](https://osf.io/xbawc/files/osfstorage#)
+        - **Muscle Aponeurosis Models**: [Vastus Lateralis & Gastrocnemius Medialis & Tibialis Anterior & Soleus](https://osf.io/xbawc/files/osfstorage#)
 
         These models are selected to serve as reliable benchmarks, not for publicity but to encourage collaboration and improvement based on a standardized common ground.
-        The performance of the models is displayed below. Additional benchmark models for other segmentation tasks are under development.
+        **Our expert analysed image datasets should be used as an external test set when applicable.**
+        The performance of the models and comparability to expert annotation is displayed below. 
+        Additional benchmark models for other segmentation tasks are under development.
         """
     )
 
@@ -611,9 +602,8 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 📊 Performance Metrics
-        Benchmarking and scoring performance is essential for comparability, transparency and reproducibility. The performance metrics are dependent on the dataset
-        which is why we chose them represent the current best practices. 
-        By expanding the fields below, you can take a detailed look at the model/algorithm performance on our test images.
+        Benchmarking and scoring performance is essential for comparability, transparency and reproducibility.  
+        By expanding the fields below, you can take a detailed look at the model/algorithm performance on our provided training and expert analysed test images.
         """
     )
 
@@ -702,7 +692,7 @@ elif selected_tab == "Image Analysis":
             "name": "DeepMTJ",
             "description": "DeepMTJ is a machine learning approach for automatically tracking of muscle-tendon junctions (MTJ) in ultrasound images. Our method is based on a convolutional neural network trained to infer MTJ positions across various ultrasound systems from different vendors, collected in independent laboratories from diverse observers, on distinct muscles and movements. We built DeepMTJ to support clinical biomechanists and locomotion researchers with an open-source tool for gait analyses.",
             "link": "https://github.com/luuleitner/deepMTJ",
-        }
+        },
     ]
 
     # Display warning about image quality
@@ -725,12 +715,14 @@ elif selected_tab == "Image Analysis":
     #     )
 
     st.markdown("---")
-    st.info("""
+    st.info(
+        """
             We acknowledge that the list of algorithms is not exhaustive. 
             Our selection criteria, are open-source code and documentation combined with clear usae-instructions and some kind of testing or validation.
             Ideally, the algorithm should have a UI an be as user-friendly as possible.
             """,
-            icon=":material/info:")
+        icon=":material/info:",
+    )
 
 
 elif selected_tab == "Contributing":
@@ -949,4 +941,3 @@ elif selected_tab == "About Us":
     st.image(
         images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500
     )  # Add the path to Olivier Seynnes's image
-

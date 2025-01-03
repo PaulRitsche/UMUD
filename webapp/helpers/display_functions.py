@@ -60,6 +60,9 @@ def display_charts(df, selected_plots, group_by_column):
 
         elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
             fig, ax = plt.subplots()
+
+            df_exploded = df.explode("MUSCLE")
+
             # Check if group_by_column is valid for grouping
             if group_by_column in df.columns:
                 df_exploded.groupby(group_by_column)["PARTICIPANT_AGE"].plot(
@@ -76,6 +79,9 @@ def display_charts(df, selected_plots, group_by_column):
 
         elif plot == "Data Type Distribution" and "DATA_TYPE" in df.columns:
             fig, ax = plt.subplots()
+
+            df_exploded = df.explode("MUSCLE")
+
             if group_by_column in df.columns:
                 datatype_count = (
                     df_exploded.groupby(group_by_column)["DATA_TYPE"]
@@ -123,10 +129,12 @@ def display_training_metrics():
     models = ["DeepACSA_VGG16Unet", "DLTrack_VGG16Unet"]
     task = ["ACSA", "Fascicles"]  # Keep naming constant
     val_iou_scores = [0.89, 0.87]
-    val_dice_scores = [0.91, 0.88]
+    val_dice_scores = ["n.a.", "n.a."]
     loss_functions = ["Binary Cross Entropy", "Binary Cross Entropy"]
     training_epochs = [50, 60]
     optimizers = ["Adam", "Adam"]
+    training_time = [20, 25]
+    parameters = [1e4, 1e4]
 
     # Add medals for top three models
     medals = ["🥇", "🥈"]
@@ -142,6 +150,8 @@ def display_training_metrics():
             "Loss Function": loss_functions,
             "Training Epochs": training_epochs,
             "Optimizer": optimizers,
+            "Training Time (min)": training_time,
+            "Model Parameters": parameters,
         }
     )
 
