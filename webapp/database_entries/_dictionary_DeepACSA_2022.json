@@ -24,9 +24,15 @@
         "47-mm Esaote"
     ],
     "DATA_TYPE": "Image",
-    "FILE_TYPE": "tif",
-    "IMAGE_TYPE": "Panoramic",
-    "DATA_PLANE": "Transverse",
+    "FILE_TYPE": [
+        "tif"
+    ],
+    "IMAGE_TYPE": [
+        "Panoramic"
+    ],
+    "DATA_PLANE": [
+        "Transverse"
+    ],
     "SCANNING_FREQUENCY": null,
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": 38,

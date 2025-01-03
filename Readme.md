@@ -13,7 +13,7 @@
 
 ## Project Description
 
-The Universal Musculoskeletal Ultrasound Repository (UMUD) is a Streamlit-based web application designed to provide easy access to metadata about muscle ultrasonography datasets. The app allows users to filter datasets based on various criteria, such as muscle type, image type, device, and age, and retrieve links to the relevant datasets. At the moment, UMUD is more of a webapp and not a python package. 
+The Universal Musculoskeletal Ultrasound Repository (UMUD) is a Streamlit-based web application designed to provide easy access to metadata about muscle ultrasonography datasets. The app allows users to filter datasets based on various criteria, such as muscle type, image type, device, and age, and retrieve links to the relevant datasets. Moreover, we proivde benchmark analysis models and corresponding training datasets. At the moment, UMUD is more of a webapp and not a python package. 
 
 The UMUD project is part of the [ORMIR](https://www.ormir.org/) community as a seperate [working group](https://www.ormir.org/groups.html#). 
 

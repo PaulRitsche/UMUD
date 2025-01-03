@@ -12,11 +12,17 @@
     "DEVICE": [
         "Hitachi Aloka SSD-5000 PHD"
     ],
-    "TRANSDUCER": null,
+    "TRANSDUCER": [],
     "DATA_TYPE": "Image",
-    "FILE_TYPE": "jpg",
-    "IMAGE_TYPE": "Static",
-    "DATA_PLANE": "Longitudinal",
+    "FILE_TYPE": [
+        "jpg"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "DATA_PLANE": [
+        "Longitudinal"
+    ],
     "SCANNING_FREQUENCY": 7,
     "SAMPLING_RATE": 25,
     "PARTICIPANT_AGE": 30,

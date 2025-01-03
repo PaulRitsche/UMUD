@@ -17,11 +17,17 @@
         "Philips HD11",
         "Telemed ArtUs EXT-1H"
     ],
-    "TRANSDUCER": null,
+    "TRANSDUCER": [],
     "DATA_TYPE": "Image",
-    "FILE_TYPE": "tif",
-    "IMAGE_TYPE": "Static",
-    "DATA_PLANE": "Longitudinal",
+    "FILE_TYPE": [
+        "tif"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "DATA_PLANE": [
+        "Longitudinal"
+    ],
     "SCANNING_FREQUENCY": null,
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": null,

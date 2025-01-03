@@ -578,9 +578,6 @@ elif selected_tab == "Benchmarks":
         """
     )
 
-    # Display warning about data quality
-    display_data_warning()
-
     st.markdown(
         """
         Additionally, we provide benchmark models (and their corresponding training datasets) for muscle architecture and ACSA analysis, implemented in Python and integrated with 
@@ -591,10 +588,12 @@ elif selected_tab == "Benchmarks":
 
         These models are selected to serve as reliable benchmarks, not for publicity but to encourage collaboration and improvement based on a standardized common ground.
         **Our expert analysed image datasets should be used as an external test set when applicable.**
-        The performance of the models and comparability to expert annotation is displayed below. 
         Additional benchmark models for other segmentation tasks are under development.
         """
     )
+
+    # Display warning about data quality
+    display_data_warning()
 
     # Performance Metrics Section
     st.markdown("---")
@@ -602,43 +601,45 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 📊 Performance Metrics
-        Benchmarking and scoring performance is essential for comparability, transparency and reproducibility.  
+        Benchmarking and scoring performance is essential for comparability, transparency and reproducibility.
         By expanding the fields below, you can take a detailed look at the model/algorithm performance on our provided training and expert analysed test images.
+        
+        Under construction 🛠...
         """
     )
 
-    with st.expander("**🤗 Algorithm Training Metrics**"):
+    # with st.expander("**🤗 Algorithm Training Metrics**"):
 
-        st.markdown("#### Algorithm Training Metrics")
-        # Description of Calculation
-        st.markdown(
-            """
-            All metrics are calculated during model training on the validation folds using the mean value of five fold cross-validation. Here is a short description of the metrics:
-            - **IoU (Intersection over Union)**: Measures overlap between predicted and ground truth areas.
-            - **Dice Coefficient**: Measures similarity between two sets of data.
-            """
-        )
+    #     st.markdown("#### Algorithm Training Metrics")
+    #     # Description of Calculation
+    #     st.markdown(
+    #         """
+    #         All metrics are calculated during model training on the validation folds using the mean value of five fold cross-validation. Here is a short description of the metrics:
+    #         - **IoU (Intersection over Union)**: Measures overlap between predicted and ground truth areas.
+    #         - **Dice Coefficient**: Measures similarity between two sets of data.
+    #         """
+    #     )
 
-        display_training_metrics()
-        # fig = display_training_metrics_barplots()
-        # st.pyplot(fig)
+    #     display_training_metrics()
+    #     # fig = display_training_metrics_barplots()
+    #     # st.pyplot(fig)
 
-    # Dropdowns for model selection and metric filtering
-    with st.expander("**📐 Muscle Geometry Comparability Statistics**", expanded=False):
+    # # Dropdowns for model selection and metric filtering
+    # with st.expander("**📐 Muscle Geometry Comparability Statistics**", expanded=False):
 
-        st.markdown(
-            """
-        All statistics are calculated compared to the manual analysis by our expert raters. Here is a short description of the statistics. (For simplicity we omit compatibility intervals, keep this in mind when interpreting the data.):
-        - **Intraclass Correlation Coefficient (ICC)**:  
-        A statistical measure of reliability that assesses the consistency of measurements made by different observers or instruments. ICC values range from 0 to 1, where higher values indicate better reliability.
-        - **Mean Difference (MD)**:  
-        The average absolute difference between measurements. It quantifies bias between methods or observers, with lower values indicating better agreement.
-        - **Coefficient of Variation (CV%)**:  
-        A measure of relative variability expressed as a percentage. It is the ratio of the standard deviation to the mean, used to compare variability across datasets.
-        """
-        )
+    #     st.markdown(
+    #         """
+    #     All statistics are calculated compared to the manual analysis by our expert raters. Here is a short description of the statistics. (For simplicity we omit compatibility intervals, keep this in mind when interpreting the data.):
+    #     - **Intraclass Correlation Coefficient (ICC)**:
+    #     A statistical measure of reliability that assesses the consistency of measurements made by different observers or instruments. ICC values range from 0 to 1, where higher values indicate better reliability.
+    #     - **Mean Difference (MD)**:
+    #     The average absolute difference between measurements. It quantifies bias between methods or observers, with lower values indicating better agreement.
+    #     - **Coefficient of Variation (CV%)**:
+    #     A measure of relative variability expressed as a percentage. It is the ratio of the standard deviation to the mean, used to compare variability across datasets.
+    #     """
+    #     )
 
-        display_comparability_statistics()
+    #     display_comparability_statistics()
 
 elif selected_tab == "Image Analysis":
     st.markdown("---")
@@ -718,8 +719,8 @@ elif selected_tab == "Image Analysis":
     st.info(
         """
             We acknowledge that the list of algorithms is not exhaustive. 
-            Our selection criteria, are open-source code and documentation combined with clear usae-instructions and some kind of testing or validation.
-            Ideally, the algorithm should have a UI an be as user-friendly as possible.
+            Our selection criteria, are open-source code and documentation combined with clear usage instructions and some kind of testing or validation.
+            Ideally, the algorithm should have a UI and be as user-friendly as possible.
             """,
         icon=":material/info:",
     )
@@ -735,7 +736,7 @@ elif selected_tab == "Contributing":
             <h3 style="text-align: center; color: #000000;">💕 Contribute Your Data to UMUD</h3>
             <p>
                 By sharing your datasets, you help create a valuable resource for researchers worldwide. <b>Follow four steps to contribute: Data Preparation,
-                Metadata Submission, Metadata Review, Metadata Integration.</b> These steps are explained in detail below.
+                Metadata Submission, Metadata Review, Metadata Integration.</b>
                 Moreover, you can also give feedback and contribute to the codebase. Thank you for helping us build a resource for the research community!
             </p>
         </div>
@@ -755,7 +756,7 @@ elif selected_tab == "Contributing":
     st.write(
         """
         1. **Prepare Your Data:**
-            - Make sure your data is properly labeled and formatted according to UMUD standards.  
+            - Make sure your data is formatted according to UMUD standards.  
             - Use the metadata entryfields below to create a metadata .json file for your data.   
             - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
             - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
@@ -893,7 +894,7 @@ elif selected_tab == "About Us":
     st.image(images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
     st.write(
         """
-    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science
+    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science.
     """
     )
     st.write(

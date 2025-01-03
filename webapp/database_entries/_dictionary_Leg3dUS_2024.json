@@ -17,9 +17,11 @@
         "50mm linear"
     ],
     "DATA_TYPE": "Volume",
-    "FILE_TYPE": "MHA",
-    "IMAGE_TYPE": null,
-    "DATA_PLANE": null,
+    "FILE_TYPE": [
+        "MHA"
+    ],
+    "IMAGE_TYPE": [],
+    "DATA_PLANE": [],
     "SCANNING_FREQUENCY": null,
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": null,

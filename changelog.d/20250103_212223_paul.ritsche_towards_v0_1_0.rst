@@ -1,0 +1,40 @@
+.. A new scriv changelog fragment.
+..
+.. Uncomment the header that is right (remove the leading dots).
+..
+Removed
+-------
+
+- Preliminary algorithm performance comparisons.
+- sample_submission.csv file of preliminary analysis display.
+
+Added
+-----
+
+- Code of Conduct.
+
+Changed
+-------
+
+- Rewrote benchmark tab for more clarity.
+- Updated the UMUD v0.1.0 roadmap.
+- Updated the umud demo gif.
+- Updated the Readme.md.
+- Updated the template_dictionary.py to newest json schema format.
+
+
+.. Deprecated
+.. ----------
+..
+.. - A bullet item for the Deprecated category.
+..
+.. Fixed
+.. -----
+..
+.. - A bullet item for the Fixed category.
+..
+.. Security
+.. --------
+..
+.. - A bullet item for the Security category.
+..
