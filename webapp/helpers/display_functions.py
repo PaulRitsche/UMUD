@@ -8,7 +8,25 @@ import seaborn as sns
 from matplotlib.colors import ListedColormap
 
 
-def display_charts(df, selected_plots, group_by_column):
+def convert_dataframe(df, list_columns):
+    """
+    Convert specified list columns in the DataFrame.
+
+    Parameters:
+    - df: Input DataFrame
+    - list_columns: List of columns to convert
+    Returns:
+    - Converted DataFrame
+    """
+    for col in list_columns:
+        # Ensure the column is parsed correctly and is a list
+        df[col] = df[col].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+        
+    # convert the DataFrame for all specified list columns
+    return df
+
+
+def display_charts(df, selected_plots, group_by_column="MUSCLE"):
     """
     Display interactive charts based on the dataframe and user selections.
 
@@ -25,52 +43,71 @@ def display_charts(df, selected_plots, group_by_column):
 
     df = pd.DataFrame(df)
 
+    # Specify the columns that contain- lists
+    list_columns_to_explode = ["MUSCLE_REGION", "MUSCLE", "DEVICE", "DATA_PLANE", "IMAGE_TYPE", "FILE_TYPE"]
+
+    # Explode the DataFrame
+    df_converted = convert_dataframe(df, list_columns_to_explode)
+
     for plot in selected_plots:
         if plot == "Muscle Distribution" and "MUSCLE" in df.columns:
             fig, ax = plt.subplots()
 
             if group_by_column in df.columns:
 
-                df["MUSCLE"] = df["MUSCLE"].apply(
-                    lambda x: ast.literal_eval(x) if isinstance(x, str) else x
-                )
-
-                # Ensure 'MUSCLE' column entries are lists and then explode them
-                df_exploded = df.explode("MUSCLE")
-
-                # Group by muscle name and count occurrences
-                muscle_counts = (
-                    df_exploded.groupby(group_by_column)["MUSCLE"]
-                    .value_counts()
-                    .unstack()
-                )
+                # Aggregate counts for each unique muscle category
+                df_exploded_muscle = df_converted.explode("MUSCLE")
+                muscle_counts = df_exploded_muscle.groupby(group_by_column)["MUSCLE"].value_counts().unstack()
+                
+                # Sum up counts for overlapping muscle categories
+                combined_counts = muscle_counts.groupby(muscle_counts.columns, axis=1).sum()
 
                 # Plotting the muscle distribution
-                fig, ax = plt.subplots()
-                muscle_counts.plot(kind="bar", ax=ax, stacked=True)
-                ax.set_title("Muscle Distribution")
-                ax.set_xlabel(group_by_column)
-                ax.set_ylabel("Count")
+                fig, ax = plt.subplots(figsize=(10, 6))
+                combined_counts.plot(kind="bar", ax=ax, stacked=True, legend=True)
+                ax.set_title("Muscle Distribution", fontsize=14, color="#008080")
+                ax.set_xlabel(group_by_column, fontsize=12)
+                ax.set_ylabel("Count", fontsize=12)
+                ax.legend(title="Muscles", bbox_to_anchor=(1.05, 1), loc="upper left")
+                plt.tight_layout()  # Adjust layout to accommodate the legend
                 st.pyplot(fig)
 
+        
             else:
                 st.warning(
                     f"'{group_by_column}' column is not suitable for 'Muscle Distribution' plot."
                 )
-
+        
         elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
             fig, ax = plt.subplots()
 
-            df_exploded = df.explode("MUSCLE")
+            df_exploded = df_converted.explode("MUSCLE")
 
             # Check if group_by_column is valid for grouping
             if group_by_column in df.columns:
-                df_exploded.groupby(group_by_column)["PARTICIPANT_AGE"].plot(
-                    kind="hist", bins=20, alpha=0.5, ax=ax
-                )
-                ax.set_title("Age Distribution")
-                ax.set_xlabel("Age")
-                ax.set_ylabel("Frequency")
+                fig, ax = plt.subplots(figsize=(10, 6))
+
+                # Iterate through each group to create a plot of vertical lines
+                for group_name, group_data in df_exploded.groupby(group_by_column):
+                    # Drop NaN values to avoid plotting errors
+                    group_ages = group_data["PARTICIPANT_AGE"].dropna()
+                    if not group_ages.empty:
+                        # Plot vertical lines at each age point
+                        ax.vlines(
+                            group_ages, 
+                            ymin=0, 
+                            ymax=1, 
+                            label=group_name, 
+                            linewidth=1.5, 
+                            alpha=0.7
+                        )
+                
+                # Add titles and labels
+                ax.set_title("Age Distribution", fontsize=14)
+                ax.set_xlabel("Age", fontsize=12)
+                ax.set_ylabel("Frequency", fontsize=12)
+                
+                # Add a legend if there are multiple groups
                 st.pyplot(fig)
             else:
                 st.warning(
@@ -78,9 +115,9 @@ def display_charts(df, selected_plots, group_by_column):
                 )
 
         elif plot == "Data Type Distribution" and "DATA_TYPE" in df.columns:
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(10, 6))
 
-            df_exploded = df.explode("MUSCLE")
+            df_exploded = df_converted.explode("MUSCLE")
 
             if group_by_column in df.columns:
                 datatype_count = (
@@ -89,9 +126,13 @@ def display_charts(df, selected_plots, group_by_column):
                     .unstack(fill_value=0)
                     .plot(kind="bar", stacked=True, ax=ax)
                 )
+                
+                # Plotting the muscle region distribution
                 ax.set_title("Data Type Distribution")
-                ax.set_xlabel("Type")
+                ax.set_xlabel("Muscles")
                 ax.set_ylabel("Frequency")
+                ax.legend(title="Muscles", bbox_to_anchor=(1.05, 1), loc="upper left")
+                plt.tight_layout()
                 st.pyplot(fig)
             else:
                 st.warning(

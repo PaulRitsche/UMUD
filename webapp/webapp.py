@@ -377,16 +377,16 @@ elif selected_tab == "Database":
         )
 
         # Dropdown for grouping selection
-        categorical_columns = get_categorical_columns(df)
-        group_by_column = st.selectbox(
-            "Select Column to Group By",
-            options=categorical_columns,
-            help="Select which column you want to group the data by.",
-            index=4,
-        )
+        # categorical_columns = get_categorical_columns(df)
+        # group_by_column = st.selectbox(
+        #     "Select Column to Group By",
+        #     options=categorical_columns,
+        #     help="Select which column you want to group the data by.",
+        #     index=4,
+        # )
 
         # Display interactive charts
-        display_charts(df, selected_plots, group_by_column)
+        display_charts(df, selected_plots)
 
 
 elif selected_tab == "Challenge":
