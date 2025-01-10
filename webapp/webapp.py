@@ -928,6 +928,8 @@ elif selected_tab == "About Us":
     [Martino Franchi](https://www.researchgate.net/profile/Martino-Franchi)
 
     [Christoph Leitner](https://www.chriskross.org/)
+
+    [Taija Finni](https://www.jyu.fi/en/people/taija-juutinen)
     """
     )
 
@@ -941,4 +943,4 @@ elif selected_tab == "About Us":
     )
     st.image(
         images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500
-    )  # Add the path to Olivier Seynnes's image
+    )  
