@@ -1,0 +1,51 @@
+{
+    "DATASET_NAME": "DLSegMskNeromDisease_2021",
+    "DOI": "10.17632/3jykz7wz8d.1",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Gastrocnemius Medialis",
+        "Tibialis Anterior",
+        "Biceps Brachii"
+    ],
+    "MUSCLE_REGION": [
+        "Proximal",
+        "Middle"
+    ],
+    "DEVICE": [
+        "Esaote MyLab Twice"
+    ],
+    "TRANSDUCER": [
+        "3-13 MHz"
+    ],
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": [
+        "png"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "DATA_PLANE": [
+        "Transverse"
+    ],
+    "SCANNING_FREQUENCY": null,
+    "SAMPLING_RATE": null,
+    "PARTICIPANT_AGE": 50,
+    "PARTICIPANT_HEIGHT": null,
+    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 1238,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "The labels are provided as binary masks of the muscle area.",
+    "SHORT_DESCRIPTION": "The dataset comprises 3917 ultrasound images of three muscles (tibialis anterior, gastrocnemius medialis, and biceps brachii) acquired from 1\u2019283 subjects (mean age 50 \u00b1 21 years, 729 male) during routine clinical practice at Radboud University Medical Center. Images were captured using an Esaote MyLab Twice device with a 3-13 MHz linear broadband transducer, following a fixed measurement protocol. The device settings were standardized with a gain set at 50%, a general mid-frequency setting, and a fixed imaging depth of either 40 mm or 60 mm, depending on the specific muscle being assessed. The focus was adjusted to 40 mm depth, and all image enhancement features were turned off to. Gastronemius medialis and vastus lateralis were acquired at the middle region, while tibialis anterior at the proximal region. The dataset includes both normal and abnormal muscle images and covers a range of echogenicity levels to represent various muscle conditions in both healthy subjects and patients with neuromuscular diseases.",
+    "DATASET_YEAR": "2021",
+    "PUBLICATION_LINK": "https://www.sciencedirect.com/science/article/abs/pii/S0010482521004170?via%3Dihub",
+    "DATASET_LINK": "https://data.mendeley.com/datasets/3jykz7wz8d/1",
+    "AUTHORS": [
+        "Francesco Marzola",
+        "Nens van Alfen",
+        "Jonne Doorduin",
+        "Kristen M. Meiburger"
+    ],
+    "CONTACT": "kristen.meiburger@polito.it",
+    "LICENSE": "MIT License"
+}

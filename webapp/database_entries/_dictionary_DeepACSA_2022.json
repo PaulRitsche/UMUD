@@ -1,0 +1,60 @@
+{
+    "DATASET_NAME": "DeepACSA_2022",
+    "DOI": "10.17605/OSF.IO/A3U4V",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Vastus Lateralis",
+        "Gastrocnemius Lateralis",
+        "Gastrocnemius Medialis",
+        "Rectus Femoris"
+    ],
+    "MUSCLE_REGION": [
+        "Distal",
+        "Proximal",
+        "Middle"
+    ],
+    "DEVICE": [
+        "Siemens Acuson Juniper",
+        "Esaote MyLab 70",
+        "Aixplorer Ultimate"
+    ],
+    "TRANSDUCER": [
+        "12 L3 ACUSON",
+        "Superline SL10-2",
+        "47-mm Esaote"
+    ],
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": [
+        "tif"
+    ],
+    "IMAGE_TYPE": [
+        "Panoramic"
+    ],
+    "DATA_PLANE": [
+        "Transverse"
+    ],
+    "SCANNING_FREQUENCY": null,
+    "SAMPLING_RATE": null,
+    "PARTICIPANT_AGE": 38,
+    "PARTICIPANT_HEIGHT": null,
+    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 153,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "The labels are provided as binary masks of the whole muscle anatomical cross-sectional area.",
+    "SHORT_DESCRIPTION": "The DeepACSA dataset contains panoramic ultrasound images of the human rectus femoris (RF), vastus lateralis (VL), gastrocnemius medialis (GM) and lateralis (GL) muscles. A total of 1772 (including image augmentation) ultrasound images from 153 participants (age = 38.2 yr, range = 13\u201378). The images were acquired with the participants in supine (VL and RF) and prone (GM and GL) positions at multiple regions.",
+    "DATASET_YEAR": "2022",
+    "PUBLICATION_LINK": "https://journals.lww.com/acsm-msse/fulltext/2022/12000/deepacsa__automatic_segmentation_of.21.aspx",
+    "DATASET_LINK": "https://osf.io/a3u4v/",
+    "AUTHORS": [
+        "Paul Ritsche",
+        "Philipp Wirth",
+        "Neil J. Cronin",
+        "Fabio Sarto",
+        "Marco V. Narici",
+        "Oliver Faude",
+        "Martino V. Franchi"
+    ],
+    "CONTACT": "paul.ritsche@unibas.ch",
+    "LICENSE": "Apache License 2.0"
+}

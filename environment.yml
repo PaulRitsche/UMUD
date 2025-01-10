@@ -1,0 +1,22 @@
+name: UMUD3.9
+channels:  
+  - defaults  
+  - conda-forge
+dependencies:  
+  - python=3.9  
+  - pip  
+  - flake8  
+  - matplotlib=3.5.2  
+  - pandas=1.3.3  
+  - seaborn=0.13.2  
+  - pip:      
+    - pymongo==4.7.2      
+    - pytest==8.2.2      
+    - streamlit==1.35.0      
+    - streamlit_option_menu==0.3.12      
+    - streamlit_aggrid==1.0.5      
+    - pydantic==1.10.0      
+    - streamlit-pydantic==0.6.0
+    - flake8
+    - pre-commit
+    - commitizen 

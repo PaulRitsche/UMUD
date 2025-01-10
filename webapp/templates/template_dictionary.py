@@ -33,32 +33,32 @@ Below, you will find a detailed explanation of each field along with its expecte
   - *Options:* Choose from proximal (0-33% of muscle/bone length), middle (33-66% of muscle/bone length), distal (66-100% of muscle/bone length).
   - *Example:* ["proximal", "middle"]
 
-- **DEVICE_MODEL (str):**
+- **DEVICE (list of str):**
   - *Description:* The ultrasound device used to collect the data.
-  - *Example:* "Siemens Juniper"
+  - *Example:* ["Siemens Juniper", "GE Logiq E9"]
 
-- **PROBE_MODEL (str):**
+- **TRANSDUCER (list of str):**
   - *Description:* The model of the probe used during data collection.fond
-  - *Example:* "ML6-15"
+  - *Example:* ["ML6-15", "12L3"]
 
 - **DATA_TYPE (str):**
   - *Description:* The type of data collected in the dataset.
   - *Options:* Choose from images, videos, volumes.
   - *Example:* "images"
 
-- **FILE_TYPE (str):**
+- **FILE_TYPE (list of str):**
   - *Description:* The file format of the data.
-  - *Example:* "jpg"
+  - *Example:* ["jpg"]
 
-- **IMAGE_TYPE (str):**
+- **IMAGE_TYPE (list of strlist of str):**
   - *Description:* Specifies whether the images are static or panoramic.
   - *Options:* Choose from static, panoramic.
-  - *Example:* "static"
+  - *Example:* ["Static", "Panoramic"]
 
-- **DATA_PLANE (str):**
+- **DATA_PLANE (list of str):**
   - *Description:* The plane in which the images/videos were collected.
   - *Options:* Choose from transverse, longitudinal.
-  - *Example:* "transverse"
+  - *Example:* ["transverse"]
 
 - **PARTICIPANT_AGE (float):**
   - *Description:* Mean age of the participants.
@@ -152,12 +152,14 @@ template_data = [
             "proximal",
             "middle",
         ],  # Which muscle regions are included in the dataset?
-        "DEVICE": "Siemens Juniper",  # What US device was used?
-        "PROBE": "L12/3 Linear Probe",  # What probe was used?
+        "DEVICE": ["Siemens Juniper"],  # What US device was used?
+        "TRANSDUCER": ["L12/3 Linear Probe"],  # What probe was used?
         "DATA_TYPE": "Images",  # Does the dataset contain images, videos, or volumes?
-        "FILE_TYPE": "jpg",  # What is the file type of the data?
-        "IMAGE_TYPE": "Static",  # If images are included, are they static or panoramic?
-        "DATA_PLANE": "Transverse",  # In what plane were the images/videos collected?
+        "FILE_TYPE": ["jpg"],  # What is the file type of the data?
+        "IMAGE_TYPE": [
+            "Static"
+        ],  # If images are included, are they static or panoramic?
+        "DATA_PLANE": ["Transverse"],  # In what plane were the images/videos collected?
         "PARTICIPANT_AGE": 29.5,  # Mean age of participants.
         "PARTICIPANT_HEIGHT": 175.3,  # Mean height of participants (in cm).
         "PARTICIPANT_WEIGHT": 70.8,  # Mean weight of participants (in kg).
