@@ -7,10 +7,11 @@
 ..
 .. - A bullet item for the Removed category.
 ..
-Added
------
-- pre-commit hooks
-
+.. Added
+.. -----
+..
+.. - A bullet item for the Added category.
+..
 .. Changed
 .. -------
 ..
@@ -23,8 +24,9 @@ Added
 ..
 Fixed
 -----
-- pyproject.toml
 
+- Plotting of database charts. 
+..
 .. Security
 .. --------
 ..

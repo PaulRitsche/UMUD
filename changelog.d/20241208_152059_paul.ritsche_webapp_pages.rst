@@ -9,9 +9,8 @@
 ..
 Added
 -----
-- Benchmark tab statistics
-- Warnings for model/algorithm performance
-- Roadmap
+
+- pre-commit hooks
 ..
 .. Changed
 .. -------
@@ -25,11 +24,8 @@ Added
 ..
 Fixed
 -----
-- Analysis Benchmark.zip download
-- Readability expanders
 
-
-.. - A bullet item for the Fixed category.
+- pyproject.toml
 ..
 .. Security
 .. --------

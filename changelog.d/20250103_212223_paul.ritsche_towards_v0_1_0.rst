@@ -21,8 +21,7 @@ Changed
 - Updated the umud demo gif.
 - Updated the Readme.md.
 - Updated the template_dictionary.py to newest json schema format.
-
-
+..
 .. Deprecated
 .. ----------
 ..

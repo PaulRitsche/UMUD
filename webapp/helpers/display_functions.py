@@ -65,9 +65,9 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                 # Plotting the muscle distribution
                 fig, ax = plt.subplots(figsize=(10, 6))
                 combined_counts.plot(kind="bar", ax=ax, stacked=True, legend=True)
-                ax.set_title("Muscle Distribution", fontsize=14, color="#008080")
-                ax.set_xlabel(group_by_column, fontsize=12)
-                ax.set_ylabel("Count", fontsize=12)
+                ax.set_title("Muscle Distribution", fontsize=16)
+                ax.set_xlabel(group_by_column, fontsize=14)
+                ax.set_ylabel("Count", fontsize=14)
                 ax.legend(title="Muscles", bbox_to_anchor=(1.05, 1), loc="upper left")
                 plt.tight_layout()  # Adjust layout to accommodate the legend
                 st.pyplot(fig)
@@ -103,9 +103,9 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                         )
                 
                 # Add titles and labels
-                ax.set_title("Age Distribution", fontsize=14)
-                ax.set_xlabel("Age", fontsize=12)
-                ax.set_ylabel("Frequency", fontsize=12)
+                ax.set_title("Age Distribution", fontsize=16)
+                ax.set_xlabel("Age", fontsize=14)
+                ax.set_ylabel("Count", fontsize=14)
                 
                 # Add a legend if there are multiple groups
                 st.pyplot(fig)
@@ -128,10 +128,10 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                 )
                 
                 # Plotting the muscle region distribution
-                ax.set_title("Data Type Distribution")
-                ax.set_xlabel("Muscles")
-                ax.set_ylabel("Frequency")
-                ax.legend(title="Muscles", bbox_to_anchor=(1.05, 1), loc="upper left")
+                ax.set_title("Data Type Distribution", fontsize=16)
+                ax.set_xlabel("Muscle", fontsize=14)
+                ax.set_ylabel("Count", fontsize=14)
+                ax.legend(title="Data Types", bbox_to_anchor=(1.05, 1), loc="upper left")
                 plt.tight_layout()
                 st.pyplot(fig)
             else:
