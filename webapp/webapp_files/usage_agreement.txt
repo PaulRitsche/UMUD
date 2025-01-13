@@ -1,6 +1,6 @@
 ## UMUD Data Usage Policy
 
-This policy outlines the appropriate use of data provided by the UMUD (Ultrasound Muscle Data) repository. By accessing and using the data, you agree to comply with the following guidelines:
+This policy outlines the appropriate use of data provided by the UMUD repository. By accessing and using the data, you agree to comply with the following guidelines:
 
 ### 1. Anonymized Data
 
@@ -9,7 +9,6 @@ The data provided in the UMUD repository is fully anonymized and does not contai
 ### 2. Permitted Uses
 
 - **Research and Education**: The data is intended for use in academic research, education, and the development of tools and technologies.
-- **Citation**: If you use the data in any publication, project, or presentation, you must provide appropriate attribution to the UMUD repository and the original data contributors by citing them.
 - **Open Sharing**: Users are encouraged to share their findings and any derivative datasets or tools developed using the UMUD data, in the spirit of open science.
 
 ### 3. Prohibited Uses
@@ -25,7 +24,7 @@ The UMUD repository is licensed under the **[GNU General Public License v3.0](ht
 
 Under the following terms:
 - **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-- **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+- **Share-alike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
 **Note that each dataset is licensed on its own.** Please review the terms of this license to ensure compliance with any specific conditions or restrictions.
 
