@@ -561,7 +561,7 @@ elif selected_tab == "Benchmarks":
         Specifically, the expert analysed dataset contains original muscle geometry ultrasound images, analysed and annotated images and the corresponding manual analysis results of: 
         - **35 architectural images** from the vastus lateralis, gastrocnemius medialis, tibialis anterior and soleus acquired with different devices.
         - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions.
-        - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle architecture.
+        - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle fascicles analysed by one expert.
 
         📥 **[Download the Dataset from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
 
@@ -719,7 +719,7 @@ elif selected_tab == "Image Analysis":
     st.info(
         """
             We acknowledge that the list of algorithms is not exhaustive. 
-            Our selection criteria, are open-source code and documentation combined with clear usage instructions and some kind of testing or validation.
+            Our selection criteria, are open-source code and documentation combined with clear usage instructions and testing or validation.
             Ideally, the algorithm should have a UI and be as user-friendly as possible.
             """,
         icon=":material/info:",
@@ -894,7 +894,7 @@ elif selected_tab == "About Us":
     st.image(images + "/fabio_sarto.png", caption="Fabio Sarto", width=150)
     st.write(
         """
-    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science.
+    Fabio Sarto is a developer of the UMUD Repository. He has been instrumental in developing and testing the UMUD Repository's data collection and during the data labeling process. Fabio has a background in neuromuscular physiology and musculoskeletal imaging, and a passion for open-science.
     """
     )
     st.write(

@@ -57,8 +57,9 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
 
                 # Aggregate counts for each unique muscle category
                 df_exploded_muscle = df_converted.explode("MUSCLE")
-                muscle_counts = df_exploded_muscle.groupby(group_by_column)["MUSCLE"].value_counts().unstack()
-                
+                muscle_counts = df_exploded_muscle.groupby([group_by_column, "MUSCLE"]).size()
+                muscle_counts = muscle_counts.unstack(fill_value=0)
+
                 # Sum up counts for overlapping muscle categories
                 combined_counts = muscle_counts.groupby(muscle_counts.columns, axis=1).sum()
 
@@ -140,7 +141,7 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                 )
 
 
-# Corrently Not Used
+# Currently Not Used
 def display_scoreboard(df):
     """
     Display the scoreboard using st_aggrid for better visualization.
