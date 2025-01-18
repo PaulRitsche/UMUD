@@ -12,6 +12,7 @@ class SelectionValueMuscle(str, Enum):
     VASTUS_LATERALIS = "Vastus Lateralis"
     VASTUS_MEDIALIS = "Vastus Medialis"
     VASTUS_INTERMEDIUS = "Vastus Intermedius"
+    QUADRICEPS_FEMORIS = "Quadriceps Femoris"
     BICEPS_FEMORIS = "Biceps Femoris"
     SEMITENDINOSUS = "Semitendinosus"
     SEMIMEMBRANOSUS = "Semimembranosus"
@@ -271,6 +272,16 @@ class DatasetMetadata(BaseModel):
     IMAGE_TYPE: Set[SelectionValueImageType] = Field(
         ..., description="Image type (Static, Panoramic). Choose one or multiple."
     )
+    IMAGE_NUMBER: Optional[int] = Field(
+        None,
+        ge=0,
+        description="Optional. Number of images/videos in the dataset. Select value.",
+    )
+    VIDEO_NUMBER: Optional[int] = Field(
+        None,
+        ge=0,
+        description="Optional. Number of videos in the dataset. Select value.",
+    )
     DATA_PLANE: Set[SelectionValueImagePlane] = Field(
         ...,
         description="Plane in which the images/videos were collected (Transverse, Longitudinal). Choose one or multiple.",
@@ -299,11 +310,11 @@ class DatasetMetadata(BaseModel):
         le=220,
         description="Optional. Mean height of participants in cm (0-220). Select mean value.",
     )
-    PARTICIPANT_WEIGHT: Optional[int] = Field(
+    PARTICIPANT_BODYMASS: Optional[int] = Field(
         ...,
         ge=0,
         le=200,
-        description="Optional. Mean weight of participants in kg (0-200). Select mean value.",
+        description="Optional. Mean body mass of participants in kg (0-200). Select mean value.",
     )
     PARTICIPANT_SEX: SelectionValueParticipantSex = Field(
         ..., description="Sex of participants (Male, Female, Both). Choose one."
@@ -392,6 +403,20 @@ class DatasetMetadata(BaseModel):
             return None
         return value
 
+    @validator("IMAGE_NUMBER", pre=True, always=True, allow_reuse=True)
+    def interpret_zero_sr_as_none(cls, value):
+        """Interpret a value of 0 as None."""
+        if value == 0:
+            return None
+        return value
+
+    @validator("VIDEO_NUMBER", pre=True, always=True, allow_reuse=True)
+    def interpret_zero_sr_as_none(cls, value):
+        """Interpret a value of 0 as None."""
+        if value == 0:
+            return None
+        return value
+
     @validator("PARTICIPANT_HEIGHT", pre=True, always=True, allow_reuse=True)
     def interpret_zero_height_as_none(cls, value):
         """Interpret a value of 0 as None."""
@@ -402,7 +427,7 @@ class DatasetMetadata(BaseModel):
             raise ValueError("Height is unusually low. Please check the input.")
         return value
 
-    @validator("PARTICIPANT_WEIGHT", pre=True, always=True, allow_reuse=True)
+    @validator("PARTICIPANT_BODYMASS", pre=True, always=True, allow_reuse=True)
     def interpret_zero_weight_as_none(cls, value):
         """Interpret a value of 0 as None."""
         if value == 0:

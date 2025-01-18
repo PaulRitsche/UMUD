@@ -24,6 +24,8 @@
     "IMAGE_TYPE": [
         "Static"
     ],
+    "IMAGE_NUMBER": 3917,
+    "VIDEO_NUMBER": null,
     "DATA_PLANE": [
         "Transverse"
     ],
@@ -31,7 +33,7 @@
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": 50,
     "PARTICIPANT_HEIGHT": null,
-    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_BODYMASS": null,
     "PARTICIPANT_SEX": "Both",
     "SAMPLE_SIZE": 1238,
     "DATA_LABELS": true,

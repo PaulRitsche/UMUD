@@ -58,6 +58,16 @@
             "type": "array",
             "description": "Image type (Static, Panoramic). Choose one."
         },
+        "IMAGE_NUMBER": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of images in the dataset."
+        },
+        "VIDEO_NUMBER": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of videos in the dataset."
+        },
         "DATA_PLANE": {
             "type": "array",
             "description": "Plane in which the images/videos were collected (Transverse, Longitudinal). Choose one."
@@ -86,11 +96,11 @@
             "maximum": 220,
             "description": "Optional. Mean height of participants in cm (0-220). Select mean value."
         },
-        "PARTICIPANT_WEIGHT": {
+        "PARTICIPANT_BODYMASS": {
             "type": "number",
             "minimum": 0,
             "maximum": 200,
-            "description": "Optional. Mean weight of participants in kg (0-200). Select mean value."
+            "description": "Optional. Mean bodymass of participants in kg (0-200). Select mean value."
         },
         "PARTICIPANT_SEX": {
             "type": "string",
@@ -160,7 +170,6 @@
         "MUSCLE_REGION",
         "DATA_TYPE",
         "FILE_TYPE",
-        "IMAGE_TYPE",
         "DATA_PLANE",
         "PARTICIPANT_SEX",
         "SAMPLE_SIZE",

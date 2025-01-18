@@ -20,6 +20,8 @@
     "IMAGE_TYPE": [
         "Static"
     ],
+    "IMAGE_NUMBER": 504,
+    "VIDEO_NUMBER": null,
     "DATA_PLANE": [
         "Longitudinal"
     ],
@@ -27,12 +29,12 @@
     "SAMPLING_RATE": 25,
     "PARTICIPANT_AGE": 30,
     "PARTICIPANT_HEIGHT": null,
-    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_BODYMASS": null,
     "PARTICIPANT_SEX": "Both",
     "SAMPLE_SIZE": 8,
     "DATA_LABELS": true,
     "DATA_LABELS_DESCRIPTION": "he labels are provided as binary masks of visible fascicle paths and muscle compartments.",
-    "SHORT_DESCRIPTION": "This dataset presents an investigation into the feasibility of using deep learning methods for developing abitrary full spatial resolution regression analysis of B-mode ultrasound images of human skeletal muscle. Dynamic ultrasound images sequences of the calf muscles were acquired (25 Hz) from 8 healthy volunteers (4 male, ages: 25\u201336, median 30). Here, the labels correspond to the extrapolated fascicles including curvature, not only visible fascicle fragments.",
+    "SHORT_DESCRIPTION": "This dataset presents an investigation into the feasibility of using deep learning methods for developing abitrary full spatial resolution regression analysis of B-mode ultrasound images of human skeletal muscle. Dynamic ultrasound images sequences of the calf muscles were acquired (25 Hz) from 8 healthy volunteers (4 male, ages: 25 to 36, median 30). Here, the labels correspond to the extrapolated fascicles including curvature, not only visible fascicle fragments.",
     "DATASET_YEAR": "2017",
     "PUBLICATION_LINK": "https://www.mdpi.com/2313-433X/4/2/29",
     "DATASET_LINK": "https://kalisteo.cea.fr/index.php/fallmud/",

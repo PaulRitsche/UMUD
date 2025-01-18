@@ -760,11 +760,11 @@ elif selected_tab == "Contributing":
             - Use the metadata entryfields below to create a metadata .json file for your data.   
             - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
             - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
-            - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef).
+            - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef) and remember to anonymize the images. You can use our FIJI (ImageJ) [Image Anonymisation_Macro](https://osf.io/xbawc/files/osfstorage). Simply drag the file into the FIJI window and read the instructions. You can download the FIJI software [here](https://imagej.net/software/fiji/downloads).
     """
     )
     # Pydantic form in a styled popover
-    with st.expander("**📝 Fill Out Dataset Metadata**", expanded=False):
+    with st.expander("**📝 Metadate Entryfields Dropdown**", expanded=False):
         st.markdown(
             """
             <p style="color: #008080;">
@@ -941,6 +941,4 @@ elif selected_tab == "About Us":
         """We at UMUD are not only concernig with the present state of the project but already have in mind what our next steps are.
         If you want to know about the future of UMUD, you can check out our roadmap below."""
     )
-    st.image(
-        images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500
-    )  
+    st.image(images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500)

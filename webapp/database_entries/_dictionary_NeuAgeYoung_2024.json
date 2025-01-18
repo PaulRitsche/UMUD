@@ -1,0 +1,69 @@
+{
+    "DATASET_NAME": "NeuAgeYoung_2024",
+    "DOI": "",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Quadriceps Femoris",
+        "Vastus Lateralis"
+    ],
+    "MUSCLE_REGION": [
+        "Distal",
+        "Middle"
+    ],
+    "DEVICE": [
+        "Esaote MyLab 70"
+    ],
+    "TRANSDUCER": [
+        "47 mm linear array"
+    ],
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": [
+        "tiff",
+        "tif"
+    ],
+    "IMAGE_TYPE": [
+        "Static",
+        "Panoramic"
+    ],
+    "IMAGE_NUMBER": 552,
+    "VIDEO_NUMBER": null,
+    "DATA_PLANE": [
+        "Longitudinal",
+        "Transverse"
+    ],
+    "SCANNING_FREQUENCY": 7,
+    "SAMPLING_RATE": 0,
+    "PARTICIPANT_AGE": 26,
+    "PARTICIPANT_HEIGHT": 171,
+    "PARTICIPANT_BODYMASS": 66,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 46,
+    "DATA_LABELS": false,
+    "DATA_LABELS_DESCRIPTION": "",
+    "SHORT_DESCRIPTION": "This dataset includes quadriceps and vastus lateralis ultrasound imaging from 46 young adults (mean age: 25.98 years, mean height: 171.26 cm, mean weight: 66.1 kg). Four additional participants are included compared to the publication, as they were excluded from the original analysis due to missing values in other measurements. A 47 mm, 7.5MHz linear array transducer was employed to collect all the ultrasound images. Femur length was measured as the distance between the greater trochanter and the mid-patellar point, with 0% representing the mid-patellar point (distal part) and 100% the greater trochanter (proximal part). Quadriceps femoris cross-sectional area (CSA) was assessed at three different muscle regions (30%, 50%, and 70% of femur length) using panoramic ultrasound imaging (MyLab70, Esaote, Genoa, Italy). To obtain the CSA images, the transducer was moved slowly in a transverse plane from the medial border of the vastus medialis to the lateral borders of the vastus lateralis, while maintaining consistent pressure on the skin. Two CSA scans were obtained at each site. Vastus lateralis muscle architecture was evaluated by B-mode longitudinal ultrasound scans at 50% at 35% of femur length. Three longitudinal scans were collected for each site.",
+    "DATASET_YEAR": "2024",
+    "PUBLICATION_LINK": "https://onlinelibrary.wiley.com/doi/full/10.1002/jcsm.13531",
+    "DATASET_LINK": "https://osf.io/bf8ut/",
+    "AUTHORS": [
+        "Fabio Sarto",
+        "Martino V. Franchi",
+        "Jamie S. McPhee",
+        "Daniel W. Stashuk",
+        "Matteo Paganini",
+        "Elena Monti",
+        "Maira Rossi",
+        "Giuseppe Sirago",
+        "Sandra Zampieri",
+        "Evgeniia S. Montanova",
+        "Giacomo Valli",
+        "Tatiana Moro",
+        "Antonio Paoli",
+        "Roberto Bottinelli",
+        "Maria A. Pellegrino",
+        "Giuseppe De Vite",
+        "Helen M. Blau",
+        "Marco V. Narici"
+    ],
+    "CONTACT": "fabio.sarto@unipd.it",
+    "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}

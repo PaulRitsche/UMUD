@@ -30,6 +30,8 @@
     "IMAGE_TYPE": [
         "Panoramic"
     ],
+    "IMAGE_NUMBER": 1444,
+    "VIDEO_NUMBER": null,
     "DATA_PLANE": [
         "Transverse"
     ],
@@ -37,7 +39,7 @@
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": 38,
     "PARTICIPANT_HEIGHT": null,
-    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_BODYMASS": null,
     "PARTICIPANT_SEX": "Both",
     "SAMPLE_SIZE": 153,
     "DATA_LABELS": true,

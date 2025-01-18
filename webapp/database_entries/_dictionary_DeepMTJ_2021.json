@@ -26,6 +26,8 @@
     "IMAGE_TYPE": [
         "Static"
     ],
+    "IMAGE_NUMBER": 66864,
+    "VIDEO_NUMBER": 1747,
     "DATA_PLANE": [
         "Longitudinal"
     ],
@@ -33,7 +35,7 @@
     "SAMPLING_RATE": 80,
     "PARTICIPANT_AGE": null,
     "PARTICIPANT_HEIGHT": null,
-    "PARTICIPANT_WEIGHT": null,
+    "PARTICIPANT_BODYMASS": null,
     "PARTICIPANT_SEX": "Both",
     "SAMPLE_SIZE": 161,
     "DATA_LABELS": true,
