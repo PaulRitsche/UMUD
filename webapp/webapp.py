@@ -38,11 +38,12 @@ if "has_shown_banner" not in st.session_state:
 # Only show balloons and toast if they haven't been shown in this session
 if not st.session_state["has_shown_banner"]:
     st.balloons()
-    st.toast("Version 0.1.0 Released! Check out the new UMUD webapp!", icon="🎉")
+    st.toast("Version 0.1.0 Released!!", icon="🎉")
     st.session_state["has_shown_banner"] = True
 
-st.title(
-    "Universal Musculoskeletal Ultrasound Database",
+st.markdown(
+    "<h1 style='text-align: center; '>Universal Musculoskeletal Ultrasound Database</h1>",
+    unsafe_allow_html=True,
 )
 
 # Specify tabs
