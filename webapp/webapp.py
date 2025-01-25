@@ -23,19 +23,26 @@ import seaborn as sns
 
 
 # TODO complete benchmark Tab
-# TODO adjust jscon schema based on new pydanntic models
 
 # ----- Settings -----
 page_title = "UMUD"
 page_icon = ":mechanical_arm:"
 layout = "centered"
 # --------------------
-
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 
-st.markdown(
-    "<h1 style='text-align: center; '>Universal Musculoskeletal Ultrasound Database</h1>",
-    unsafe_allow_html=True,
+# Initialize session state for balloons and toast
+if "has_shown_banner" not in st.session_state:
+    st.session_state["has_shown_banner"] = False
+
+# Only show balloons and toast if they haven't been shown in this session
+if not st.session_state["has_shown_banner"]:
+    st.balloons()
+    st.toast("Version 0.1.0 Released! Check out the new UMUD webapp!", icon="🎉")
+    st.session_state["has_shown_banner"] = True
+
+st.title(
+    "Universal Musculoskeletal Ultrasound Database",
 )
 
 # Specify tabs
@@ -111,15 +118,15 @@ if selected_tab == "Home":
         """
     )
 
-    st.warning(
-        "**This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions.**",
-        icon=":material/warning:",
-    )
+    # st.warning(
+    #     "**This is a beta version of the UMUD repository, no functionality is guaranteed yet. We are currently testing first dataset inclusions.**",
+    #     icon=":material/warning:",
+    # )
     st.markdown(
         """
         The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos and volumetric data, with a focus on providing labeled datasets for training and research purposes.
         
-        Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeltal ultrasonography datasets.
+        Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeletal ultrasonography datasets.
         
         Moreover, as part of the [ORMIR](https://www.ormir.org/) community, we aim to set analysis standards by offering benchmark datasets and models, and organizing community challenges.
         """
@@ -201,15 +208,15 @@ if selected_tab == "Home":
             st.markdown("</a>", unsafe_allow_html=True)
 
     # Closing message
-    st.markdown(
-        """
-    <div style="text-align: center;">
-        <h3></h3>
-        <h4>Thank you for visiting the UMUD Repository!</h4>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    # st.markdown(
+    #     """
+    # <div style="text-align: center;">
+    #     <h3></h3>
+    #     <h4>Thank you for visiting the UMUD Repository!</h4>
+    # </div>
+    # """,
+    #     unsafe_allow_html=True,
+    # )
 
 
 elif selected_tab == "Datasets":
@@ -554,7 +561,7 @@ elif selected_tab == "Benchmarks":
         Additionally, we provide benchmark training datasets for analysis algorithm training (lower limb muscle ACSA and architecture). A detailed description of the data and analyses can be found in the Readme.md accompanying the dataset.
 
         These datasets allow you to:
-        - **Evaluate** your models/algorithm agains a common ground truth.
+        - **Evaluate** your models/algorithm against a common ground truth.
         - **Compare** your manual analysis with expert annotations.
         - **Learn** how to analyse muscle geometry in ultrasonography images.
 
@@ -565,7 +572,7 @@ elif selected_tab == "Benchmarks":
 
         📥 **[Download the Dataset from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
 
-        🔍 We are **continuously inlcuding more images and muscles** in our expert analysed benchmark datasets.
+        🔍 We are **continuously including more images and muscles** in our expert analysed benchmark datasets.
         """
     )
 
@@ -659,25 +666,26 @@ elif selected_tab == "Image Analysis":
     )
     st.markdown("---")
     algorithms = [
-        {
-            "name": "DeepACSA",
-            "description": "DeepACSA is a python package using convolutional neural networks trained on ultrasonography images of the human lower limb. Specifically, the dataset included transversal ultrasonography images from the human gastrocnemius medialis and lateralis, vastus lateralis and rectus femoris. The algorithm is able to analyse muscle anatomical cross-sectional area, echo intensity and muscle volume.",
-            "link": "https://deepacsa.readthedocs.io/en/latest/",
-        },
+        
         {
             "name": "ACSAuto",
             "description": "ACSAuto is an ImageJ macro script to semi-automatically evaluate the anatomical cross-sectional area of ultrasound images. ACSA preprocesses the image with filtering and ridge detection to enable automatic scaling using a reference line. It then enhances muscle aponeuroses and identifies their boundaries using a custom function, calculating the muscle’s ACSA from a generated polygon.",
             "link": "https://github.com/PaulRitsche/ACSAuto",
         },
         {
-            "name": "DL_Track_US",
-            "description": "D_Track_US is a python package using convolutional neural networks trained on a ultrasonography images of the human lower limb. Specifically, the dataset included longitudinal ultrasonography images from the human gastrocnemius medialis, tibialis anterior, soleus and vastus lateralis. The algorithm is able to analyse muscle architectural parameters (muscle thickness, fasciclelength and pennation angle) in both, single image files as well as videos.",
-            "link": "https://dltrack.readthedocs.io/en/latest/index.html",
+            "name": "DeepACSA",
+            "description": "DeepACSA is a python package using convolutional neural networks trained on ultrasonography images of the human lower limb. Specifically, the dataset included transversal ultrasonography images from the human gastrocnemius medialis and lateralis, vastus lateralis and rectus femoris. The algorithm is able to analyse muscle anatomical cross-sectional area, echo intensity and muscle volume.",
+            "link": "https://deepacsa.readthedocs.io/en/latest/",
         },
         {
-            "name": "UltraTrack",
-            "description": "UltraTrack is a software program for tracking muscle fascicle length and orientation changes through sequences of B-mode ultrasound images. It implements an affine extension to an optic flow algorithm to track movement of the muscle fascicle end-points throughout the sequence of images.",
-            "link": "https://sites.google.com/site/ultratracksoftware/home",
+            "name": "DeepMTJ",
+            "description": "DeepMTJ is a machine learning approach for automatically tracking of muscle-tendon junctions (MTJ) in ultrasound images. Our method is based on a convolutional neural network trained to infer MTJ positions across various ultrasound systems from different vendors, collected in independent laboratories from diverse observers, on distinct muscles and movements. We built DeepMTJ to support clinical biomechanists and locomotion researchers with an open-source tool for gait analyses.",
+            "link": "https://github.com/luuleitner/deepMTJ",
+        },
+        {
+            "name": "DL_Track_US",
+            "description": "DL_Track_US is a python package using convolutional neural networks trained on ultrasonography images of the human lower limb. Specifically, the dataset included longitudinal ultrasonography images from the human gastrocnemius medialis, tibialis anterior, soleus and vastus lateralis. The algorithm is able to analyse muscle architectural parameters (muscle thickness, fascicle length and pennation angle) in both, single image files as well as videos.",
+            "link": "https://dltrack.readthedocs.io/en/latest/index.html",
         },
         {
             "name": "SMA",
@@ -690,10 +698,16 @@ elif selected_tab == "Image Analysis":
             "link": "https://github.com/timvanderzee/ultrasound-automated-algorithm",
         },
         {
-            "name": "DeepMTJ",
-            "description": "DeepMTJ is a machine learning approach for automatically tracking of muscle-tendon junctions (MTJ) in ultrasound images. Our method is based on a convolutional neural network trained to infer MTJ positions across various ultrasound systems from different vendors, collected in independent laboratories from diverse observers, on distinct muscles and movements. We built DeepMTJ to support clinical biomechanists and locomotion researchers with an open-source tool for gait analyses.",
-            "link": "https://github.com/luuleitner/deepMTJ",
+            "name": "UltraTimTrack",
+            "description": "UltraTimTrack is a Kalman-filter-based fascicle tracking algorithm that combines tracking estimates from existing and openly-available algorithms to yield improved estimates of muscle fascicle length and fascicle angle changes during movement. The proposed UltraTimTrack algorithm was evaluated using ultrasound image sequences collected from the left-sided medial gastrocnemius muscle of healthy young adults during cyclical submaximal voluntary fixed-end plantar flexion contractions at various frequencies with varying activation levels, as well as during passive ankle rotations at various angular velocities.",
+            "link": "https://github.com/timvanderzee/UltraTimTrack"
         },
+        {
+            "name": "UltraTrack",
+            "description": "UltraTrack is a software program for tracking muscle fascicle length and orientation changes through sequences of B-mode ultrasound images. It implements an affine extension to an optic flow algorithm to track movement of the muscle fascicle end-points throughout the sequence of images.",
+            "link": "https://sites.google.com/site/ultratracksoftware/home",
+        },
+        
     ]
 
     # Display warning about image quality
@@ -757,7 +771,7 @@ elif selected_tab == "Contributing":
         """
         1. **Prepare Your Data:**
             - Make sure your data is formatted according to UMUD standards.  
-            - Use the metadata entryfields below to create a metadata .json file for your data.   
+            - Use the metadata entry fields below to create a metadata .json file for your data.   
             - Upload your data to a reliable repository like [Zenodo](https://zenodo.org/) or [OSF](https://osf.io/). Include the link to your dataset in the metadata dictionary.
             - If your dataset includes different populations (e.g., young vs. old individuals), please upload each population as a separate dataset. This makes the data easier to reuse.
             - Organize your images according to our [sample dataset](https://osf.io/xbawc/?view_only=f1b975a4ef554facb48b0a3236adddef) and remember to anonymize the images. You can use our FIJI (ImageJ) [Image Anonymisation_Macro](https://osf.io/xbawc/files/osfstorage). Simply drag the file into the FIJI window and read the instructions. You can download the FIJI software [here](https://imagej.net/software/fiji/downloads).
@@ -938,7 +952,7 @@ elif selected_tab == "About Us":
     st.subheader("The UMUD Roadmap")
     # Roadmap
     st.write(
-        """We at UMUD are not only concernig with the present state of the project but already have in mind what our next steps are.
+        """We at UMUD are not only concerned with the present state of the project but already have in mind what our next steps are.
         If you want to know about the future of UMUD, you can check out our roadmap below."""
     )
     st.image(images + "/roadmap_v0.1.0.png", caption="UMUD v0.1.0 Roadmap", width=500)
