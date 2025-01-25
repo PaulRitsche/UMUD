@@ -17,6 +17,8 @@
     "DATA_TYPE": "Volume",
     "FILE_TYPE": [],
     "IMAGE_TYPE": [],
+    "IMAGE_NUMBER": null,
+    "VIDEO_NUMBER": null,
     "DATA_PLANE": [
         "Longitudinal"
     ],
@@ -24,7 +26,7 @@
     "SAMPLING_RATE": null,
     "PARTICIPANT_AGE": 27,
     "PARTICIPANT_HEIGHT": 179,
-    "PARTICIPANT_WEIGHT": 75,
+    "PARTICIPANT_BODYMASS": 75,
     "PARTICIPANT_SEX": "Both",
     "SAMPLE_SIZE": 12,
     "DATA_LABELS": false,
