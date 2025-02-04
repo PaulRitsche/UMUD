@@ -1,0 +1,50 @@
+{
+    "DATASET_NAME": "UltraTimTrack_2024",
+    "DOI": "10.6084/m9.figshare.26502868.v1",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Gastrocnemius Medialis"
+    ],
+    "MUSCLE_REGION": [
+        "Middle"
+    ],
+    "DEVICE": [
+        "Telemed ArtUs EXT-1H"
+    ],
+    "TRANSDUCER": [
+        "LV8-5N60-A2"
+    ],
+    "DATA_TYPE": "Video",
+    "FILE_TYPE": [
+        "mp4"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "IMAGE_NUMBER": null,
+    "VIDEO_NUMBER": 101,
+    "DATA_PLANE": [
+        "Longitudinal"
+    ],
+    "SCANNING_FREQUENCY": 8,
+    "SAMPLING_RATE": null,
+    "PARTICIPANT_AGE": 26,
+    "PARTICIPANT_HEIGHT": 174,
+    "PARTICIPANT_BODYMASS": 70,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 8,
+    "DATA_LABELS": null,
+    "DATA_LABELS_DESCRIPTION": "",
+    "SHORT_DESCRIPTION": "In this study, a Kalman filter was applied to combine fascicle length and fascicle angle estimates from existing and openly available UltraTrack and TimTrack algorithms into a hybrid algorithm called UltraTimTrack. The study utilized a Telemed LV8-5N60-A2 linear ultrasound transducer, scanning at frequencies of 33-100 Fps, with synchronized data acquisition at 2 kHz. Data were collected from 8 healthy participants (4 women, 4 men; age: 26 ± 3 years; height: 174 ± 6 cm; weight: 70 ± 7 kg) during submaximal plantar flexion contractions and passive ankle joint rotations.",
+    "DATASET_YEAR": "2024",
+    "PUBLICATION_LINK": "https://peerj.com/articles/cs-2636/",
+    "DATASET_LINK": "https://figshare.com/articles/dataset/Gastrocnemius_medialis_muscle_ultrasonography_dataset/26502868/1",
+    "AUTHORS": [
+        "Tim J. van der Zee",
+        "Paolo Tecchio",
+        "Daniel Hahn",
+        "Brent J. Raiteri"
+    ],
+    "CONTACT": "brent.raiteri@rub.de",
+    "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}
