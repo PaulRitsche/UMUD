@@ -41,6 +41,7 @@ class SelectionValueMuscle(str, Enum):
     SUPINATOR = "Supinator"
     FLEXOR_DIGITORUM_SUPERFICIALIS = "Flexor Digitorum Superficialis"
     FLEXOR_DIGITORUM_PROFUNDUS = "Flexor Digitorum Profundus"
+    LUMBAR_MULTIFIDUS = "Lumbar Multifidus"
 
 
 class SelectionValueFileType(str, Enum):
@@ -139,6 +140,7 @@ class SelectionValueSoftwareLicense(str, Enum):
 
 class SelectionValueUltrasoundDevice(str, Enum):
     # GE Healthcare
+    GE_LOGIQ_E = "GE Logiq E"
     GE_LOGIQ_E9 = "GE Logiq E9"
     GE_LOGIQ_S8 = "GE Logiq S8"
     GE_LOGIQ_P9 = "GE Logiq P9"
