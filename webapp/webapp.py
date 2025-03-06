@@ -37,7 +37,7 @@ if "has_shown_banner" not in st.session_state:
 
 # Only show balloons and toast if they haven't been shown in this session
 if not st.session_state["has_shown_banner"]:
-    st.balloons()
+    # st.balloons()
     st.toast("Version 0.1.0 Released!!", icon="🎉")
     st.session_state["has_shown_banner"] = True
 
@@ -125,6 +125,8 @@ if selected_tab == "Home":
     # )
     st.markdown(
         """
+        *Preprint:* [![DOI:10.31219/osf.io/syr4z](https://zenodo.org/badge/DOI/10.31219/osf.io/syr4z.svg)](https://doi.org/10.31219/osf.io/syr4z)
+        
         The **UMUD repository** is a centralized platform for musculoskeletal ultrasonography dataset metadata. The database includes B-mode images, videos and volumetric data, with a focus on providing labeled datasets for training and research purposes.
         
         Existing  datasets often lack standardized metadata, making it challenging to find the datasets and compare data across different studies. UMUD tries to solve this issue by providing a comprehensive metadata index for musculoskeletal ultrasonography datasets.
@@ -306,13 +308,15 @@ elif selected_tab == "Datasets":
                 if results:
                     st.markdown("##### Dataset Links and Descriptions:")
                     for result in results:
+                        title = result.get("DATASET_NAME", "No title available")
                         link = result.get("DATASET_LINK", "No link available")
                         description = result.get(
                             "SHORT_DESCRIPTION", "No description available"
                         )
                         # Display the link and its corresponding description
-                        st.markdown(f"- **[{link}]({link})**")
-                        st.markdown(f"  {description}")
+                        st.markdown(f"- **{title}**")
+                        st.markdown(f"**[{link}]({link})**")
+                        st.markdown(f"{description}")
                 else:
                     st.write("No datasets found for the selected criteria.")
 
@@ -667,7 +671,6 @@ elif selected_tab == "Image Analysis":
     )
     st.markdown("---")
     algorithms = [
-        
         {
             "name": "ACSAuto",
             "description": "ACSAuto is an ImageJ macro script to semi-automatically evaluate the anatomical cross-sectional area of ultrasound images. ACSA preprocesses the image with filtering and ridge detection to enable automatic scaling using a reference line. It then enhances muscle aponeuroses and identifies their boundaries using a custom function, calculating the muscle’s ACSA from a generated polygon.",
@@ -701,14 +704,13 @@ elif selected_tab == "Image Analysis":
         {
             "name": "UltraTimTrack",
             "description": "UltraTimTrack is a Kalman-filter-based fascicle tracking algorithm that combines tracking estimates from existing and openly-available algorithms to yield improved estimates of muscle fascicle length and fascicle angle changes during movement. The proposed UltraTimTrack algorithm was evaluated using ultrasound image sequences collected from the left-sided medial gastrocnemius muscle of healthy young adults during cyclical submaximal voluntary fixed-end plantar flexion contractions at various frequencies with varying activation levels, as well as during passive ankle rotations at various angular velocities.",
-            "link": "https://github.com/timvanderzee/UltraTimTrack"
+            "link": "https://github.com/timvanderzee/UltraTimTrack",
         },
         {
             "name": "UltraTrack",
             "description": "UltraTrack is a software program for tracking muscle fascicle length and orientation changes through sequences of B-mode ultrasound images. It implements an affine extension to an optic flow algorithm to track movement of the muscle fascicle end-points throughout the sequence of images.",
             "link": "https://sites.google.com/site/ultratracksoftware/home",
         },
-        
     ]
 
     # Display warning about image quality
