@@ -1,0 +1,50 @@
+{
+    "DATASET_NAME": "LuminousMultifidus_2020",
+    "DOI": "10.1186/s12891-020-03679-3",
+    "VERSION": "1.0",
+    "MUSCLE": "Lumbar Multifidus",
+    "MUSCLE_REGION": [
+        "Middle"
+    ],
+    "DEVICE": [
+        "GE Logiq E"
+    ],
+    "TRANSDUCER": [
+        null
+    ],
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": [
+        "tif"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "IMAGE_NUMBER": 341,
+    "VIDEO_NUMBER": null,
+    "DATA_PLANE": [
+        "Transverse"
+    ],
+    "SCANNING_FREQUENCY": 5,
+    "SAMPLING_RATE": null,
+    "PARTICIPANT_AGE": 21,
+    "PARTICIPANT_HEIGHT": 175,
+    "PARTICIPANT_BODYMASS": 77,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 109,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "The LUMINOUS database contains the US images with their corresponding manually segmented binary masks, serving as the ground truth. The ground truth segmentations of LM CSA and LM EI measurements in prone and standing positions were performed on the acquired data using Fiji, a distribution of the ImageJ image processing software. The B-mode images and binary segmentation masks for each subject are deposited as *.tif files.",
+    "SHORT_DESCRIPTION": "Ultrasound dataset of the lumbar multifidus muscle segmentation, including B-mode images and manually segmented binary masks from 109 young athletic adults. Images of the lumbar multifidus muscle at the L5 level were taken in prone and standing positions using a GE LOGIQ e ultrasound machine with a curvilinear probe at 5 MHz frequency. The dataset aims to support the development of deep learning-based segmentation algorithms.",
+    "DATASET_YEAR": "2020",
+    "PUBLICATION_LINK": "https://doi.org/10.1186/s12891-020-03679-3",
+    "DATASET_LINK": "https://users.encs.concordia.ca/~impact/luminous-database/",
+    "AUTHORS": [
+        "Clyde J. Belasso",
+        "Bahareh Behboodi",
+        "Habib Benali",
+        "Mathieu Boily",
+        "Hassan Rivaz",
+        "Maryse Fortin"
+    ],
+    "CONTACT": "maryse.fortin@concordia.ca",
+    "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}

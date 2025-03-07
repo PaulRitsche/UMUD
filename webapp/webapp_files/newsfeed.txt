@@ -1,5 +1,5 @@
-2025-04-02: Added UltraTimTrack_2024, SMA_2019 datasets. 
-2025-27-01: UMUD preprint published and v0.1.0 released.
+2025-06-03: Added UltratimTrack_2025, LuminousMulitifidus_2020 and SimpleMuscleArchitectureAnalysis_2019 datasets.
+2025-28-01: UMUD Preprint published on OSF and v0.1.0 released.
 2025-25-01: Added NeuAgeOld_2024, NeuAgeYoung_2024 and Heelraise_2017 datasets.
 2024-21-12: Added UMUD v0.1.0 roadmap.
 2024-16-12: Added GasFasTrack_2019, Leg3dUS_2024 and DLSegMskNeuromDisease_2021 datasets.

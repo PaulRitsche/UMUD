@@ -1,4 +1,58 @@
 
+2025-03-06
+==========
+
+Removed
+-------
+
+- Preliminary algorithm performance comparisons.
+- sample_submission.csv file of preliminary analysis display.
+
+- Animation for new release.
+
+Added
+-----
+
+- Benchmark tab statistics
+- Warnings for model/algorithm performance
+- Roadmap
+
+- pre-commit hooks
+
+- Code of Conduct.
+
+- NeuAge datasets
+
+- NeuAge and Heelraise datasets
+- Animation for new release
+
+l
+- LuminousMultifidus_2020 and SimpleMuscleArchitectureAnalysis_2019 datasets.
+- Display of dataset name in webapp when querying.
+
+Changed
+-------
+
+- Rewrote benchmark tab for more clarity.
+- Updated the UMUD v0.1.0 roadmap.
+- Updated the umud demo gif.
+- Updated the Readme.md.
+- Updated the template_dictionary.py to newest json schema format.
+
+Fixed
+-----
+
+- Analysis Benchmark.zip download
+- Readability expanders
+
+- pyproject.toml
+
+- Plotting of database charts.
+
+- Roadmap v0.1.0
+
+- Typos in webapp.
+
 2024-09-11
 ==========
 
