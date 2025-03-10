@@ -37,10 +37,7 @@ if "has_shown_banner" not in st.session_state:
 
 # Only show balloons and toast if they haven't been shown in this session
 if not st.session_state["has_shown_banner"]:
-<<<<<<< HEAD
-=======
     # st.balloons()
->>>>>>> f4a947ed9fbe6844b3f6f922398aafcfd3e23deb
     st.toast("Version 0.1.0 Released!!", icon="🎉")
     st.session_state["has_shown_banner"] = True
 
