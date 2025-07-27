@@ -6,6 +6,7 @@ import numpy as np
 from st_aggrid import AgGrid, GridOptionsBuilder
 import seaborn as sns
 from matplotlib.colors import ListedColormap
+from matplotlib.lines import Line2D
 
 
 def convert_dataframe(df, list_columns):
@@ -79,42 +80,94 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                     f"'{group_by_column}' column is not suitable for 'Muscle Distribution' plot."
                 )
         
-        elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
-            fig, ax = plt.subplots()
+        # elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
+        #     fig, ax = plt.subplots()
 
-            df_exploded = df_converted.explode("MUSCLE")
+        #     df_exploded = df_converted.explode("MUSCLE")
 
-            # Check if group_by_column is valid for grouping
-            if group_by_column in df.columns:
-                fig, ax = plt.subplots(figsize=(10, 6))
+        #     # Check if group_by_column is valid for grouping
+        #     if group_by_column in df.columns:
+        #         fig, ax = plt.subplots(figsize=(10, 6))
 
-                # Iterate through each group to create a plot of vertical lines
-                for group_name, group_data in df_exploded.groupby(group_by_column):
-                    # Drop NaN values to avoid plotting errors
-                    group_ages = group_data["PARTICIPANT_AGE"].dropna()
-                    if not group_ages.empty:
-                        # Plot vertical lines at each age point
-                        ax.vlines(
-                            group_ages, 
-                            ymin=0, 
-                            ymax=1, 
-                            label=group_name, 
-                            linewidth=1.5, 
-                            alpha=0.7
-                        )
+        #         # Iterate through each group to create a plot of vertical lines
+        #         for group_name, group_data in df_exploded.groupby(group_by_column):
+        #             # Drop NaN values to avoid plotting errors
+        #             group_ages = group_data["PARTICIPANT_AGE"].dropna()
+        #             print(len(group_ages))
+        #             if not group_ages.empty:
+        #                 # Plot vertical lines at each age point
+        #                 # ax.vlines(
+        #                 #     group_ages, 
+        #                 #     ymin=0, 
+        #                 #     ymax=1, 
+        #                 #     label=group_name, 
+        #                 #     linewidth=1.5, 
+        #                 #     alpha=0.7
+        #                 # )
+        #                 y_jitter = np.random.uniform(low=0.4, high=0.6, size=len(group_ages))  # vertical scatter around 0.5
+        #                 ax.scatter(
+        #                     group_ages,
+        #                     y_jitter,
+        #                     label=group_name, 
+        #                     s=50
+        #                 )
+                        
+        #         # 
+        #         # Add titles and labels
+        #         ax.set_title("Age Distribution", fontsize=16)
+        #         ax.set_xlabel("Age", fontsize=14)
+        #         ax.set_ylabel("Count", fontsize=14)
                 
-                # Add titles and labels
+        #         # Add a legend if there are multiple groups
+        #         st.pyplot(fig)
+        #     else:
+        #         st.warning(
+        #             f"'{group_by_column}' column is not suitable for 'Age Distribution' plot."
+        #         )
+        elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
+
+            fig, ax = plt.subplots(figsize=(12, 6))
+
+            # Clean age column
+            ages = df["PARTICIPANT_AGE"].dropna().astype(int)
+            names = df["DATASET_NAME"].dropna().astype(str) if "MUSCLE" in df.columns else None
+
+
+            if not ages.empty:
+                # Count occurrences of each age
+                age_counts = {}
+                xs = []
+                ys = []
+                colors = []
+
+                cmap = plt.cm.get_cmap('tab20', len(ages))  # many distinct colors
+
+                for i, age in enumerate(ages):
+                    if age not in age_counts:
+                        age_counts[age] = 0
+                    else:
+                        age_counts[age] += 1
+
+                    xs.append(age)
+                    ys.append(age_counts[age] + 1)
+                    colors.append(cmap(i % cmap.N))  # cycle through colors
+
+                ax.scatter(xs, ys, c=colors, s=400, alpha=1, edgecolor='k')
+
+                # Set y-axis ticks at every integer (1 unit steps)
+                max_y = max(ys)
+                ax.set_yticks(range(1, max_y + 1))  # +2 ensures last tick is shown
+                ax.set_ylim(0.5, max_y + 0.5)
+
+                # Labels and style
                 ax.set_title("Age Distribution", fontsize=16)
                 ax.set_xlabel("Age", fontsize=14)
                 ax.set_ylabel("Count", fontsize=14)
-                
-                # Add a legend if there are multiple groups
+                ax.grid(True, axis='y', linestyle='--', alpha=0.5)
+
                 st.pyplot(fig)
             else:
-                st.warning(
-                    f"'{group_by_column}' column is not suitable for 'Age Distribution' plot."
-                )
-
+                st.warning("No valid ages found in 'PARTICIPANT_AGE'.")
         elif plot == "Data Type Distribution" and "DATA_TYPE" in df.columns:
             fig, ax = plt.subplots(figsize=(10, 6))
 
