@@ -1,0 +1,54 @@
+{
+    "DATASET_NAME": "AnkleImage_2024",
+    "DOI": "10.6019/S-BIAD1482",
+    "VERSION": "1.0",
+    "MUSCLE": [
+        "Tibialis Anterior",
+        "Soleus",
+        "Gastrocnemius Medialis",
+        "Gastrocnemius Lateralis"
+    ],
+    "MUSCLE_REGION": [
+        "Middle"
+    ],
+    "DEVICE": ["S-Sharp Prodigy"],
+    "TRANSDUCER": [
+        "L7.5SC Prodigy Probe"
+    ],
+    "DATA_TYPE": "Image",
+    "FILE_TYPE": [
+        "png",
+        "jpg"
+    ],
+    "IMAGE_TYPE": [
+        "Static"
+    ],
+    "IMAGE_NUMBER": 69440,
+    "VIDEO_NUMBER": null,
+    "DATA_PLANE": [
+        "Longitudinal"
+    ],
+    "SCANNING_FREQUENCY": 6,
+    "SAMPLING_RATE": 1000,
+    "PARTICIPANT_AGE": 26,
+    "PARTICIPANT_HEIGHT": 176,
+    "PARTICIPANT_BODYMASS": 75,
+    "PARTICIPANT_SEX": "Both",
+    "SAMPLE_SIZE": 10,
+    "DATA_LABELS": true,
+    "DATA_LABELS_DESCRIPTION": "The dataset contains annotatoins of fascicle and aponeurosis (sometimes partly, using Ultratrack), thickness, displacement, and echogenicity. Labels can be converted to binary but are sometimes limited to one fascicle and one aponeurosis line per image. For description of folder structure please check publication. ",
+    "SHORT_DESCRIPTION": "Ultrafast ultrasound dataset of the human ankle joint during isometric, isokinetic, and dynamic platar flextions as well as treadmill walking. It contains B-mode and radio frequency ultrasound images from A total of ten young participants (7 males and 3 females, age: 26.1\u2009\u00b1\u20092.5 years, height: 1.76\u2009\u00b1\u20090.08\u2009m, mass: 75.0\u2009\u00b1\u200915.4\u2009kg) with no record of neuromuscular or musculoskeletal disorders. Data were collected using a clinical-grade linear US transducer (L7.5SC Prodigy Probe, S-Sharp, Taiwan, 6.4 MHz, up to 1000 FPS). The linear US array transducer, with a width of 38\u2009mm and comprising 128 channels, was configured with a pitch of 0.3\u2009mm. Imaged muscles include the gastrocnemius medialis and lateralis, tibialis anterior and soleus muscles. The probe was affixed to the muscle using a using a specially designed holder (3-D printed) capable of one degree of freedom (DOF), enabling the adjustment of the US probe\u2019s orientation perpendicular to the skin. For description of folder structure please check publication.",
+    "DATASET_YEAR": "2024",
+    "PUBLICATION_LINK": "https://www.nature.com/articles/s41597-024-04285-x#Sec18",
+    "DATASET_LINK": "https://ftp.ebi.ac.uk/biostudies/fire/S-BIAD/482/S-BIAD1482/Files/",
+    "AUTHORS": [
+        "Qiang Zhang",
+        "Noor Hakam",
+        "Oluwasegun Akinniyi",
+        "Ashwin Iyer",
+        "Xuefeng Bao",
+        "Nitin Sharma"
+    ],
+    "CONTACT": "qiang.zhang@ua.edu",
+    "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}

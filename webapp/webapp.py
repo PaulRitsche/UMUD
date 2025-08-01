@@ -23,6 +23,7 @@ import seaborn as sns
 
 
 # TODO complete benchmark Tab
+# TODO complete video benchmark dataset by UltraTim
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -562,7 +563,7 @@ elif selected_tab == "Benchmarks":
     st.markdown(
         """
         ### 📂 Benchmark Image Dataset
-        UMUD provides the first downloadable benchmark muscle architecture and morphology datasets, analyzed by **six expert raters**. 
+        UMUD provides the first downloadable benchmark muscle architecture (static & dynamic) and morphology datasets, analyzed by **multiple expert raters**. 
         Additionally, we provide benchmark training datasets for analysis algorithm training (lower limb muscle ACSA and architecture). A detailed description of the data and analyses can be found in the Readme.md accompanying the dataset.
 
         These datasets allow you to:
@@ -571,9 +572,10 @@ elif selected_tab == "Benchmarks":
         - **Learn** how to analyse muscle geometry in ultrasonography images.
 
         Specifically, the expert analysed dataset contains original muscle geometry ultrasound images, analysed and annotated images and the corresponding manual analysis results of: 
-        - **35 architectural images** from the vastus lateralis, gastrocnemius medialis, tibialis anterior and soleus acquired with different devices.
-        - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions.
-        - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle fascicles analysed by one expert.
+        - **35 architectural images** from the vastus lateralis, gastrocnemius medialis, tibialis anterior and soleus acquired with different devices and analysed by seven experts (Fabio Sarto, Neil Cronin, Olivier Seynnes, Christoph Leitner, Taija Finni, Martino Franchi, Paul Ritsche).
+        - **30 panoramic images of rectus femoris ACSA** acquired with different devices and at different muscle regions analysed by six experts (Fabio Sarto, Neil Cronin, Olivier Seynnes, Taija Finni, Martino Franchi, Paul Ritsche).
+        - **167 architectural images of the gastrocnemius medialis during a calf raise** acquired with a Telemed device analysed by three experts (Tim van der Zee, Paolo Tecchio, Brent Raiteri). 
+        - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle fascicles analysed by one expert (Fabio Sarto).
 
         📥 **[Download the Dataset from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
 

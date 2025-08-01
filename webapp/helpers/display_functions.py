@@ -80,50 +80,6 @@ def display_charts(df, selected_plots, group_by_column="MUSCLE"):
                     f"'{group_by_column}' column is not suitable for 'Muscle Distribution' plot."
                 )
         
-        # elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
-        #     fig, ax = plt.subplots()
-
-        #     df_exploded = df_converted.explode("MUSCLE")
-
-        #     # Check if group_by_column is valid for grouping
-        #     if group_by_column in df.columns:
-        #         fig, ax = plt.subplots(figsize=(10, 6))
-
-        #         # Iterate through each group to create a plot of vertical lines
-        #         for group_name, group_data in df_exploded.groupby(group_by_column):
-        #             # Drop NaN values to avoid plotting errors
-        #             group_ages = group_data["PARTICIPANT_AGE"].dropna()
-        #             print(len(group_ages))
-        #             if not group_ages.empty:
-        #                 # Plot vertical lines at each age point
-        #                 # ax.vlines(
-        #                 #     group_ages, 
-        #                 #     ymin=0, 
-        #                 #     ymax=1, 
-        #                 #     label=group_name, 
-        #                 #     linewidth=1.5, 
-        #                 #     alpha=0.7
-        #                 # )
-        #                 y_jitter = np.random.uniform(low=0.4, high=0.6, size=len(group_ages))  # vertical scatter around 0.5
-        #                 ax.scatter(
-        #                     group_ages,
-        #                     y_jitter,
-        #                     label=group_name, 
-        #                     s=50
-        #                 )
-                        
-        #         # 
-        #         # Add titles and labels
-        #         ax.set_title("Age Distribution", fontsize=16)
-        #         ax.set_xlabel("Age", fontsize=14)
-        #         ax.set_ylabel("Count", fontsize=14)
-                
-        #         # Add a legend if there are multiple groups
-        #         st.pyplot(fig)
-        #     else:
-        #         st.warning(
-        #             f"'{group_by_column}' column is not suitable for 'Age Distribution' plot."
-        #         )
         elif plot == "Age Distribution" and "PARTICIPANT_AGE" in df.columns:
 
             fig, ax = plt.subplots(figsize=(12, 6))
