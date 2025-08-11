@@ -577,7 +577,7 @@ elif selected_tab == "Benchmarks":
         - **167 architectural images of the gastrocnemius medialis during a calf raise** acquired with a Telemed device analysed by three experts (Tim van der Zee, Paolo Tecchio, Brent Raiteri). 
         - **250 static architectural images** from the vastus lateralis in young and old individuals with drawings of the muscle fascicles analysed by one expert (Fabio Sarto).
 
-        📥 **[Download the Dataset from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
+        📥 **[Download the Datasets from the UMUD Repository](https://osf.io/xbawc/files/osfstorage#)**  
 
         🔍 We are **continuously including more images and muscles** in our expert analysed benchmark datasets.
         """
