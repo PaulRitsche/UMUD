@@ -22,35 +22,58 @@ collection = db.datasets
 # Example data
 dictionary = [
     {
-        "DATASET_NAME": "SimpleMuscleArchitectureAnalysis_2019",
-        "DOI": "10.17632/dpmf9bz8pt.2",
-        "VERSION": "2.0",
-        "MUSCLE": ["Tibialis Anterior", "Gastrocnemius Medialis"],
-        "MUSCLE_REGION": ["Middle"],
-        "DEVICE": ["Telemed LogicScan 128", "Philips HD11"],
-        "TRANSDUCER": ["LV7.5/60/96Z", "HL9.0/60/128Z-2"],
+        "DATASET_NAME": "AnkleImage_2024",
+        "DOI": "10.6019/S-BIAD1482",
+        "VERSION": "1.0",
+        "MUSCLE": [
+            "Tibialis Anterior",
+            "Soleus",
+            "Gastrocnemius Medialis",
+            "Gastrocnemius Lateralis"
+        ],
+        "MUSCLE_REGION": [
+            "Middle"
+        ],
+        "DEVICE": ["S-Sharp Prodigy"],
+        "TRANSDUCER": [
+            "L7.5SC Prodigy Probe"
+        ],
         "DATA_TYPE": "Image",
-        "FILE_TYPE": ["png"],
-        "IMAGE_TYPE": ["Static"],
-        "IMAGE_NUMBER": 114,
+        "FILE_TYPE": [
+            "png",
+            "jpg"
+        ],
+        "IMAGE_TYPE": [
+            "Static"
+        ],
+        "IMAGE_NUMBER": 69440,
         "VIDEO_NUMBER": None,
-        "DATA_PLANE": ["Longitudinal"],
-        "SCANNING_FREQUENCY": None,
-        "SAMPLING_RATE": None,
-        "PARTICIPANT_AGE": None,
-        "PARTICIPANT_HEIGHT": None,
-        "PARTICIPANT_BODYMASS": None,
-        "PARTICIPANT_SEX": None,
-        "SAMPLE_SIZE": 15,
-        "DATA_LABELS": False,
-        "DATA_LABELS_DESCRIPTION": None,
-        "SHORT_DESCRIPTION": "Ultrasound images of muscle architecture were acquired using LogicScan 128 EXT-1Z systems with transducers LV7.5/60/96Z and HL9.0/60/128Z-2, at scanning frequencies of 9–12 MHz, to analyze the gastrocnemius medialis and tibialis anterior and Phillips HD11 at scanning frequency from 5-12 MHz. Data were collected from 15 participants, with optimized settings for fascicle and aponeurosis visualization. To assess the influence of different ultrasound settings, three sample groups were analyzed: Sample A: Scans of the gastrocnemius medialis from 15 individuals, acquired at 9 MHz using a 96-element transducer (60 mm, LV7.5/60/96Z, LogicScan 128 EXT-1Z, Telemed, Lithuania). Sample B: Additional scans of the gastrocnemius medialis from 15 individuals, taken at 12 MHz with a 128-element transducer (50 mm, 5–12 MHz HD11XE, Phillips, Bothell, Washington, USA). Sample C: Dynamic scans of the tibialis anterior, acquired at 12 MHz using a 128-element transducer (60 mm, HL9.0/60/128Z-2, LogicScan 128 EXT-1Z, Telemed, Lithuania), recorded at 15 frames per second during unconstrained dorsiflexion-plantarflexion movements.",
-        "DATASET_YEAR": "2019",
-        "PUBLICATION_LINK": "https://doi.org/10.1371/journal.pone.0229034",
-        "DATASET_LINK": "https://data.mendeley.com/datasets/dpmf9bz8pt/2",
-        "AUTHORS": ["Oliver R. Seynnes", "Neil J. Cronin"],
-        "CONTACT": "olivier.seynnes@nih.no",
-        "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "DATA_PLANE": [
+            "Longitudinal"
+        ],
+        "SCANNING_FREQUENCY": 6,
+        "SAMPLING_RATE": 1000,
+        "PARTICIPANT_AGE": 26,
+        "PARTICIPANT_HEIGHT": 176,
+        "PARTICIPANT_BODYMASS": 75,
+        "PARTICIPANT_SEX": "Both",
+        "SAMPLE_SIZE": 10,
+        "DATA_LABELS": True,
+        "DATA_LABELS_DESCRIPTION": "The dataset contains annotatoins of fascicle and aponeurosis (sometimes partly, using Ultratrack), thickness, displacement, and echogenicity. Labels can be converted to binary but are sometimes limited to one fascicle and one aponeurosis line per image. For description of folder structure please check publication. ",
+        "SHORT_DESCRIPTION": "Ultrafast ultrasound dataset of the human ankle joint during isometric, isokinetic, and dynamic platar flextions as well as treadmill walking. It contains B-mode and radio frequency ultrasound images from A total of ten young participants (7 males and 3 females, age: 26.1\u2009\u00b1\u20092.5 years, height: 1.76\u2009\u00b1\u20090.08\u2009m, mass: 75.0\u2009\u00b1\u200915.4\u2009kg) with no record of neuromuscular or musculoskeletal disorders. Data were collected using a clinical-grade linear US transducer (L7.5SC Prodigy Probe, S-Sharp, Taiwan, 6.4 MHz, up to 1000 FPS). The linear US array transducer, with a width of 38\u2009mm and comprising 128 channels, was configured with a pitch of 0.3\u2009mm. Imaged muscles include the gastrocnemius medialis and lateralis, tibialis anterior and soleus muscles. The probe was affixed to the muscle using a using a specially designed holder (3-D printed) capable of one degree of freedom (DOF), enabling the adjustment of the US probe\u2019s orientation perpendicular to the skin. For description of folder structure please check publication.",
+        "DATASET_YEAR": "2024",
+        "PUBLICATION_LINK": "https://www.nature.com/articles/s41597-024-04285-x#Sec18",
+        "DATASET_LINK": "https://ftp.ebi.ac.uk/biostudies/fire/S-BIAD/482/S-BIAD1482/Files/",
+        "AUTHORS": [
+            "Qiang Zhang",
+            "Noor Hakam",
+            "Oluwasegun Akinniyi",
+            "Ashwin Iyer",
+            "Xuefeng Bao",
+            "Nitin Sharma"
+        ],
+        "CONTACT": "qiang.zhang@ua.edu",
+        "LICENSE": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
     }
 ]
 
@@ -60,7 +83,7 @@ dictionary = [
 collection.insert_many(dictionary)
 
 # Retrieve and print data from the collection
-query = {"DATASET_NAME": "SimpleMuscleArchitectureAnalysis_2019"}
+query = {"DATASET_NAME": "AnkleImage_2024"}
 results = collection.find(query)
 
 # Print the result, DATASET_LINK must be present

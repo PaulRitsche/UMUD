@@ -232,6 +232,9 @@ class SelectionValueUltrasoundDevice(str, Enum):
     TELEMED_ECHO_BLASTER_128 = "Telemed Echo Blaster 128"
     TELEMED_LOGICSCAN_128 = "Telemed LogicScan 128"
 
+    # S-Sharp
+    S_SHARP_PRODIGY = "S-Sharp Prodigy"
+
 
 # Define the schema using Pydantic
 class DatasetMetadata(BaseModel):
