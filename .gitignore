@@ -202,10 +202,14 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,python
 
 # Streamlit 
-webapp/.streamlit/
+./webapp/.streamlit/secrets.toml
 
 # MongoDB
 access.txt
 
 # Benchmarks
 benchmarks/
+
+# Legacy admin panel
+
+.streamlit

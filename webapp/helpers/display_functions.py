@@ -356,3 +356,16 @@ def display_comparability_statistics():
     )
     ax.set_title(f"All Metrics for {selected_variable}")
     st.pyplot(fig)
+
+def highlight_metric_columns(col):
+
+    if "FL" in col.name:
+        return ["background-color: #f2f2f2"] * len(col)
+
+    elif "MT" in col.name:
+        return ["background-color: #ffffff"] * len(col)
+
+    elif "PA" in col.name:
+        return ["background-color: #e8e8e8"] * len(col)
+
+    return [""] * len(col)

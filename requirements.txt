@@ -11,3 +11,4 @@ seaborn==0.13.2
 flake8
 pre-commit
 commitizen
+openpyxl
