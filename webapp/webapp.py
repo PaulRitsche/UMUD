@@ -668,7 +668,7 @@ elif selected_tab == "Benchmarks":
             / "35_images_benchmark_summary.csv"
         )
 
-        benchmark_df = pd.read_csv(benchmark_path, sep=",")
+        benchmark_df = pd.read_csv(benchmark_path, sep=";")
 
         template_df = pd.DataFrame(
             {
@@ -843,9 +843,24 @@ elif selected_tab == "Benchmarks":
 
         benchmark_folder = Path("benchmark_data/approved_submissions")
 
-        model_files = list(benchmark_folder.glob("*.csv"))
+        model_files = list(
+            benchmark_folder.glob("*.csv")
+        )
 
-        available_models = [file.stem for file in model_files]
+        available_models = []
+
+        for model_file in model_files:
+
+            submission = load_submission(
+                model_file.stem,
+                folder="approved_submissions"
+            )
+
+            if (
+                submission["metadata"].get("benchmark_task")
+                == "Muscle Architecture (Images)"
+            ):
+                available_models.append(model_file.stem)
 
         selected_models = st.multiselect(
             "Select models to compare",

@@ -37,7 +37,7 @@ def load_benchmark():
 
     benchmark_df = pd.read_csv(
         benchmark_path,
-        sep=","
+        sep=";"
     )
 
     return benchmark_df
@@ -163,7 +163,7 @@ def build_web_imagewise_comparison(selected_models):
 
     benchmark_df = pd.read_csv(
         benchmark_path,
-        sep=","
+        sep=";"
     )
 
     benchmark_df["FL Experts"] = (
