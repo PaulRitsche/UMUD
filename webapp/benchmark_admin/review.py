@@ -4,15 +4,17 @@ from pathlib import Path
 from submission_storage import list_pending_submissions, load_submission, approve_submission, reject_submission
 from review_tools import (
     open_submission_csv,
-    load_benchmark,
+    load_image_benchmark,
     load_video_benchmark,
     build_imagewise_comparison,
     build_video_framewise_comparison,
     build_summary_dataframe,
     build_video_summary_dataframe,
     export_comparison,
-    export_video_comparison
-)
+    load_acsa_benchmark,
+    build_acsa_imagewise_comparison,
+    build_acsa_summary_dataframe,
+    )
 
 def main():
 
@@ -89,7 +91,7 @@ def main():
                     == "Muscle Architecture (Images)"
                 ):
 
-                    benchmark = load_benchmark()
+                    benchmark = load_image_benchmark()
 
                     comparison_df = build_imagewise_comparison(
                         submission["predictions"],
@@ -120,6 +122,24 @@ def main():
                         selected_submission["model_name"]
                     )
 
+                elif (
+                    selected_submission["benchmark_task"]
+                    == "ACSA Quantification"
+                ):
+
+                    benchmark = load_acsa_benchmark()
+
+                    comparison_df = build_acsa_imagewise_comparison(
+                        submission["predictions"],
+                        benchmark,
+                        selected_submission["model_name"]
+                    )
+
+                    summary_df = build_acsa_summary_dataframe(
+                        comparison_df,
+                        selected_submission["model_name"]
+                    )
+
                 else:
 
                     print("Unsupported benchmark task.")
@@ -145,7 +165,18 @@ def main():
                     == "Muscle Architecture (Video)"
                 ):
 
-                    report_path = export_video_comparison(
+                    report_path = export_comparison(
+                        summary_df,
+                        comparison_df,
+                        selected_submission["model_name"]
+                    )
+
+                elif (
+                    selected_submission["benchmark_task"]
+                    == "ACSA Quantification"
+                ):
+
+                    report_path = export_comparison(
                         summary_df,
                         comparison_df,
                         selected_submission["model_name"]

@@ -12,3 +12,4 @@ flake8
 pre-commit
 commitizen
 openpyxl
+pingouin

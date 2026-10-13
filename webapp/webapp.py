@@ -18,9 +18,11 @@ from helpers.display_functions import (
     )
 from benchmark_admin.review_tools import (
     build_web_imagewise_comparison,
-    build_global_summary,
+    build_image_global_summary,
     build_video_global_summary,
     build_web_video_framewise_comparison,
+    build_acsa_global_summary,
+    build_web_acsa_imagewise_comparison,
     )
 from benchmark_admin.submission_storage import load_submission
 from helpers.data_tools import *
@@ -646,109 +648,10 @@ elif selected_tab == "Benchmarks":
             - Muscle Thickness (MT)
             - Pennation Angle (PA)
 
-            The benchmark includes 35 expert-annotated ultrasound images analysed by seven independent expert raters.
             """
-        )
+            )
 
-        st. markdown("##### Benchmark Submission")
-
-        st.markdown(
-            """
-            Upload your model predictions in CSV format to compare them against the expert benchmark dataset.
-            """
-        )
-
-        # -----------------------------
-        # Submission Template
-        # -----------------------------
-
-        benchmark_path = (
-            Path(__file__).parent
-            / "benchmark_data"
-            / "35_images_benchmark_summary.csv"
-        )
-
-        benchmark_df = pd.read_csv(benchmark_path, sep=";")
-
-        template_df = pd.DataFrame(
-            {
-                "image_id": benchmark_df["image_id"],
-                "fl_mm": np.nan,
-                "mt_mm": np.nan,
-                "pa_deg": np.nan,
-            }
-        )
-
-        csv = template_df.to_csv(sep=',', index=False).encode("utf-8")
-
-        st.download_button(
-            label="📥 Download Submission Template",
-            data=csv,
-            file_name="muscle_architecture_benchmark_template.csv",
-            mime="text/csv",
-        )
-
-        model_name = st.text_input(
-            "Model Name (Required)",
-            placeholder="e.g. DL_Track",
-        )
-
-        uploaded_file = st.file_uploader(
-            "Submit Your Own Results",
-            type=["csv"]
-        )
-
-        if uploaded_file is not None:
-
-            if not model_name.strip():
-                st.error("Please enter a model name")
-
-            else:
-
-                submission_df = pd.read_csv(uploaded_file)
-
-                # -----------------------------
-                # Create local folder if needed
-                # -----------------------------
-
-                benchmark_folder = Path("benchmark_data/submissions")
-                benchmark_folder.mkdir(exist_ok=True)
-
-                # -----------------------------
-                # Save uploaded file locally
-                # -----------------------------
-
-                save_path = benchmark_folder / f"{model_name}.csv"
-
-                submission_df.to_csv(save_path, sep=',', index=False)
-
-                # -----------------------------
-                # Save metadata
-                # -----------------------------
-
-                metadata = {
-                    "model_name": model_name,
-                    "benchmark_task": "Muscle Architecture (Images)",
-                    "submission_date": pd.Timestamp.now().strftime(
-                        "%Y-%m-%d %H:%M"
-                    ),
-                    "status": "pending",
-                }
-
-                metadata_path = (
-                    benchmark_folder
-                    / f"{model_name}_metadata.json"
-                )
-
-                with open(metadata_path, "w") as f:
-
-                    json.dump(metadata, f, indent=4)
-
-                st.success("Thank you for your submission. ")
-
-        st.markdown("---")
-
-        # -----------------------------
+            # -----------------------------
         # Global Benchmark Summary
         # -----------------------------
 
@@ -756,11 +659,11 @@ elif selected_tab == "Benchmarks":
 
         st.caption(
             """
-            Mean Absolute Error (MAE) relative to expert consensus.
+            Ranking order based on MAE for each parameter. The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
             """
         )
 
-        summary_df = build_global_summary()
+        summary_df = build_image_global_summary()
 
         # -----------------------------
         # Fascicle Length
@@ -769,7 +672,15 @@ elif selected_tab == "Benchmarks":
         st.markdown("#### Fascicle Length")
 
         fl_ranking = (
-            summary_df[["Model", "FL MAE (mm)"]]
+            summary_df[
+                [
+                    "Model",
+                    "FL MAE (mm)",
+                    "FL ICC",
+                    "FL CV (%)",
+                    "FL Bias (mm)"
+                ]
+            ]
             .sort_values("FL MAE (mm)")
             .reset_index(drop=True)
         )
@@ -794,7 +705,15 @@ elif selected_tab == "Benchmarks":
         st.markdown("#### Muscle Thickness")
 
         mt_ranking = (
-            summary_df[["Model", "MT MAE (mm)"]]
+            summary_df[
+                [
+                    "Model",
+                    "MT MAE (mm)",
+                    "MT ICC",
+                    "MT CV (%)",
+                    "MT Bias (mm)"
+                ]
+            ]
             .sort_values("MT MAE (mm)")
             .reset_index(drop=True)
         )
@@ -819,7 +738,15 @@ elif selected_tab == "Benchmarks":
         st.markdown("#### Pennation Angle")
 
         pa_ranking = (
-            summary_df[["Model", "PA MAE (°)"]]
+            summary_df[
+                [
+                    "Model",
+                    "PA MAE (°)",
+                    "PA ICC",
+                    "PA CV (%)",
+                    "PA Bias (°)"
+                ]
+            ]
             .sort_values("PA MAE (°)")
             .reset_index(drop=True)
         )
@@ -905,6 +832,137 @@ elif selected_tab == "Benchmarks":
                 use_container_width=True
             )
 
+        with st.expander("📤 Submit Your Own Model Predictions"):
+
+            st. markdown("### Benchmark Submission")
+
+            st.markdown(
+                """
+                Upload your model predictions in CSV format to compare them against the expert benchmark dataset.
+                """
+            )
+
+            # -----------------------------
+            # Submission Template
+            # -----------------------------
+
+            benchmark_path = (
+                Path(__file__).parent
+                / "benchmark_data"
+                / "35_images_benchmark_summary.csv"
+            )
+
+            benchmark_df = pd.read_csv(benchmark_path, sep=";")
+
+            template_df = pd.DataFrame(
+                {
+                    "image_id": benchmark_df["image_id"],
+                    "fl_mm": np.nan,
+                    "mt_mm": np.nan,
+                    "pa_deg": np.nan,
+                }
+            )
+
+            csv = template_df.to_csv(sep=',', index=False).encode("utf-8")
+
+            st.download_button(
+                label="📥 Download Submission Template",
+                data=csv,
+                file_name="muscle_architecture_benchmark_template.csv",
+                mime="text/csv",
+            )
+
+            model_name = st.text_input(
+                "Model Name (Required)",
+                placeholder="e.g. DL_Track",
+            )
+
+            uploaded_file = st.file_uploader(
+                "Submit Your Own Results",
+                type=["csv"]
+            )
+
+            if uploaded_file is not None:
+
+                if not model_name.strip():
+                    st.error("Please enter a model name")
+
+                else:
+
+                    submission_df = pd.read_csv(uploaded_file)
+
+                    # -----------------------------
+                    # Create local folder if needed
+                    # -----------------------------
+
+                    benchmark_folder = Path("benchmark_data/submissions")
+                    benchmark_folder.mkdir(exist_ok=True)
+
+                    # -----------------------------
+                    # Save uploaded file locally
+                    # -----------------------------
+
+                    save_path = benchmark_folder / f"{model_name}.csv"
+
+                    submission_df.to_csv(save_path, sep=',', index=False)
+
+                    # -----------------------------
+                    # Save metadata
+                    # -----------------------------
+
+                    metadata = {
+                        "model_name": model_name,
+                        "benchmark_task": "Muscle Architecture (Images)",
+                        "submission_date": pd.Timestamp.now().strftime(
+                            "%Y-%m-%d %H:%M"
+                        ),
+                        "status": "pending",
+                    }
+
+                    metadata_path = (
+                        benchmark_folder
+                        / f"{model_name}_metadata.json"
+                    )
+
+                    with open(metadata_path, "w") as f:
+
+                        json.dump(metadata, f, indent=4)
+
+                    st.success("Thank you for your submission. ")
+
+
+            st.markdown("---")
+
+        st.markdown(
+        """
+            ### Analysis methodology
+            The images were manually analysed using imageJ (FIJI). For this, 3 straight lines were used to assess muscle thickness at a left, middle and right location in the images, 3 segmented
+            lines were used to asses 3 fascicles, and 3 angles were used to assess 3 pennation angles (not the same as for the fascicles). Of all parameters, the mean was calculated
+            which represented the final estimate. This methodology was kept constant between all six expert raters. 
+
+            ### Dataset description
+            The UMUD benchmark muscle architecture dataset contains 35 muscle architectural images. 
+            Muscles included in this set are the gastrocnemius medialis, the soleus and the vastus lateralis. 
+            The images were acquired by four different devices: Hitachi Aloka Alpha-10, Telemed Echo Blaster 128, Philips HD11 and Telemed ArtUs EXT-1H.
+            The dataset contains images from both, young and healthy males and females. (For examples on older invidiuals please see the annotated datasets.) 
+
+            ### Performance metrics
+            The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
+
+            - **Mean Absolute Error (MAE):**
+            The average absolute difference between the model predictions and the expert reference values. Lower values indicate better accuracy.
+
+            - **Intraclass Correlation Coefficient (ICC):**
+            Measures the agreement between the model predictions and the expert reference values. ICC values range from 0 to 1, where higher values indicate better agreement.
+
+            - **Coefficient of Variation (CV):**
+            The standard deviation of the prediction differences, normalized by the mean reference value and expressed as a percentage. Lower values indicate more consistent predictions.
+
+            - **Bias:**
+            The mean signed difference between the model predictions and the expert reference values. Positive values indicate systematic overestimation, whereas negative values indicate systematic underestimation.
+        """
+        )
+
     if benchmark_option == "Muscle Architecture (Video)":
 
         st.markdown(
@@ -914,115 +972,10 @@ elif selected_tab == "Benchmarks":
             This benchmark evaluates:
             - Fascicle Length (FL)
             - Pennation Angle (PA)
-
-            #### Analysis Methodology
-
-            The video frames were manually analysed using a custom Matlab script. For this, The fascicles and pennation angles were drawn until the aponeurosis intersections. The resulting value represented the final estimate for the fascicle length and pennation angle. This methodology was kept constant between all three expert raters. Only every second frame whas analysed, beginning with frame 0. Every other frame was interpolated as the mean between two subsequent manual analysis frames. 
-
-            #### Dataset description
-            The UMUD benchmark GM architecture calf raise dataset contains 167 architectural images from the muscle belly of the gastrocnemius medialis during a calf raise exercise. 
-            The video was acquired using a Telemed ultrasound device. The video was acquired in a healthy male. Both, the single frames as well as the video is contained in the dataset. 
-            This dataset can be used to test analysis algorithms evaluating dynamic muscle behaviour.
+            )
 
             """
         )
-
-        st. markdown("##### Benchmark Submission")
-
-        st.markdown(
-            """
-            Upload your model predictions in CSV format to compare them against the expert benchmark dataset.
-            """
-        )
-
-        # -----------------------------
-        # Submission Template
-        # -----------------------------
-
-        benchmark_path = (
-            Path(__file__).parent
-            / "benchmark_data"
-            / "benchmark_architecture_GM_calf_raise_v0.1.0.csv"
-        )
-
-        benchmark_df = pd.read_csv(benchmark_path, sep=",")
-
-        template_df = pd.DataFrame(
-            {
-                "frame": benchmark_df["frame"],
-                "fl_mm": np.nan,
-                "pa_deg": np.nan,
-            }
-        )
-
-        csv = template_df.to_csv(sep=',',index=False).encode("utf-8")
-
-        st.download_button(
-            label="📥 Download Submission Template",
-            data=csv,
-            file_name="muscle_architecture_benchmark_template.csv",
-            mime="text/csv",
-        )
-
-        model_name = st.text_input(
-            "Model Name (Required)",
-            placeholder="e.g. DL_Track",
-        )
-
-        uploaded_file = st.file_uploader(
-            "Submit Your Own Results",
-            type=["csv"]
-        )
-
-        if uploaded_file is not None:
-
-            if not model_name.strip():
-                st.error("Please enter a model name")
-
-            else:
-
-                submission_df = pd.read_csv(uploaded_file)
-
-                # -----------------------------
-                # Create local folder if needed
-                # -----------------------------
-
-                benchmark_folder = Path("benchmark_data/submissions")
-                benchmark_folder.mkdir(exist_ok=True)
-
-                # -----------------------------
-                # Save uploaded file locally
-                # -----------------------------
-
-                save_path = benchmark_folder / f"{model_name}.csv"
-
-                submission_df.to_csv(save_path, sep=',', index=False)
-
-                # -----------------------------
-                # Save metadata
-                # -----------------------------
-
-                metadata = {
-                    "model_name": model_name,
-                    "benchmark_task": "Muscle Architecture (Video)",
-                    "submission_date": pd.Timestamp.now().strftime(
-                        "%Y-%m-%d %H:%M"
-                    ),
-                    "status": "pending",
-                }
-
-                metadata_path = (
-                    benchmark_folder
-                    / f"{model_name}_metadata.json"
-                )
-
-                with open(metadata_path, "w") as f:
-
-                    json.dump(metadata, f, indent=4)
-
-                st.success("Thank you for your submission. ")
-
-        st.markdown("---")
 
         # -----------------------------
         # Global Benchmark Summary
@@ -1032,7 +985,7 @@ elif selected_tab == "Benchmarks":
 
         st.caption(
             """
-            Mean Absolute Error (MAE) relative to expert consensus.
+            Ranking order based on MAE for each parameter. The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
             """
         )
 
@@ -1045,7 +998,15 @@ elif selected_tab == "Benchmarks":
         st.markdown("#### Fascicle Length")
 
         fl_ranking = (
-            summary_df[["Model", "FL MAE (mm)"]]
+            summary_df[
+                [
+                    "Model",
+                    "FL MAE (mm)",
+                    "FL ICC",
+                    "FL CV (%)",
+                    "FL Bias (mm)"
+                ]
+            ]
             .sort_values("FL MAE (mm)")
             .reset_index(drop=True)
         )
@@ -1071,7 +1032,15 @@ elif selected_tab == "Benchmarks":
         st.markdown("#### Pennation Angle")
 
         pa_ranking = (
-            summary_df[["Model", "PA MAE (°)"]]
+            summary_df[
+                [
+                    "Model",
+                    "PA MAE (°)",
+                    "PA ICC",
+                    "PA CV (%)",
+                    "PA Bias (°)"
+                ]
+            ]
             .sort_values("PA MAE (°)")
             .reset_index(drop=True)
         )
@@ -1149,6 +1118,412 @@ elif selected_tab == "Benchmarks":
                 styled_df,
                 use_container_width=True
             )
+
+
+        with st.expander("📤 Submit Your Own Model Predictions"):
+
+            st. markdown("### Benchmark Submission")
+
+            st.markdown(
+                """
+                Upload your model predictions in CSV format to compare them against the expert benchmark dataset.
+                """
+            )
+
+            # -----------------------------
+            # Submission Template
+            # -----------------------------
+
+            benchmark_path = (
+                Path(__file__).parent
+                / "benchmark_data"
+                / "benchmark_architecture_GM_calf_raise_v0.1.0.csv"
+            )
+
+            benchmark_df = pd.read_csv(benchmark_path, sep=",")
+
+            template_df = pd.DataFrame(
+                {
+                    "frame": benchmark_df["frame"],
+                    "fl_mm": np.nan,
+                    "pa_deg": np.nan,
+                }
+            )
+
+            csv = template_df.to_csv(sep=',',index=False).encode("utf-8")
+
+            st.download_button(
+                label="📥 Download Submission Template",
+                data=csv,
+                file_name="muscle_architecture_benchmark_template.csv",
+                mime="text/csv",
+            )
+
+            model_name = st.text_input(
+                "Model Name (Required)",
+                placeholder="e.g. DL_Track",
+            )
+
+            uploaded_file = st.file_uploader(
+                "Submit Your Own Results",
+                type=["csv"]
+            )
+
+            if uploaded_file is not None:
+
+                if not model_name.strip():
+                    st.error("Please enter a model name")
+
+                else:
+
+                    submission_df = pd.read_csv(uploaded_file)
+
+                    # -----------------------------
+                    # Create local folder if needed
+                    # -----------------------------
+
+                    benchmark_folder = Path("benchmark_data/submissions")
+                    benchmark_folder.mkdir(exist_ok=True)
+
+                    # -----------------------------
+                    # Save uploaded file locally
+                    # -----------------------------
+
+                    save_path = benchmark_folder / f"{model_name}.csv"
+
+                    submission_df.to_csv(save_path, sep=',', index=False)
+
+                    # -----------------------------
+                    # Save metadata
+                    # -----------------------------
+
+                    metadata = {
+                        "model_name": model_name,
+                        "benchmark_task": "Muscle Architecture (Video)",
+                        "submission_date": pd.Timestamp.now().strftime(
+                            "%Y-%m-%d %H:%M"
+                        ),
+                        "status": "pending",
+                    }
+
+                    metadata_path = (
+                        benchmark_folder
+                        / f"{model_name}_metadata.json"
+                    )
+
+                    with open(metadata_path, "w") as f:
+
+                        json.dump(metadata, f, indent=4)
+
+                    st.success("Thank you for your submission. ")
+
+                st.markdown("---")
+
+        st.markdown(
+        """
+        #### Analysis Methodology
+
+        The video frames were manually analysed using a custom Matlab script. For this, The fascicles and pennation angles were drawn until the aponeurosis intersections. The resulting value represented the final estimate for the fascicle length and pennation angle. This methodology was kept constant between all three expert raters. Only every second frame whas analysed, beginning with frame 0. Every other frame was interpolated as the mean between two subsequent manual analysis frames. 
+
+        #### Dataset description
+        The UMUD benchmark GM architecture calf raise dataset contains 167 architectural images from the muscle belly of the gastrocnemius medialis during a calf raise exercise. 
+        The video was acquired using a Telemed ultrasound device. The video was acquired in a healthy male. Both, the single frames as well as the video is contained in the dataset. 
+        This dataset can be used to test analysis algorithms evaluating dynamic muscle behaviour.
+
+        ### Performance metrics
+        The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
+
+        - **Mean Absolute Error (MAE):**
+        The average absolute difference between the model predictions and the expert reference values. Lower values indicate better accuracy.
+
+        - **Intraclass Correlation Coefficient (ICC):**
+        Measures the agreement between the model predictions and the expert reference values. ICC values range from 0 to 1, where higher values indicate better agreement.
+
+        - **Coefficient of Variation (CV):**
+        The standard deviation of the prediction differences, normalized by the mean reference value and expressed as a percentage. Lower values indicate more consistent predictions.
+
+        - **Bias:**
+        The mean signed difference between the model predictions and the expert reference values. Positive values indicate systematic overestimation, whereas negative values indicate systematic underestimation.
+        """
+        )
+     
+
+    if benchmark_option == "ACSA Quantification":
+
+        st.markdown(
+            """
+            ### ACSA Quantification Benchmark
+
+            This benchmark evaluates:
+            - Anatomical Cross Section Area (ACSA)
+            - Echo Intensity (EI)
+
+            """
+            )
+
+        # -----------------------------
+        # Global Benchmark Summary
+        # -----------------------------
+
+        st.markdown("### Global Benchmark Performance")
+
+        st.caption(
+            """
+            Ranking order based on MAE for each parameter. The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
+            """
+        )
+
+        summary_df = build_acsa_global_summary()
+
+        st.markdown("#### Anatomical Cross-Sectional Area")
+
+        acsa_ranking = (
+            summary_df[
+                [
+                    "Model",
+                    "ACSA MAE (cm2)",
+                    "ACSA ICC",
+                    "ACSA CV (%)",
+                    "ACSA Bias (cm2)"
+                ]
+            ]
+            .sort_values("ACSA MAE (cm2)")
+            .reset_index(drop=True)
+        )
+
+        acsa_ranking.index += 1
+
+        acsa_ranking = (
+            acsa_ranking
+            .rename_axis("Rank")
+            .reset_index()
+        )
+
+        st.dataframe(
+            acsa_ranking,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        st.markdown("#### Echo Intensity")
+
+        ei_ranking = (
+            summary_df[
+                [
+                    "Model",
+                    "EI MAE",
+                    "EI ICC",
+                    "EI CV (%)",
+                    "EI Bias"
+                ]
+            ]
+            .sort_values("EI MAE")
+            .reset_index(drop=True)
+        )
+
+        ei_ranking.index += 1
+
+        ei_ranking = (
+            ei_ranking
+            .rename_axis("Rank")
+            .reset_index()
+        )
+
+        st.dataframe(
+            ei_ranking,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        # -----------------------------
+        # Image-wise Comparison
+        # -----------------------------
+
+        benchmark_folder = Path("benchmark_data/approved_submissions")
+
+        model_files = list(
+            benchmark_folder.glob("*.csv")
+        )
+
+        available_models = []
+
+        for model_file in model_files:
+
+            submission = load_submission(
+                model_file.stem,
+                folder="approved_submissions"
+            )
+
+            if (
+                submission["metadata"].get("benchmark_task")
+                == "ACSA Quantification"
+            ):
+                available_models.append(model_file.stem)
+
+        selected_models = st.multiselect(
+            "Select models to compare",
+            available_models
+        )
+
+        with st.expander("🔍 View Image-Wise Benchmark Analysis"):
+
+            display_df = build_web_acsa_imagewise_comparison(
+                selected_models
+            )
+
+            styled_df = (
+                display_df.style
+                .apply(highlight_metric_columns)
+                .set_properties(
+                    **{
+                        "text-align": "center"
+                    }
+                )
+                .set_table_styles(
+                    [
+                        {
+                            "selector": "th",
+                            "props": [("text-align", "center")]
+                        }
+                    ]
+                )
+                .format(precision=2)
+            )
+
+            st.dataframe(
+                styled_df,
+                use_container_width=True
+            )
+
+
+        with st.expander("📤 Submit Your Own Model Predictions"):
+
+            st. markdown("### Benchmark Submission")
+
+            st.markdown(
+                """
+                Upload your model predictions in CSV format to compare them against the expert benchmark dataset.
+                """
+            )
+
+            # -----------------------------
+            # Submission Template
+            # -----------------------------
+
+            benchmark_path = (
+                Path(__file__).parent
+                / "benchmark_data"
+                / "benchmark_acsa_ei.csv"
+            )
+
+            benchmark_df = pd.read_csv(benchmark_path, sep=",")
+
+            template_df = pd.DataFrame(
+                {
+                    "image_id": benchmark_df["image_id"],
+                    "ACSA": np.nan,
+                    "EI": np.nan,
+                }
+            )
+
+            csv = template_df.to_csv(sep=',',index=False).encode("utf-8")
+
+            st.download_button(
+                label="📥 Download Submission Template",
+                data=csv,
+                file_name="acsa_ei_benchmark_template.csv",
+                mime="text/csv",
+            )
+
+            model_name = st.text_input(
+                "Model Name (Required)",
+                placeholder="e.g. DL_Track",
+            )
+
+            uploaded_file = st.file_uploader(
+                "Submit Your Own Results",
+                type=["csv"]
+            )
+
+            if uploaded_file is not None:
+
+                if not model_name.strip():
+                    st.error("Please enter a model name")
+
+                else:
+
+                    submission_df = pd.read_csv(uploaded_file)
+
+                    # -----------------------------
+                    # Create local folder if needed
+                    # -----------------------------
+
+                    benchmark_folder = Path("benchmark_data/submissions")
+                    benchmark_folder.mkdir(exist_ok=True)
+
+                    # -----------------------------
+                    # Save uploaded file locally
+                    # -----------------------------
+
+                    save_path = benchmark_folder / f"{model_name}.csv"
+
+                    submission_df.to_csv(save_path, sep=',', index=False)
+
+                    # -----------------------------
+                    # Save metadata
+                    # -----------------------------
+
+                    metadata = {
+                        "model_name": model_name,
+                        "benchmark_task": "ACSA Quantification",
+                        "submission_date": pd.Timestamp.now().strftime(
+                            "%Y-%m-%d %H:%M"
+                        ),
+                        "status": "pending",
+                    }
+
+                    metadata_path = (
+                        benchmark_folder
+                        / f"{model_name}_metadata.json"
+                    )
+
+                    with open(metadata_path, "w") as f:
+
+                        json.dump(metadata, f, indent=4)
+
+                    st.success("Thank you for your submission. ")
+
+            st.markdown("---")
+
+        st.markdown(
+            """
+            ### Analysis methodology
+            The images were manually analysed using imageJ (FIJI). For this, the polygon tool was selected and the area of the muscle was drawn. The inner border of the rectus femoris
+            was followd until the whole anatomical cross-sectional area was outlines. The resulting value represented the final estimate for the image. This methodology was kept constant between all six expert raters. 
+
+            ### Dataset description
+            The UMUD benchmark RF ACSA dataset contains 30 muscle anatomical cross-sectional area images of the rectus femoris. 
+            The images were acquired by three different devices: Siemens Acuson Juniper, Esaote MyLab 70 and Aixplorer Ultimate.
+            The dataset contains images from both, young and healthy males and females.
+
+            ### Performance metrics
+            The benchmark evaluates model performance by comparing the predicted measurements with the expert reference values.
+
+            - **Mean Absolute Error (MAE):**
+            The average absolute difference between the model predictions and the expert reference values. Lower values indicate better accuracy.
+
+            - **Intraclass Correlation Coefficient (ICC):**
+            Measures the agreement between the model predictions and the expert reference values. ICC values range from 0 to 1, where higher values indicate better agreement.
+
+            - **Coefficient of Variation (CV):**
+            The standard deviation of the prediction differences, normalized by the mean reference value and expressed as a percentage. Lower values indicate more consistent predictions.
+
+            - **Bias:**
+            The mean signed difference between the model predictions and the expert reference values. Positive values indicate systematic overestimation, whereas negative values indicate systematic underestimation.
+            """
+            )
+
+    
 
     # with st.expander("**🤗 Algorithm Training Metrics**"):
 
