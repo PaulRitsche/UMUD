@@ -1,5 +1,5 @@
 {
-    "model_name": "DeepACSA",
+    "model_name": "DeepACSA_v032",
     "benchmark_task": "ACSA Quantification",
     "submission_date": "2026-07-09 10:09",
     "status": "approved"

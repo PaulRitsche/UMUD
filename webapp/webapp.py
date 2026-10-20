@@ -34,7 +34,6 @@ import shutil
 
 
 # TODO complete benchmark Tab
-# TODO complete video benchmark dataset by UltraTim
 
 # ----- Settings -----
 page_title = "UMUD"
@@ -651,10 +650,6 @@ elif selected_tab == "Benchmarks":
             """
             )
 
-            # -----------------------------
-        # Global Benchmark Summary
-        # -----------------------------
-
         st.markdown("### Global Benchmark Performance")
 
         st.caption(
@@ -664,10 +659,6 @@ elif selected_tab == "Benchmarks":
         )
 
         summary_df = build_image_global_summary()
-
-        # -----------------------------
-        # Fascicle Length
-        # -----------------------------
 
         st.markdown("#### Fascicle Length")
 
@@ -852,7 +843,7 @@ elif selected_tab == "Benchmarks":
                 / "35_images_benchmark_summary.csv"
             )
 
-            benchmark_df = pd.read_csv(benchmark_path, sep=";")
+            benchmark_df = pd.read_csv(benchmark_path, sep=",")
 
             template_df = pd.DataFrame(
                 {
